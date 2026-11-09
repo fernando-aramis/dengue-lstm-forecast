@@ -52,6 +52,10 @@ pip install -r requirements.txt
 
 # os dados REAIS já estão em data/ — basta subir o app:
 python app.py            # -> http://127.0.0.1:8050   (DASH_DEBUG=1 liga o modo debug)
+
+# (opcional) instalação ENDURECIDA/reprodutível, com verificação de hash — idêntica à da imagem:
+#   pip install --require-hashes -r requirements.lock
+# (regere o lock quando requirements.txt mudar — ver o comando `uv pip compile` no Dockerfile)
 ```
 
 ## Estrutura
@@ -95,8 +99,10 @@ mantenha as colunas e o app não muda.
 - **Variáveis de ambiente:** `DASH_DEBUG=1` liga o debug (padrão **desligado** — nunca ligar em
   produção), `HOST`/`PORT` (padrão `127.0.0.1:8050`), `LOG_LEVEL` (padrão `INFO`).
 - **Segurança (hardening de exposição):** cabeçalhos `X-Content-Type-Options`, `Referrer-Policy`,
-  `X-Frame-Options` e uma **CSP em Report-Only** (não quebra o Dash; promova a enforce depois de
-  revisar os relatórios). Sem auth/DB/PII por design — ver `docs` do diagnóstico.
+  `X-Frame-Options`, HSTS, `Permissions-Policy` e uma **CSP em Report-Only** — mantida assim por
+  **decisão documentada**: o renderer do Dash exige `script-src 'unsafe-inline' 'unsafe-eval'` e os
+  mapas (MapLibre) exigem `worker-src blob:`, então enforçar agregaria pouco sobre os demais
+  cabeçalhos (ver a docstring de `_cabecalhos_seguranca` em `app.py`). Sem auth/DB/PII por design.
 - **Desempenho:** respostas com **gzip** (flask-compress) e geojson simplificado; o tema recolore
   o mapa via `Patch` parcial, **sem reenviar** o geojson.
 - **Regerar a malha enxuta:** `python pipeline/simplificar_geojson.py` (lê sempre o backup
@@ -159,7 +165,10 @@ Isso sobrescreve `data/historico.csv` e `data/previsoes.csv` com previsões **re
 3. Evoluir para o **modelo pooled** (município como feature) — ver a análise do projeto original.
 4. **GitHub Actions** (`.github/workflows/ci.yml` e `refresh.yml`) já prontos — **inertes** até
    subir o repositório; ao subir, revisar o pin do `tensorflow-cpu` para o Python do runner.
-5. Promover a **CSP** de Report-Only para enforce após revisar os relatórios.
+5. **CSP** mantida em Report-Only por **decisão documentada** (o Dash exige `unsafe-eval`/
+   `unsafe-inline`; o MapLibre exige `worker-src blob:`) — ver a docstring de
+   `_cabecalhos_seguranca`. Próximo passo possível: adicionar um coletor `report-to`/`report-uri`
+   para o Report-Only gerar telemetria útil.
 6. (Opcional) Geolocalização do browser para pré-selecionar a cidade, com fallback ao estado.
 
 ## Créditos e colaboração
