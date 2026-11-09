@@ -1,0 +1,10 @@
+# Toolchain de CI para o REFRESH (GitHub runner). Difere de propósito dos pins de DEV em
+# pipeline/requirements.txt — que miram Python 3.14 + RC do TensorFlow (sem wheel no runner).
+#
+# TensorFlow (<= 2.18) exige numpy < 2.2 e Python <= 3.12 — por isso o refresh.yml fixa Python 3.12
+# e usa estas FAIXAS (não pins exatos), para o pip encontrar um conjunto TF-compatível que roda.
+# O gate de contrato dos dados (test_unit -k "schema or geojson or meta") valida a SAÍDA após o
+# treino, então uma eventual diferença de minor de pandas/numpy é barrada antes de qualquer commit.
+tensorflow-cpu~=2.18.0
+numpy>=1.26,<2.2
+pandas>=2.2,<2.4
