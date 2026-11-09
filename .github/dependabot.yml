@@ -1,0 +1,41 @@
+# Dependabot — PRs automáticos de atualização (patch/minor) com as mudanças já testadas pelo CI.
+# Cobre: GitHub Actions (versões/SHA), dependências Python e a imagem base do Dockerfile.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: pip
+    directory: /                      # app (requirements.txt)
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps
+
+  - package-ecosystem: pip
+    directory: /pipeline              # pipeline (requirements*.txt)
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps(pipeline)
+
+  - package-ecosystem: pip
+    directory: /tests                 # testes (requirements.txt)
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: deps(tests)
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build

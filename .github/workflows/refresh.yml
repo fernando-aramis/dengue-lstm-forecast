@@ -1,0 +1,74 @@
+# Refresh das previsões — roda o pipeline, VALIDA o contrato e commita os CSVs atualizados em main.
+# O deploy.yml então publica no Hugging Face Space (o push em main dispara o deploy).
+# INERTE até o projeto ir para o GitHub.
+#
+# Toolchain: usa pipeline/requirements-ci.txt (Python 3.12 + TF estável), NÃO os pins de dev
+# (requirements.txt mira Python 3.14 + RC do TF, sem wheel no runner). Ver 16-diagnostico-cicd.
+#
+# ⚠️ Treinar 33 cidades × 500 épocas em CPU (runner 2 vCPU) é lento. Para a execução agendada,
+# considere MODO_RAPIDO/CIDADES_GEO ou mover o treino para Colab/GPU/self-hosted (ver relatório).
+name: Refresh das previsões
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"      # toda segunda, 09:00 UTC (após fechar a semana epidemiológica)
+  workflow_dispatch:
+    inputs:
+      modo_rapido:
+        description: "Treino rápido (poucas épocas) para smoke-test"
+        type: boolean
+        default: false
+      cidades_geo:
+        description: "Geocodes separados por vírgula (vazio = todas)"
+        type: string
+        default: ""
+
+permissions:
+  contents: write           # commita os CSVs atualizados
+
+# Serial: um dispatch manual nunca corre junto do cron (evita corrida no git push).
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120      # teto de segurança; se o treino completo exceder, use MODO_RAPIDO/GPU
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"           # TF exige <= 3.12 (ver requirements-ci.txt)
+          cache: pip
+          cache-dependency-path: pipeline/requirements-ci.txt
+      - run: pip install -r pipeline/requirements-ci.txt
+
+      - name: Rodar o pipeline (InfoDengue -> LSTM -> CSVs)
+        working-directory: pipeline
+        env:
+          MODO_RAPIDO: ${{ inputs.modo_rapido && '1' || '' }}
+          CIDADES_GEO: ${{ inputs.cidades_geo }}
+        run: python gerar_previsoes_reais.py
+
+      - name: Gate — validar contrato dos dados ANTES de commitar
+        # Se o pipeline gerou CSV vazio/malformado (ex.: API fora do ar), estes testes falham e o
+        # job aborta aqui — nada é commitado em main, e o app no ar continua com os dados bons.
+        # Só testes de contrato de DADOS (pandas/json puro) — não importam o app (dash/plotly não
+        # está instalado neste job).
+        run: |
+          pip install pytest
+          pytest tests/test_unit.py -q -k "schema or geojson or meta_proveniencia"
+
+      - name: Commitar dados atualizados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/previsoes.csv data/historico.csv data/eda.json data/_meta.json data/snapshots/
+          if git diff --cached --quiet; then
+            echo "sem mudancas nos dados — nada a commitar"; exit 0
+          fi
+          # sem [skip ci]: o push em main deve disparar o deploy.yml (publica os dados novos no Space)
+          git commit -m "chore(dados): refresh das previsoes"
+          git pull --rebase --autostash origin main   # evita rejeição se main avançou
+          git push
