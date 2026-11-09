@@ -63,11 +63,26 @@ app.index_string = """<!DOCTYPE html>
 
 @server.after_request
 def _cabecalhos_seguranca(resp):
-    """Hardening de exposição (OWASP A05). CSP em Report-Only para não quebrar o Dash."""
+    """Hardening de exposição (OWASP A05). Cabeçalhos de segurança + CSP.
+
+    A CSP fica em **Report-Only de propósito** — e assim permanece (decisão documentada, NÃO um
+    TODO de "promover a enforce depois"). Enforçá-la quebraria o app por dois motivos estruturais
+    e irredutíveis:
+      1. O renderer do Dash injeta config inline e avalia bundles em runtime → exige
+         `script-src 'unsafe-inline' 'unsafe-eval'`, o que já esvazia a proteção anti-XSS que uma
+         CSP enforçada traria.
+      2. As camadas de mapa (MapLibre GL, via Scattermap/Choroplethmap) criam Web Workers a partir
+         de `blob:` → exigem `worker-src blob:`.
+    Com esses relaxamentos obrigatórios, uma CSP *enforçada* agregaria pouco sobre os demais
+    cabeçalhos. E o app é público, read-only, SEM auth / cookie de sessão / entrada de usuário /
+    caminho de escrita — o impacto prático de um XSS aqui é mínimo. Mantemos a política completa e
+    correta no cabeçalho como documentação executável e para gerar telemetria útil caso um coletor
+    (`report-to` / `report-uri`) seja adicionado. (Opção B do diagnóstico de segurança.)
+    """
     resp.headers["X-Content-Type-Options"] = "nosniff"
     resp.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     resp.headers["X-Frame-Options"] = "SAMEORIGIN"
-    # HSTS (o proxy do Spaces termina o TLS) + Permissions-Policy (desliga APIs sensíveis não usadas)
+    # HSTS (o proxy do host, ex.: Render, termina o TLS) + Permissions-Policy (desliga APIs sensíveis)
     resp.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains"
     resp.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
     resp.headers.setdefault(
@@ -76,8 +91,13 @@ def _cabecalhos_seguranca(resp):
         "img-src 'self' data: blob: https://*.basemaps.cartocdn.com; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
+        # script-src: 'unsafe-inline'/'unsafe-eval' são EXIGIDOS pelo renderer do Dash (ver docstring)
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-        "connect-src 'self' https://*.basemaps.cartocdn.com https://*.tiles.mapbox.com")
+        # worker-src blob: é EXIGIDO pelos Web Workers do MapLibre GL (camadas do mapa)
+        "worker-src 'self' blob:; "
+        "connect-src 'self' https://*.basemaps.cartocdn.com https://*.tiles.mapbox.com; "
+        # endurecimentos sem custo p/ o app (não usa iframe aninhado, <base>, form externo nem plugin)
+        "frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'")
     return resp
 
 

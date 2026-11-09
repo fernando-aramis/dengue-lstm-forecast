@@ -40,6 +40,21 @@ jobs:
           # de serving; o gate duro fica no requirements.txt (o que de fato é publicado).
           pip-audit -r pipeline/requirements.txt --desc || echo "::warning::CVE(s) em pipeline/requirements.txt (não-bloqueante)"
 
+  # Segredos no HISTÓRICO do git (complementa o scanner `secret` do Trivy, que só olha a imagem
+  # buildada — não os commits antigos). fetch-depth: 0 traz todo o histórico para a varredura.
+  # gitleaks é FREE para repositórios públicos / contas pessoais; GITLEAKS_LICENSE só é exigido
+  # em repositórios de ORGANIZAÇÃO. Falha o job (bloqueia o merge) se achar um segredo.
+  secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # SAST do código Python (falha em MEDIUM+). Exclui venv e testes.
   sast:
     runs-on: ubuntu-latest

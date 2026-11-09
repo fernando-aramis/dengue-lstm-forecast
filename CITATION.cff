@@ -1,0 +1,27 @@
+# Metadados de citação (GitHub renderiza "Cite this repository").
+# Spec: https://citation-file-format.github.io
+cff-version: 1.2.0
+message: "Se você usar este software ou seus resultados, por favor cite-o conforme abaixo."
+title: "Painel de previsão semanal de dengue no Brasil (LSTM + predição conformal)"
+abstract: >-
+  Painel web (Dash + Plotly) de previsão semanal de casos de dengue para capitais e
+  principais cidades do Brasil, 1 a 4 semanas à frente, com banda de incerteza conformal
+  de 90% e fallback estadual. Estende ao mapa nacional o estudo de LSTM para Curitiba
+  (IAGA04, UTFPR). A arquitetura separa treino (offline) de serving (apenas leitura de CSVs).
+type: software
+authors:
+  - family-names: "Colque"
+    given-names: "Fernando Aramis"
+    affiliation: "Universidade Tecnológica Federal do Paraná (UTFPR)"
+version: "1.0.0"
+date-released: "2026-11-09"
+license: "GPL-3.0-or-later"
+repository-code: "https://github.com/fernando-aramis/dengue-lstm-forecast"
+keywords:
+  - "dengue"
+  - "forecasting"
+  - "LSTM"
+  - "conformal prediction"
+  - "epidemiology"
+  - "InfoDengue"
+  - "Brazil"
