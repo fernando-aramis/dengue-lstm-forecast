@@ -1,0 +1,7 @@
+# Dependências do PIPELINE OFFLINE (não do app web). Versões pinadas.
+# O app (../requirements.txt) NÃO precisa de TensorFlow — ele só lê os CSVs.
+pandas==3.1.1
+numpy==2.5.4
+tensorflow-cpu==2.22.0rc0   # Python 3.14: versão rc; em 3.11 use a estável equivalente (ex. 2.17.x)
+shapely==2.2.0              # só p/ simplificar_geojson.py (offline); não entra na imagem de serving
+# openpyxl só é necessário se for reinspecionar a planilha original do estudo.
