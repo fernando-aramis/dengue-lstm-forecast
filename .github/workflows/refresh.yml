@@ -1,6 +1,6 @@
 # Refresh das previsões — roda o pipeline, VALIDA o contrato e commita os CSVs atualizados em main.
-# O deploy.yml então publica no Hugging Face Space (o push em main dispara o deploy).
-# INERTE até o projeto ir para o GitHub.
+# O push em main então dispara o redeploy no Render (autoDeploy do render.yaml) — não há workflow
+# de deploy: o Render observa o repositório e republica sozinho. INERTE até o projeto ir ao GitHub.
 #
 # Toolchain: usa pipeline/requirements-ci.txt (Python 3.12 + TF estável), NÃO os pins de dev
 # (requirements.txt mira Python 3.14 + RC do TF, sem wheel no runner). Ver 16-diagnostico-cicd.
@@ -68,7 +68,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "sem mudancas nos dados — nada a commitar"; exit 0
           fi
-          # sem [skip ci]: o push em main deve disparar o deploy.yml (publica os dados novos no Space)
+          # sem [skip ci]: o push em main deve disparar o autoDeploy do Render (publica os dados novos)
           git commit -m "chore(dados): refresh das previsoes"
           git pull --rebase --autostash origin main   # evita rejeição se main avançou
           git push
