@@ -1,0 +1,17 @@
+# Render Blueprint — web service via Docker, free tier. Deploy automático no push em main.
+# Como usar (uma vez): Render Dashboard -> New -> Blueprint -> conecte este repositório.
+# O Render lê este arquivo, builda o Dockerfile e publica o serviço. Em Settings do serviço
+# dá para ligar "Auto-Deploy: After CI Checks Pass" para só publicar com o CI verde (GitHub Flow).
+services:
+  - type: web
+    name: dengue-lstm-forecast
+    runtime: docker          # usa o Dockerfile (não-root, healthcheck, deps hash-pinned)
+    plan: free               # 512 MB; dorme após inatividade (cold start ~1 min)
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health # o Render monitora esta rota (o app expõe /health)
+    autoDeploy: true         # publica a cada push em main
+    envVars:
+      - key: WEB_CONCURRENCY # 1 worker no free tier (512 MB) — o Dockerfile lê esta env
+        value: "1"
+      # O Render injeta $PORT automaticamente; o container já se vincula a ele.

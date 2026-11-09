@@ -1,4 +1,5 @@
-# Dash no Hugging Face Spaces (SDK: Docker). Porta 7860 é a esperada pelo Spaces.
+# Imagem do app Dash para qualquer host de container (Render, Fly.io, etc.).
+# A porta é configurável por $PORT (default 7860): o host injeta PORT e o app se vincula a ele.
 # Base pinada por DIGEST (reprodutível + controle de quando a base muda).
 # python:3.11-slim (Debian 13/trixie) — digest resolvido em 2026-11-09.
 # Para re-pinar no futuro: docker pull python:3.11-slim && \
@@ -35,13 +36,14 @@ USER 10001
 
 EXPOSE 7860
 
-# HEALTHCHECK sem depender de curl (usa a stdlib do próprio Python). JSON/exec-form.
+# HEALTHCHECK sem depender de curl (usa a stdlib do próprio Python). Lê $PORT (default 7860).
 # Bate na rota leve /health (não re-renderiza a página inteira a cada 30s).
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD ["python","-c","import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:7860/health',timeout=4).status==200 else 1)"]
+  CMD ["python","-c","import os,urllib.request,sys;p=os.environ.get('PORT','7860');sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:'+p+'/health',timeout=4).status==200 else 1)"]
 
 # gunicorn serve o objeto `server` do app.py (Flask por baixo do Dash).
 # --max-requests recicla workers periodicamente (mitiga vazamento de memória/estado).
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "2", \
-     "--timeout", "60", "--graceful-timeout", "30", \
-     "--max-requests", "1000", "--max-requests-jitter", "100", "app:server"]
+# Shell-form com exec p/ expandir $PORT (host injeta) e $WEB_CONCURRENCY (workers; 1 no free tier).
+# exec => gunicorn vira PID 1 e recebe os sinais corretamente.
+CMD exec gunicorn --bind "0.0.0.0:${PORT:-7860}" --workers "${WEB_CONCURRENCY:-2}" \
+    --timeout 60 --graceful-timeout 30 --max-requests 1000 --max-requests-jitter 100 app:server

@@ -1,16 +1,3 @@
----
-title: Previsão de Dengue no Brasil — LSTM
-emoji: 🦟
-colorFrom: green
-colorTo: yellow
-sdk: docker
-app_port: 7860
-pinned: false
----
-
-<!-- ^ Cabeçalho do Hugging Face Space (SDK Docker): precisa ser o PRIMEIRO bloco do arquivo.
-     O deploy.yml espelha este repo no Space; o HF lê 'sdk'/'app_port' daqui (Dockerfile serve em 7860). -->
-
 # Painel de previsão de dengue — Brasil (Dash)
 
 Mapa nacional com previsão semanal de dengue para **capitais e principais cidades** de cada
@@ -117,14 +104,21 @@ mantenha as colunas e o app não muda.
 - **Container:** `docker build -t dengue . && docker run -p 7860:7860 dengue` — roda como
   usuário **não-root**, com `HEALTHCHECK`.
 
-## Deploy — Hugging Face Spaces (recomendado)
+## Deploy — Render (Docker, free tier)
 
-1. Crie um Space com **SDK: Docker**.
-2. Suba o conteúdo de `webapp/` (o `Dockerfile` já está pronto, serve na porta 7860).
-3. Pronto. Para atualizar a previsão, rode o pipeline offline e faça commit dos novos `data/*.csv`.
+O repositório traz um **`render.yaml`** (Blueprint) e o `Dockerfile` já pronto. A porta é dinâmica
+via `$PORT` (o Render injeta), e `WEB_CONCURRENCY=1` mantém o uso de memória dentro do free tier.
 
-Alternativa **Render**: Web Service, build `pip install -r requirements.txt`,
-start `gunicorn app:server`.
+1. Em [render.com](https://render.com), faça *Sign up with GitHub* e autorize o repositório.
+2. **New → Blueprint** → selecione este repo. O Render lê o `render.yaml`, builda o `Dockerfile`
+   e publica o web service (monitorando `/health`).
+3. Deploy automático a cada push em `main`. Em *Settings* dá para exigir **"After CI Checks Pass"**.
+4. Para atualizar a previsão: rode o pipeline offline (ou o workflow `refresh.yml`) e faça commit
+   dos novos `data/*.csv` — o push redispara o deploy.
+
+> Hugging Face Spaces exige **plano pago** para Spaces com compute (Docker/Gradio); só *Static* é
+> grátis e não roda o servidor Dash. A imagem é portável: Render, Fly.io, Koyeb etc. servem o mesmo
+> `Dockerfile` (ou `gunicorn app:server`).
 
 ## Pipeline real (previsão de verdade)
 
