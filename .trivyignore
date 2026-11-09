@@ -1,0 +1,12 @@
+# Supressões de CVE para o Trivy — cada entrada é um FALSO-POSITIVO documentado.
+# Revisar periodicamente: um ignore só deve existir enquanto a justificativa for verdadeira.
+
+# CVE-2025-47273 — setuptools: Path Traversal no PackageIndex (fix: 78.1.1).
+# Falso-positivo NESTE contexto: o Trivy lê a string "setuptools==70.3.0" do MANIFESTO de
+# vendoring do pip (site-packages/pip/_vendor/vendor.txt) e a reporta como pacote instalado.
+# Porém NÃO existe código setuptools vendorizado dentro de pip/_vendor/ — é só uma referência.
+# O setuptools REALMENTE instalado na imagem é 84.2.1 (>= 78.1.1, já corrigido — ver Dockerfile),
+# e o pip (26.3, atualizado) mantém essa linha no manifesto independentemente da versão.
+# Build-isolation do pip busca o setuptools atual do PyPI, não a versão do manifesto.
+# Além disso o pip não é executado em runtime (o container só roda gunicorn como não-root).
+CVE-2025-47273

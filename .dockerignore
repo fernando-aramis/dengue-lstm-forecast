@@ -1,0 +1,13 @@
+# A imagem de serving só precisa do app + data/. Fora: venv, caches, pipeline (offline),
+# testes, backups e artefatos de desenvolvimento.
+.venv/
+__pycache__/
+*.pyc
+pipeline/
+tests/
+.github/
+data/br_uf.full.geojson
+data/snapshots/
+data/eda.json
+.gitignore
+README.md
