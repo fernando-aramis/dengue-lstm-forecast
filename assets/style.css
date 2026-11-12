@@ -84,6 +84,15 @@ body {
 img, svg, canvas { max-width: 100%; }
 a { color: var(--green-ink); }
 :focus-visible { outline: 3px solid var(--green-ink); outline-offset: 2px; border-radius: 6px; }
+/* a11y C2 — reuse the site's brand focus ring where embedded components ship
+   their own: react-select dropdown (1px purple) and the Plotly attribution
+   <summary> (browser-default blue glow). Scoped; other focus styles untouched. */
+.dash-dropdown .Select.is-focused:not(.is-open) > .Select-control,
+.dash-dropdown .Select-control:focus-within,
+.js-plotly-plot summary:focus-visible,
+.dash-graph summary:focus-visible {
+  outline: 3px solid var(--green-ink); outline-offset: 2px; border-radius: 6px; box-shadow: none; }
+.js-plotly-plot summary:focus:not(:focus-visible) { outline: none; }
 .hide-sm { display: none; }
 
 .wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter) 48px; }
@@ -105,7 +114,7 @@ a { color: var(--green-ink); }
   background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; }
 .seg { appearance: none; border: 0; background: transparent; color: var(--topbar-muted);
   cursor: pointer; font: inherit; font-size: .76rem; font-weight: 650; line-height: 1;
-  padding: 5px 9px; border-radius: 999px; min-width: 32px; min-height: 30px;
+  padding: 5px 11px; border-radius: 999px; min-width: 44px; min-height: 44px;  /* AAA target size (WCAG 2.5.5) */
   display: inline-flex; align-items: center; justify-content: center; }
 @media (prefers-reduced-motion: no-preference) { .seg { transition: background-color .15s var(--ease-out); } }
 .seg:hover { background: rgba(255,255,255,.12); color: var(--topbar-fg); }
