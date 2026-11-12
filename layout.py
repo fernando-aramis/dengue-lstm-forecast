@@ -427,6 +427,10 @@ def construir_conteudo(lang):
                 html.Div(className="grid", children=[
                     html.Div(className="panel panel-mapa", children=[
                         html.Div(className="pad", children=[
+                            # a11y: react-select (dcc.Dropdown) coloca um <input>
+                            # focável dentro de um container aria-hidden="true"
+                            # (axe: aria-hidden-focus). Mitigado no cliente por
+                            # assets/a11y_dropdown.js (Dash 4.5 ainda traz o bug).
                             html.Div(className="controles", children=[
                                 html.Div([html.Label(tr(lang, "lbl_estado")),
                                           dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value="BR",
