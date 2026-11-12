@@ -335,3 +335,59 @@ footer .refs span { display: block; }
 @media (min-width: 1200px) {
   .running-header, .rodape { padding-left: 48px; padding-right: 48px; }
 }
+
+/* ==================================================== F3 — hero capa, situação, avisos, KPIs */
+header.hero { background: var(--brand); color: var(--on-brand); }
+header.hero h1 { color: var(--on-brand); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.12;
+  letter-spacing: -0.03em; }
+header.hero h1 .acento { color: var(--accent-on-brand); font-weight: 700; }
+header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-width: 60ch; }
+.hero-grid { display: grid; gap: 28px; }
+.hero-main { min-width: 0; }
+.hero-main .eyebrow { margin: 14px 0; }
+.chip--inverse { background: transparent; color: var(--on-brand-muted);
+  border: 1px solid rgba(255,255,255,.28); }
+.hero-autor { display: flex; flex-direction: column; gap: 2px; margin: 20px 0; font-size: .9rem; }
+.hero-autor strong { color: var(--on-brand); }
+.hero-afil { color: var(--on-brand-muted); font-size: .84rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; padding: 0 18px; border-radius: var(--radius-md); font-size: .92rem;
+  font-weight: 600; text-decoration: none; border: 1px solid transparent; white-space: nowrap; }
+.btn--on-brand { background: var(--btn-on-brand-bg); color: var(--btn-on-brand-fg); }
+.btn--secondary { background: transparent; color: var(--on-brand); border-color: rgba(255,255,255,.5); }
+.btn--ghost { background: transparent; color: var(--on-brand); padding: 0 6px; }
+.btn--primary { background: var(--btn-bg); color: var(--btn-fg); }
+.btn:hover { opacity: .92; }
+
+.situacao { background: var(--paper); color: var(--ink); border-radius: var(--radius);
+  padding: 22px; align-self: start; box-shadow: var(--shadow); }
+.situacao .eyebrow { margin-bottom: 10px; }
+.sit-total { font-size: clamp(2rem, 6vw, 2.6rem); font-weight: 700; line-height: 1; color: var(--ink); }
+.sit-sub { color: var(--muted); font-size: .9rem; margin: 4px 0 14px; }
+.sit-barra { display: flex; height: 14px; border-radius: 4px; overflow: hidden; gap: 2px; margin-bottom: 14px; }
+.barra-seg { min-width: 4px; }
+.sit-lista { display: flex; flex-direction: column; gap: 7px; }
+.sit-linha { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.sit-n { color: var(--muted); font-size: .85rem; }
+.sit-nota { margin-top: 14px; }
+
+.faixa { height: 6px; background: var(--strip); }
+.indicadores { padding-top: 28px; }
+.avisos { display: grid; gap: 14px; margin-bottom: 22px; }
+.avisos .aviso { margin-top: 0; }
+.aviso.warn { background: var(--aviso-bg); border-color: var(--aviso-bd); color: var(--aviso-fg); }
+.aviso.warn strong { color: var(--aviso-fg); }
+
+.stat--brand { background: var(--brand); border-color: transparent; }
+.stat--brand .big { color: var(--on-brand); }
+.stat--brand .lbl { color: var(--on-brand-muted); }
+.stat--alarm .big { color: var(--terra); }
+
+@media (min-width: 768px) {
+  .avisos { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 980px) {
+  .hero-grid { grid-template-columns: 1fr 440px; gap: 48px; align-items: start; }
+}

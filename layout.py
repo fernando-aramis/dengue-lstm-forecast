@@ -4,18 +4,58 @@ Layout da página: blocos editoriais, barra de controles (idioma/tema) e montage
 (`construir_conteudo` + `serve_layout`). Textos vêm de i18n; figuras vêm de figuras.py.
 """
 import flask
+from datetime import timedelta
+
 from dash import dcc, html
 
 from i18n import tr, resolver, nivel as nivel_tr
-from dados import UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf
+from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf,
+                   RESUMO, SE_H1, SE_ORIGEM, DATA_PREV_H1)
 from figuras import figura_mapa, figura_detalhe, cartao_info, CORES_NIVEL, ORDEM_NIVEL
 
 
+def fmt_int(v, lang):
+    """Inteiro com separador de milhar por idioma: 5291 -> '5.291' (pt/es) / '5,291' (en)."""
+    s = f"{int(round(v)):,}"
+    return s if lang == "en" else s.replace(",", ".")
+
+
 # ---------------------------------------------------------------- blocos reutilizáveis
-def stat(big, lbl, accent=False):
+def stat(big, lbl, tom=None):
+    """KPI. tom: None (neutro) | 'brand' (fundo verde) | 'alarm' (número terracota)."""
     corpo = list(big) if isinstance(big, (list, tuple)) else [big]
-    return html.Div(className="stat accent" if accent else "stat", children=[
+    cls = "stat" + (f" stat--{tom}" if tom else "")
+    return html.Div(className=cls, children=[
         html.Div(corpo, className="big"), html.Div(lbl, className="lbl")])
+
+
+def situacao(lang):
+    """Cartão 'Resumo da situação' do hero: total t+1 + barra empilhada + lista por nível."""
+    _, se = SE_H1
+    ini, fim = DATA_PREV_H1, DATA_PREV_H1 + timedelta(days=6)
+    por, n = RESUMO["por_nivel"], RESUMO["n_cidades"]
+    segs, aria = [], []
+    for nv in ORDEM_NIVEL:
+        c = por.get(nv, 0)
+        if c:
+            segs.append(html.Span(className="barra-seg",
+                                  style={"flexGrow": c, "background": CORES_NIVEL[nv]}))
+            aria.append(f"{c} {nivel_tr(lang, nv)}")
+    linhas = [html.Div(className="sit-linha", children=[
+        html.Span(nivel_tr(lang, nv), className=f"pill nivel-{nv.lower()}"),
+        html.Span(f"{por.get(nv, 0)} "
+                  f"{tr(lang, 'palavra_cidade' if por.get(nv, 0) == 1 else 'palavra_cidades')}",
+                  className="sit-n tabular")]) for nv in ORDEM_NIVEL]
+    return html.Div(className="situacao", children=[
+        html.Span(tr(lang, "sit_eyebrow", se=se, ini=ini.strftime("%d/%m"),
+                     fim=fim.strftime("%d/%m/%Y")), className="eyebrow"),
+        html.Div(fmt_int(RESUMO["total_h1"], lang), className="sit-total tabular"),
+        html.Div(tr(lang, "sit_total", n=n), className="sit-sub"),
+        html.Div(segs, className="sit-barra", role="img",
+                 **{"aria-label": tr(lang, "sit_barra_aria", n=n, lista=", ".join(aria))}),
+        html.Div(linhas, className="sit-lista"),
+        html.Div(tr(lang, "nota_nivel"), className="sit-nota aux"),
+    ])
 
 
 def card(ico, titulo, texto):
@@ -50,7 +90,8 @@ def opcoes_cidade_br():
 
 
 def _aviso(lang):
-    full = tr(lang, "aviso", origem=DATA_ORIGEM)
+    origem_se = f"SE {SE_ORIGEM[1]}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
+    full = tr(lang, "aviso", origem=origem_se)
     strong = tr(lang, "aviso_strong")
     resto = full[len(strong):] if full.startswith(strong) else full
     return html.Div(className="aviso info", children=[
@@ -113,23 +154,51 @@ def legenda_niveis(lang):
 
 def construir_conteudo(lang):
     return [
-        # hero
+        # hero (capa dos slides: fundo verde full-bleed + resumo da situação)
         html.Header(className="hero", children=[
-            html.Div(className="chips", children=[
-                html.Span(tr(lang, "chip1"), className="chip solid"),
-                html.Span(tr(lang, "chip2"), className="chip"),
-                html.Span(tr(lang, "chip3"), className="chip"),
-                html.Span(tr(lang, "chip4"), className="chip")]),
-            html.H1(tr(lang, "h1")),
-            html.P(tr(lang, "lede"), className="lede"),
+            html.Div(className="wrap hero-grid", children=[
+                html.Div(className="hero-main", children=[
+                    html.Div(className="chips", children=[
+                        html.Span(tr(lang, "chip1"), className="chip chip--inverse"),
+                        html.Span(tr(lang, "chip2"), className="chip chip--inverse"),
+                        html.Span(tr(lang, "chip3"), className="chip chip--inverse"),
+                        html.Span(tr(lang, "chip4"), className="chip chip--inverse")]),
+                    html.Span(tr(lang, "hero_eyebrow"), className="eyebrow eyebrow--inverse"),
+                    html.H1([tr(lang, "h1"), html.Br(),
+                             html.Span(tr(lang, "h1_acento"), className="acento")]),
+                    html.P(tr(lang, "lede"), className="lede"),
+                    html.Div(className="hero-autor", children=[
+                        html.Strong("Fernando Aramis Colque"),
+                        html.Span(tr(lang, "autor_afil"), className="hero-afil")]),
+                    html.Div(className="hero-cta", children=[
+                        html.A(tr(lang, "cta_painel"), href="#painel", className="btn btn--on-brand"),
+                        html.A(tr(lang, "cta_artigo"), href="#artigo", className="btn btn--secondary"),
+                        html.A(tr(lang, "cta_citar"), href="#como-citar", className="btn btn--ghost")]),
+                ]),
+                situacao(lang),
+            ]),
+        ]),
+        html.Div(className="faixa", **{"aria-hidden": "true"}),
+
+        # indicadores: avisos (warn + info) + KPIs
+        html.Section(id="indicadores", className="wrap indicadores", children=[
+            html.Div(className="avisos", children=[
+                html.Div(className="aviso warn", children=[
+                    html.Span("⚠"),
+                    html.Span([html.Strong(tr(lang, "aviso_warn_t")), " ",
+                               tr(lang, "aviso_warn_p")])]),
+                _aviso(lang),
+            ]),
             html.Div(className="stats", children=[
                 stat([html.Span("913 "), html.Span("→", className="arrow"), html.Span(" 15.389")],
                      tr(lang, "stat1")),
-                stat("−14%", tr(lang, "stat2"), accent=True),
-                stat("94–98%", tr(lang, "stat3"), accent=True),
-                stat("749", tr(lang, "stat4"))]),
-            _aviso(lang),
+                stat("−14%", tr(lang, "stat2"), tom="brand"),
+                stat("94–98%", tr(lang, "stat3")),
+                stat("1,16", tr(lang, "stat4b"), tom="alarm")]),
         ]),
+
+        # ---- conteúdo em coluna de leitura (.wrap) ----
+        html.Div(className="wrap", children=[
 
         # mapa + detalhe
         html.Section(className="enter", children=[
@@ -214,6 +283,8 @@ def construir_conteudo(lang):
                 card("➍", tr(lang, "fut4_t"), tr(lang, "fut4_p"))]),
         ]),
 
+        ]),  # ---- fecha o .wrap de conteúdo ----
+
         # rodapé (JBCS/slides): 3 colunas + aviso + faixa verde
         html.Footer(className="rodape", children=[
             html.Div(className="rodape-cols", children=[
@@ -240,7 +311,7 @@ def serve_layout():
             html.Nav(id="topnav", className="topnav", children=nav_links(lang),
                      **{"aria-label": tr(lang, "nav_label")}),
             barra_controles()])]),
-        html.Main(id="conteudo", children=html.Div(id="app-content", className="wrap",
+        html.Main(id="conteudo", children=html.Div(id="app-content",
                                                    children=construir_conteudo(lang))),
         dcc.Store(id="lang", storage_type="local", data=lang),
         dcc.Store(id="theme"),

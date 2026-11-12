@@ -99,6 +99,44 @@ T = {
     "stat4": {"pt": "semanas na série de Curitiba (2010–2024)",
               "en": "weeks in the Curitiba series (2010–2024)",
               "es": "semanas en la serie de Curitiba (2010–2024)"},
+
+    # ---- hero + resumo da situação + avisos + KPIs (F3) ----
+    "hero_eyebrow": {"pt": "Projeto de pesquisa · IAGA04 · UTFPR 2026",
+                     "en": "Research project · IAGA04 · UTFPR 2026",
+                     "es": "Proyecto de investigación · IAGA04 · UTFPR 2026"},
+    "h1_acento": {"pt": "com redes LSTM", "en": "with LSTM networks", "es": "con redes LSTM"},
+    "autor_afil": {"pt": "Especialização em IA Generativa Aplicada · UTFPR",
+                   "en": "Graduate Certificate in Applied Generative AI · UTFPR",
+                   "es": "Especialización en IA Generativa Aplicada · UTFPR"},
+    "cta_painel": {"pt": "Explorar o painel", "en": "Explore the panel", "es": "Explorar el panel"},
+    "cta_artigo": {"pt": "Ler o artigo", "en": "Read the article", "es": "Leer el artículo"},
+    "cta_citar": {"pt": "Como citar →", "en": "How to cite →", "es": "Cómo citar →"},
+    "sit_eyebrow": {"pt": "Próxima semana · SE {se} ({ini}–{fim})",
+                    "en": "Next week · EW {se} ({ini}–{fim})",
+                    "es": "Próxima semana · SE {se} ({ini}–{fim})"},
+    "sit_total": {"pt": "casos previstos nas {n} cidades monitoradas",
+                  "en": "cases forecast across the {n} monitored cities",
+                  "es": "casos previstos en las {n} ciudades monitoreadas"},
+    "sit_barra_aria": {"pt": "Distribuição das {n} cidades por nível: {lista}",
+                       "en": "Distribution of the {n} cities by level: {lista}",
+                       "es": "Distribución de las {n} ciudades por nivel: {lista}"},
+    "palavra_cidade": {"pt": "cidade", "en": "city", "es": "ciudad"},
+    "palavra_cidades": {"pt": "cidades", "en": "cities", "es": "ciudades"},
+    "aviso_warn_t": {"pt": "Projeto acadêmico — não é alerta oficial",
+                     "en": "Academic project — not an official alert",
+                     "es": "Proyecto académico — no es una alerta oficial"},
+    "aviso_warn_p": {"pt": "O nível exibido é uma simplificação (incidência semanal por 100 mil hab.) "
+                           "e não corresponde ao alerta do InfoDengue. Não use para decisões clínicas "
+                           "ou de saúde pública.",
+                     "en": "The level shown is a simplification (weekly incidence per 100k inhabitants) "
+                           "and does not match the InfoDengue alert. Do not use for clinical or public "
+                           "health decisions.",
+                     "es": "El nivel mostrado es una simplificación (incidencia semanal por 100 mil hab.) "
+                           "y no corresponde a la alerta de InfoDengue. No lo use para decisiones clínicas "
+                           "o de salud pública."},
+    "stat4b": {"pt": "pico de 2024 na escala normalizada: fora da faixa de treino — nenhuma rede previu",
+               "en": "2024 peak on the normalized scale: outside the training range — no network predicted it",
+               "es": "pico de 2024 en la escala normalizada: fuera del rango de entrenamiento — ninguna red lo previó"},
     "aviso": {"pt": "Previsões reais. Dados do InfoDengue até a semana de {origem}; LSTM univariada "
                     "(versão A do estudo) com intervalo conformal de 90%, uma rede por cidade. "
                     "Treino do pipeline completo; geocodes validados no IBGE.",

@@ -9,10 +9,7 @@ from dash import html
 
 from i18n import tr, nivel as nivel_tr
 from dados import (GEOJSON_UF, mapa_uf, mapa_cid, nome_uf, COBERTAS, NAO_COBERTAS,
-                   prev, hist)
-
-CORES_NIVEL = {"Verde": "#2e9e5b", "Amarelo": "#d9a404", "Laranja": "#ef7d2d", "Vermelho": "#d6364c"}
-ORDEM_NIVEL = ["Verde", "Amarelo", "Laranja", "Vermelho"]
+                   prev, hist, CORES_NIVEL, ORDEM_NIVEL)
 
 # paletas de GRÁFICO por tema (coerentes com o CSS claro/escuro)
 PLOT = {
