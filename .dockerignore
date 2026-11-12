@@ -11,3 +11,12 @@ data/snapshots/
 data/eda.json
 .gitignore
 README.md
+# hardening (WS3): não embarcar histórico Git, caches nem artefatos de dev na imagem
+.git/
+.git
+.pytest_cache/
+.claude/
+CLAUDE.md
+render.yaml
+.trivyignore
+.dockerignore
