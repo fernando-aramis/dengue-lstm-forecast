@@ -314,3 +314,70 @@ def test_cabecalhos_seguranca():
     css = c.get("/assets/style.css")
     assert css.status_code == 200, "assets/style.css deveria responder 200"
     assert "immutable" in (css.headers.get("Cache-Control") or ""), "estático versionado deve ser imutável"
+
+
+# ---------------------------------------------------------------- UI nova (F3–F5)
+def test_semana_epi():
+    import dados
+    from datetime import date
+    casos = {date(2026, 10, 25): (2026, 43), date(2026, 11, 1): (2026, 44),
+             date(2026, 11, 22): (2026, 47), date(2026, 1, 4): (2026, 1),
+             date(2026, 1, 1): (2025, 53), date(2024, 12, 29): (2025, 1)}
+    for d, exp in casos.items():
+        assert dados.semana_epi(d) == exp, f"{d}: {dados.semana_epi(d)} != {exp}"
+
+
+def test_resumo_situacao():
+    import dados
+    r = dados.RESUMO
+    assert sum(r["por_nivel"].values()) == r["n_cidades"] == len(dados.mapa_cid), "soma por nível != n_cidades"
+    assert r["total_h1"] == int(dados.mapa_cid["prev"].sum()), "total_h1 != soma das previsões"
+
+
+def test_fmt_int_por_idioma():
+    from i18n import fmt_int
+    assert fmt_int(5291, "pt") == "5.291" and fmt_int(5291, "es") == "5.291", "pt/es usam ponto"
+    assert fmt_int(5291, "en") == "5,291", "en usa vírgula"
+
+
+def test_horizontes_4_itens():
+    import figuras, dados
+    out = figuras.horizontes(dados.GEO0, "pt")
+    assert len(out[0].children) == 4, f"esperava 4 horizontes, veio {len(out[0].children)}"
+
+
+def test_tabela_ranking():
+    import layout
+    table = layout.tabela_ranking("pt", n=8).children[0]
+    assert type(table.children[0]).__name__ == "Caption", "Caption deve ser o 1º filho da tabela"
+    assert len(table.children[2].children) == 8, "Tabela 1 deveria ter 8 linhas"
+
+
+def test_referencias_doi():
+    import re
+    import conteudo
+    slugs = [r["slug"] for r in conteudo.REFERENCIAS]
+    for r in conteudo.REFERENCIAS:
+        assert re.match(r"^10\.\d{4,9}/\S+$", r["doi"]), f"DOI inválido: {r['doi']}"
+    assert len(set(slugs)) == len(slugs), "slugs de referência duplicados"
+
+
+def test_citation_cff_route():
+    import app as A
+    r = A.app.server.test_client().get("/CITATION.cff")
+    assert r.status_code == 200 and "cff-version" in r.get_data(as_text=True), "/CITATION.cff deve servir o arquivo"
+
+
+def test_meta_academica():
+    import app as A
+    html_ = A.app.server.test_client().get("/").get_data(as_text=True)
+    assert "citation_title" in html_, "falta meta citation_title"
+    assert "citation_pdf_url" not in html_, "não deve haver citation_pdf_url (sem PDF)"
+    assert "application/ld+json" in html_ and "ScholarlyArticle" in html_, "falta JSON-LD"
+
+
+def test_clipboard_citar():
+    """Dois dcc.Clipboard (ABNT + BibTeX) presentes no layout."""
+    import app as A
+    j = A.app.server.test_client().get("/_dash-layout").get_data(as_text=True)
+    assert j.count('"Clipboard"') == 2, "esperava 2 dcc.Clipboard (ABNT e BibTeX)"

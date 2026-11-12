@@ -217,3 +217,38 @@ def test_troca_tema_nao_recarrega_a_pagina(pagina):
                              timeout=10000)
     assert pagina.evaluate("()=>window.__marca") == "vivo", "troca de tema recarregou a página"
     pagina.click("#theme-system")
+
+
+# ---- UI nova (F2–F5): navegação, recência, artigo, citação ----
+def test_nav_ancoras(pagina):
+    pagina.set_viewport_size({"width": 1200, "height": 900})
+    pagina.goto(URL)
+    pagina.wait_for_selector("#artigo", timeout=40000)
+    pagina.click(".nav-desktop a[href='#artigo']")
+    pagina.wait_for_timeout(600)
+    top = pagina.evaluate("()=>document.querySelector('#artigo').getBoundingClientRect().top")
+    assert top < 120, f"#artigo deveria ir ao topo ao navegar (top={top})"
+
+
+def test_recencia_se(pagina):
+    pagina.goto(URL)
+    pagina.wait_for_selector(".recencia", timeout=40000)
+    assert "SE 43" in pagina.inner_text(".recencia"), "selo de recência deve mostrar a SE da origem"
+
+
+def test_artigo_lang_pt(pagina):
+    pagina.set_viewport_size({"width": 1200, "height": 900})
+    pagina.goto(URL)
+    pagina.wait_for_selector(".artigo-titulo", timeout=40000)
+    pagina.click("#lang-en")
+    pagina.wait_for_function(
+        "()=>document.querySelector('header.hero h1').textContent.includes('Weekly dengue')", timeout=15000)
+    assert pagina.get_attribute(".artigo-titulo", "lang") == "pt", "título do artigo deve ficar em pt"
+    pagina.click("#lang-pt")
+
+
+def test_citar_e_cff(pagina):
+    pagina.goto(URL)
+    pagina.wait_for_selector("#como-citar", timeout=40000)
+    assert pagina.locator("#cite-abnt").count() == 1 and pagina.locator("#cite-bibtex").count() == 1
+    assert pagina.locator("#como-citar a[href='/CITATION.cff']").count() == 1, "falta link de download do CFF"
