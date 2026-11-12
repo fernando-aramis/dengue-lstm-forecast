@@ -169,7 +169,9 @@ def tabela_ranking(lang, n=8):
             html.Td(fmt_int(r["sup"], lang), className="tabular"),
             html.Td(html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
                                nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}"))]))
-    return html.Div(className="tbl-wrap", children=[html.Table(className="res tab-rank", children=[
+    return html.Div(className="tbl-wrap", tabIndex=0,
+                    **{"role": "region", "aria-label": tr(lang, "tab1_caption", se=se)},
+                    children=[html.Table(className="res tab-rank", children=[
         html.Caption([html.Strong("Tabela 1. "), tr(lang, "tab1_caption", se=se)]),
         html.Thead(html.Tr([html.Th(tr(lang, "tab1_cidade")), html.Th(tr(lang, "tab1_prev")),
                             html.Th(tr(lang, "tab1_inf")), html.Th(tr(lang, "tab1_sup")),
@@ -188,7 +190,8 @@ def _data_abnt():
 def selo_orcid():
     if not ORCID:
         return None
-    return html.A(html.Span("iD", className="orcid-id"), href=ORCID_URL, className="orcid",
+    return html.A(html.Span("iD", className="orcid-id", **{"aria-hidden": "true"}),
+                  href=ORCID_URL, className="orcid",
                   target="_blank", rel="noopener noreferrer", title=f"ORCID {ORCID}",
                   **{"aria-label": f"ORCID: {ORCID}"})
 
@@ -252,7 +255,9 @@ def fig2_pipeline(lang):
 
 
 def tabela2(lang):
-    return html.Div(className="tbl-wrap", children=[html.Table(className="res", children=[
+    return html.Div(className="tbl-wrap", tabIndex=0,
+                    **{"role": "region", "aria-label": tr(lang, "tab2_caption")},
+                    children=[html.Table(className="res", children=[
         html.Caption([html.Strong("Tabela 2. "), tr(lang, "tab2_caption")]),
         html.Thead(html.Tr([html.Th(tr(lang, "th_modelo")), html.Th(tr(lang, "th_e1h1")),
                             html.Th(tr(lang, "th_e1h4")), html.Th(tr(lang, "th_e2h1")),
@@ -269,7 +274,8 @@ def _link_ext(texto, href):
 
 
 def materiais(lang):
-    return html.Aside(id="dados", className="materiais", children=[
+    return html.Section(id="dados", className="materiais",
+                        **{"aria-label": tr(lang, "nav_dados")}, children=[
         html.H3(tr(lang, "mat_t")),
         html.Ul([
             html.Li(_link_ext(tr(lang, "mat_nb"), LINKS["colab"])),
@@ -345,7 +351,8 @@ def artigo(lang):
             html.Div([dcc.Clipboard(target_id="cite-abnt", title=tr(lang, "copiar_abnt")),
                       html.Span(tr(lang, "copiar_abnt"), className="aux")], className="cite-copy")]),
         html.Div(className="cite-bloco", children=[
-            html.Pre(html.Code(BIBTEX), id="cite-bibtex", className="bibtex"),
+            html.Pre(html.Code(BIBTEX), id="cite-bibtex", className="bibtex", tabIndex=0,
+                     **{"role": "region", "aria-label": tr(lang, "bibtex_aria")}),
             html.Div([dcc.Clipboard(target_id="cite-bibtex", title=tr(lang, "copiar_bibtex")),
                       html.Span(tr(lang, "copiar_bibtex"), className="aux")], className="cite-copy")]),
         html.A(tr(lang, "baixar_cff"), href=LINKS["cff"], className="btn btn--primary cite-cff")])
@@ -474,7 +481,9 @@ def serve_layout():
     lang = resolver(flask.request.headers.get("Accept-Language", "") if flask.has_request_context() else "")
     return html.Div([
         html.A(tr(lang, "skip"), href="#conteudo", className="skip-link"),
-        html.Div(id="running-header", className="running-header", children=cabecalho_corrido(lang)),
+        html.Div(id="running-header", className="running-header",
+                 **{"role": "region", "aria-label": tr(lang, "running_header_aria")},
+                 children=cabecalho_corrido(lang)),
         html.Header(className="topbar", children=[html.Div(className="inner", children=[
             html.Div(className="brand", children=[
                 html.Span(className="brand-dot"),
