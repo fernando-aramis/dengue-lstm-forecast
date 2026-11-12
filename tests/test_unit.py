@@ -276,3 +276,21 @@ def test_janelas_shapes_e_nan_futuro():
     assert np.allclose(yw[0], y[t + 1:t + 1 + M.HORIZONTE]), "alvo desalinhado"
     _, yb = M._janelas(X, y, np.array([n - 1]))                # origem na borda: t+1..t+4 não existem
     assert np.isnan(yb).all(), "alvo futuro inexistente deveria ser NaN"
+
+
+# ---------------------------------------------------------------- cabeçalhos HTTP (WS1/WS4)
+def test_cabecalhos_seguranca():
+    """Trava regressão do after_request: headers de segurança + Cache-Control por tipo de rota."""
+    import app as A
+    c = A.app.server.test_client()
+    r = c.get("/")
+    assert r.headers.get("X-Content-Type-Options") == "nosniff", "falta X-Content-Type-Options"
+    assert r.headers.get("Referrer-Policy"), "falta Referrer-Policy"
+    assert r.headers.get("X-Frame-Options") == "SAMEORIGIN", "falta X-Frame-Options"
+    assert r.headers.get("Strict-Transport-Security"), "falta HSTS"
+    assert r.headers.get("Permissions-Policy"), "falta Permissions-Policy"
+    assert r.headers.get("Content-Security-Policy-Report-Only"), "CSP deve existir (Report-Only por decisão)"
+    assert "no-cache" in (r.headers.get("Cache-Control") or ""), "HTML não deve ter cache longo"
+    css = c.get("/assets/style.css")
+    assert css.status_code == 200, "assets/style.css deveria responder 200"
+    assert "immutable" in (css.headers.get("Cache-Control") or ""), "estático versionado deve ser imutável"

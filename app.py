@@ -16,6 +16,7 @@ import logging
 import os
 
 from dash import Dash, dcc, html, Input, Output, State, ctx, no_update, Patch
+from flask import request
 from flask_compress import Compress
 
 from i18n import tr, resolver
@@ -98,6 +99,14 @@ def _cabecalhos_seguranca(resp):
         "connect-src 'self' https://*.basemaps.cartocdn.com https://*.tiles.mapbox.com; "
         # endurecimentos sem custo p/ o app (não usa iframe aninhado, <base>, form externo nem plugin)
         "frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'")
+    # Cache (WS1): estáticos versionados (Dash usa ?m=/hash) → imutável 1 ano; HTML e callbacks →
+    # no-cache (senão o navegador "congela" tema/idioma de um render antigo).
+    _p = request.path
+    if _p.startswith("/_dash-component-suites/") or _p.startswith("/assets/"):
+        # força: o Dash seta um Cache-Control próprio; estes caminhos são versionados (?m=/hash)
+        resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    elif _p == "/" or _p.startswith("/_dash-update-component"):
+        resp.headers["Cache-Control"] = "no-cache"
     return resp
 
 
