@@ -12,13 +12,15 @@ contraste WCAG AAA, layout mobile-first.
 Rodar local:   python app.py                 (DASH_DEBUG=1 liga o modo debug)
 Deploy:        gunicorn app:server
 """
+import json
 import logging
 import os
 
 from dash import Dash, dcc, html, Input, Output, State, ctx, no_update, Patch
-from flask import request
+from flask import request, send_file
 from flask_compress import Compress
 
+import conteudo
 from i18n import tr, resolver
 from dados import (prev, hist, mapa_cid, mapa_uf, nome_uf, UFS, COBERTAS, NAO_COBERTAS,
                    cidades_por_uf, nome_por_geo, GEO0, DATA_ORIGEM, META, TETO_FATOR,
@@ -34,7 +36,23 @@ log = logging.getLogger("dengue.app")
 app = Dash(__name__, title="Previsão de dengue no Brasil — LSTM",
            update_title=None, suppress_callback_exceptions=True,
            meta_tags=[{"name": "viewport",
-                       "content": "width=device-width, initial-scale=1, viewport-fit=cover"}])
+                       "content": "width=device-width, initial-scale=1, viewport-fit=cover"},
+                      # metadados acadêmicos (Google Scholar / OJS). SEM citation_pdf_url (não há PDF).
+                      {"name": "citation_title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"name": "citation_author", "content": "Colque, Fernando Aramis"},
+                      {"name": "citation_publication_date", "content": "2026/10/21"},
+                      {"name": "citation_language", "content": "pt"},
+                      {"name": "citation_keywords",
+                       "content": "dengue; time-series forecasting; LSTM; conformal prediction; "
+                                  "epidemiological surveillance"},
+                      {"name": "citation_dissertation_institution",
+                       "content": "Universidade Tecnológica Federal do Paraná"},
+                      {"name": "DC.title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"name": "DC.creator", "content": "Colque, Fernando Aramis"},
+                      {"name": "DC.date", "content": "2026-10-21"},
+                      {"name": "DC.language", "content": "pt"},
+                      {"property": "og:type", "content": "article"},
+                      {"property": "og:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]}])
 # Fontes auto-hospedadas em assets/fonts/ (self-host, WS2/F1): o Dash carrega assets/fonts.css
 # automaticamente; sem dependência do Google Fonts (ver CSP: font-src 'self', style-src sem o Google).
 server = app.server
@@ -60,6 +78,19 @@ app.index_string = """<!DOCTYPE html>
 </head>
 <body>{%app_entry%}<footer>{%config%}{%scripts%}{%renderer%}</footer></body>
 </html>"""
+
+# JSON-LD ScholarlyArticle (estático, gerado em Python — não usa dado do usuário). Injetado após o CSS.
+_JSONLD = json.dumps({
+    "@context": "https://schema.org", "@type": "ScholarlyArticle",
+    "headline": conteudo.T_ARTIGO["artigo_titulo"]["pt"],
+    "author": {"@type": "Person", "name": "Fernando Aramis Colque",
+               **({"identifier": conteudo.ORCID_URL} if conteudo.ORCID else {})},
+    "inLanguage": "pt", "datePublished": "2026-10-21", "url": conteudo.PUBLIC_URL + "/",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "publisher": {"@type": "Organization", "name": "Universidade Tecnológica Federal do Paraná"},
+}, ensure_ascii=False)
+app.index_string = app.index_string.replace(
+    "{%css%}", '{%css%}\n  <script type="application/ld+json">' + _JSONLD + "</script>")
 
 
 @server.after_request
@@ -115,6 +146,13 @@ def _cabecalhos_seguranca(resp):
 def _health():
     """Liveness barato p/ o HEALTHCHECK do container — testa o processo, não re-renderiza a página."""
     return "ok", 200
+
+
+@server.route("/CITATION.cff")
+def _citation_cff():
+    """Serve o CITATION.cff da raiz (para 'Como citar'). Herda os cabeçalhos de segurança."""
+    return send_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), "CITATION.cff"),
+                     mimetype="text/plain")
 
 
 app.layout = serve_layout

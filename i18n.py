@@ -4,6 +4,8 @@ Traduções da interface (PT / EN / ES). Idioma vem do navegador; sem correspond
 Use tr(lang, "chave") — valores com {campos} são formatados no app.py.
 Os nomes de nível de alerta são traduzidos só para EXIBIÇÃO; a chave interna continua em PT.
 """
+import conteudo
+
 IDIOMAS = ["pt", "en", "es"]
 FALLBACK = "en"
 
@@ -434,6 +436,9 @@ T = {
                   "es": "Límites estatales: IBGE. Apoyo de IA (Claude/Anthropic) en planificación, "
                         "revisión de código y texto."},
 }
+
+
+T.update(conteudo.T_ARTIGO)   # textos longos do artigo (F5) — mantém o teste de i18n cobrindo tudo
 
 
 def resolver(code):
