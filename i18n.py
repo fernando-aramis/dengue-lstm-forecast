@@ -4,6 +4,8 @@ Traduções da interface (PT / EN / ES). Idioma vem do navegador; sem correspond
 Use tr(lang, "chave") — valores com {campos} são formatados no app.py.
 Os nomes de nível de alerta são traduzidos só para EXIBIÇÃO; a chave interna continua em PT.
 """
+import conteudo
+
 IDIOMAS = ["pt", "en", "es"]
 FALLBACK = "en"
 
@@ -23,6 +25,50 @@ T = {
     "tema_light": {"pt": "Modo claro", "en": "Light mode", "es": "Modo claro"},
     "tema_system": {"pt": "Modo do sistema", "en": "System mode", "es": "Modo del sistema"},
     "tema_dark": {"pt": "Modo escuro", "en": "Dark mode", "es": "Modo oscuro"},
+
+    # ---- casca JBCS (F2): skip link, navegação, cabeçalho corrido, rodapé ----
+    "skip": {"pt": "Pular para o conteúdo", "en": "Skip to content", "es": "Saltar al contenido"},
+    "nav_label": {"pt": "Seções da página", "en": "Page sections", "es": "Secciones de la página"},
+    "nav_menu": {"pt": "Menu", "en": "Menu", "es": "Menú"},
+    "nav_painel": {"pt": "Painel", "en": "Panel", "es": "Panel"},
+    "nav_artigo": {"pt": "Artigo", "en": "Article", "es": "Artículo"},
+    "nav_metodos": {"pt": "Métodos", "en": "Methods", "es": "Métodos"},
+    "nav_dados": {"pt": "Dados", "en": "Data", "es": "Datos"},
+    "nav_citar": {"pt": "Como citar", "en": "How to cite", "es": "Cómo citar"},
+    "rh_esq": {"pt": "IAGA04 — Aprendizado Profundo · Especialização em IA Generativa Aplicada · UTFPR, 2026",
+               "en": "IAGA04 — Deep Learning · Graduate Certificate in Applied Generative AI · UTFPR, 2026",
+               "es": "IAGA04 — Aprendizaje Profundo · Especialización en IA Generativa Aplicada · UTFPR, 2026"},
+    "rh_esq_curto": {"pt": "IAGA04 · UTFPR 2026", "en": "IAGA04 · UTFPR 2026", "es": "IAGA04 · UTFPR 2026"},
+    "rh_dir": {"pt": "Dados: Zenodo 10.5281/zenodo.13328231 · {licenca}",
+               "en": "Data: Zenodo 10.5281/zenodo.13328231 · {licenca}",
+               "es": "Datos: Zenodo 10.5281/zenodo.13328231 · {licenca}"},
+    "rodape_sobre_t": {"pt": "Sobre", "en": "About", "es": "Acerca de"},
+    "rodape_sobre_p": {"pt": "Painel acadêmico de previsão semanal de dengue com redes LSTM e "
+                             "intervalos conformais de 90%. Nasceu de um estudo de Curitiba (IAGA04/UTFPR).",
+                       "en": "Academic panel for weekly dengue forecasting with LSTM networks and 90% "
+                             "conformal intervals. Born from a Curitiba case study (IAGA04/UTFPR).",
+                       "es": "Panel académico de pronóstico semanal de dengue con redes LSTM e "
+                             "intervalos conformes del 90%. Nació de un estudio de Curitiba (IAGA04/UTFPR)."},
+    "rodape_dados_t": {"pt": "Dados e fontes", "en": "Data & sources", "es": "Datos y fuentes"},
+    "rodape_dados_p": {"pt": "Casos prováveis do SINAN via InfoDengue; malha estadual do IBGE. "
+                             "Conjunto da Sprint 2024 (Zenodo 10.5281/zenodo.13328231).",
+                       "en": "Probable SINAN cases via InfoDengue; IBGE state boundaries. "
+                             "2024 Sprint dataset (Zenodo 10.5281/zenodo.13328231).",
+                       "es": "Casos probables del SINAN vía InfoDengue; malla estatal del IBGE. "
+                             "Conjunto de la Sprint 2024 (Zenodo 10.5281/zenodo.13328231)."},
+    "rodape_lic_t": {"pt": "Licenças e IA", "en": "Licenses & AI", "es": "Licencias e IA"},
+    "rodape_lic_p": {"pt": "Código sob GPL-3.0; texto sob CC BY 4.0. O assistente Claude (Anthropic) "
+                           "apoiou planejamento, código e revisão.",
+                     "en": "Code under GPL-3.0; text under CC BY 4.0. The Claude assistant (Anthropic) "
+                           "supported planning, code and review.",
+                     "es": "Código bajo GPL-3.0; texto bajo CC BY 4.0. El asistente Claude (Anthropic) "
+                           "apoyó la planificación, el código y la revisión."},
+    "rodape_aviso": {"pt": "Projeto acadêmico — não é ferramenta oficial de vigilância epidemiológica. "
+                           "Para informação oficial, consulte o InfoDengue e as autoridades de saúde.",
+                     "en": "Academic project — not an official epidemiological surveillance tool. "
+                           "For official information, consult InfoDengue and health authorities.",
+                     "es": "Proyecto académico — no es una herramienta oficial de vigilancia epidemiológica. "
+                           "Para información oficial, consulte InfoDengue y las autoridades de salud."},
 
     # ---------------------------------------------------------------- hero
     "chip1": {"pt": "Vigilância epidemiológica", "en": "Epidemiological surveillance",
@@ -55,6 +101,93 @@ T = {
     "stat4": {"pt": "semanas na série de Curitiba (2010–2024)",
               "en": "weeks in the Curitiba series (2010–2024)",
               "es": "semanas en la serie de Curitiba (2010–2024)"},
+
+    # ---- hero + resumo da situação + avisos + KPIs (F3) ----
+    "hero_eyebrow": {"pt": "Projeto de pesquisa · IAGA04 · UTFPR 2026",
+                     "en": "Research project · IAGA04 · UTFPR 2026",
+                     "es": "Proyecto de investigación · IAGA04 · UTFPR 2026"},
+    "h1_acento": {"pt": "com redes LSTM", "en": "with LSTM networks", "es": "con redes LSTM"},
+    "autor_afil": {"pt": "Especialização em IA Generativa Aplicada · UTFPR",
+                   "en": "Graduate Certificate in Applied Generative AI · UTFPR",
+                   "es": "Especialización en IA Generativa Aplicada · UTFPR"},
+    "cta_painel": {"pt": "Explorar o painel", "en": "Explore the panel", "es": "Explorar el panel"},
+    "cta_artigo": {"pt": "Ler o artigo", "en": "Read the article", "es": "Leer el artículo"},
+    "cta_citar": {"pt": "Como citar →", "en": "How to cite →", "es": "Cómo citar →"},
+    "sit_eyebrow": {"pt": "Próxima semana · SE {se} ({ini}–{fim})",
+                    "en": "Next week · EW {se} ({ini}–{fim})",
+                    "es": "Próxima semana · SE {se} ({ini}–{fim})"},
+    "sit_total": {"pt": "casos previstos nas {n} cidades monitoradas",
+                  "en": "cases forecast across the {n} monitored cities",
+                  "es": "casos previstos en las {n} ciudades monitoreadas"},
+    "sit_barra_aria": {"pt": "Distribuição das {n} cidades por nível: {lista}",
+                       "en": "Distribution of the {n} cities by level: {lista}",
+                       "es": "Distribución de las {n} ciudades por nivel: {lista}"},
+    "palavra_cidade": {"pt": "cidade", "en": "city", "es": "ciudad"},
+    "palavra_cidades": {"pt": "cidades", "en": "cities", "es": "ciudades"},
+    "aviso_warn_t": {"pt": "Projeto acadêmico — não é alerta oficial",
+                     "en": "Academic project — not an official alert",
+                     "es": "Proyecto académico — no es una alerta oficial"},
+    "aviso_warn_p": {"pt": "O nível exibido é uma simplificação (incidência semanal por 100 mil hab.) "
+                           "e não corresponde ao alerta do InfoDengue. Não use para decisões clínicas "
+                           "ou de saúde pública.",
+                     "en": "The level shown is a simplification (weekly incidence per 100k inhabitants) "
+                           "and does not match the InfoDengue alert. Do not use for clinical or public "
+                           "health decisions.",
+                     "es": "El nivel mostrado es una simplificación (incidencia semanal por 100 mil hab.) "
+                           "y no corresponde a la alerta de InfoDengue. No lo use para decisiones clínicas "
+                           "o de salud pública."},
+    "stat4b": {"pt": "pico de 2024 na escala normalizada: fora da faixa de treino — nenhuma rede previu",
+               "en": "2024 peak on the normalized scale: outside the training range — no network predicted it",
+               "es": "pico de 2024 en la escala normalizada: fuera del rango de entrenamiento — ninguna red lo previó"},
+
+    # ---- Figura 1: recência, legenda da série, horizontes, Tabela 1, como ler (F4) ----
+    "fig1_eyebrow": {"pt": "Figura 1 · interativa", "en": "Figure 1 · interactive",
+                     "es": "Figura 1 · interactiva"},
+    "recencia": {"pt": "Dados até SE {se}/{ano} · atualização semanal",
+                 "en": "Data up to EW {se}/{ano} · weekly update",
+                 "es": "Datos hasta SE {se}/{ano} · actualización semanal"},
+    "fig1_caption": {"pt": "Previsão de casos prováveis de dengue para t+1 a t+4 semanas (origem: "
+                           "SE {se}/{ano}) com intervalo conformal de 90%. Fonte: InfoDengue/SINAN; "
+                           "malha estadual IBGE; elaboração própria. Nível simplificado — não é o alerta oficial.",
+                     "en": "Forecast of probable dengue cases for t+1 to t+4 weeks (origin: EW {se}/{ano}) "
+                           "with a 90% conformal interval. Source: InfoDengue/SINAN; IBGE state boundaries; "
+                           "own elaboration. Simplified level — not the official alert.",
+                     "es": "Pronóstico de casos probables de dengue para t+1 a t+4 semanas (origen: "
+                           "SE {se}/{ano}) con intervalo conforme del 90%. Fuente: InfoDengue/SINAN; "
+                           "malla estatal del IBGE; elaboración propia. Nivel simplificado — no es la alerta oficial."},
+    "leg_sem_dado": {"pt": "Sem dado", "en": "No data", "es": "Sin dato"},
+    "serie_obs": {"pt": "Observado", "en": "Observed", "es": "Observado"},
+    "serie_prev": {"pt": "Previsto", "en": "Forecast", "es": "Previsto"},
+    "serie_int": {"pt": "Intervalo 90%", "en": "90% interval", "es": "Intervalo 90%"},
+    "serie_origem": {"pt": "Origem (SE {se})", "en": "Origin (EW {se})", "es": "Origen (SE {se})"},
+    "horiz_nota": {"pt": "A faixa se alarga com o horizonte: ±{a} → ±{b} casos em 4 semanas.",
+                   "en": "The band widens with the horizon: ±{a} → ±{b} cases in 4 weeks.",
+                   "es": "La franja se ensancha con el horizonte: ±{a} → ±{b} casos en 4 semanas."},
+    "tab1_caption": {"pt": "Maiores previsões para a próxima semana (SE {se}). Alternativa textual ao mapa.",
+                     "en": "Largest forecasts for next week (EW {se}). Text alternative to the map.",
+                     "es": "Mayores pronósticos para la próxima semana (SE {se}). Alternativa textual al mapa."},
+    "tab1_cidade": {"pt": "Cidade (UF)", "en": "City (state)", "es": "Ciudad (estado)"},
+    "tab1_prev": {"pt": "Previsto", "en": "Forecast", "es": "Previsto"},
+    "tab1_inf": {"pt": "IC 90% inf.", "en": "90% CI low", "es": "IC 90% inf."},
+    "tab1_sup": {"pt": "IC 90% sup.", "en": "90% CI high", "es": "IC 90% sup."},
+    "tab1_nivel": {"pt": "Nível", "en": "Level", "es": "Nivel"},
+    "como_ler_t": {"pt": "Como ler este painel", "en": "How to read this panel",
+                   "es": "Cómo leer este panel"},
+    "como_ler_1": {"pt": "O ponto previsto é a melhor estimativa; a faixa de 90% mostra onde o valor "
+                         "real deve cair em 9 de cada 10 semanas.",
+                   "en": "The forecast point is the best estimate; the 90% band shows where the real "
+                         "value should fall in 9 out of 10 weeks.",
+                   "es": "El punto previsto es la mejor estimación; la franja del 90% muestra dónde debe "
+                         "caer el valor real en 9 de cada 10 semanas."},
+    "como_ler_2": {"pt": "Quanto mais longe (t+4), mais larga a faixa: a previsão perde precisão.",
+                   "en": "The further out (t+4), the wider the band: the forecast loses precision.",
+                   "es": "Cuanto más lejos (t+4), más ancha la franja: el pronóstico pierde precisión."},
+    "como_ler_3": {"pt": "Em surtos fora do histórico (como 2024), o modelo subestima — trate valores "
+                         "altos com cautela.",
+                   "en": "In outbreaks outside the history (like 2024), the model underestimates — treat "
+                         "high values with caution.",
+                   "es": "En brotes fuera del histórico (como 2024), el modelo subestima — trate los "
+                         "valores altos con cautela."},
     "aviso": {"pt": "Previsões reais. Dados do InfoDengue até a semana de {origem}; LSTM univariada "
                     "(versão A do estudo) com intervalo conformal de 90%, uma rede por cidade. "
                     "Treino do pipeline completo; geocodes validados no IBGE.",
@@ -305,6 +438,9 @@ T = {
 }
 
 
+T.update(conteudo.T_ARTIGO)   # textos longos do artigo (F5) — mantém o teste de i18n cobrindo tudo
+
+
 def resolver(code):
     """Normaliza o idioma do navegador para pt/en/es; sem correspondência -> en."""
     if not code:
@@ -321,3 +457,9 @@ def tr(lang, chave, **fmt):
 
 def nivel(lang, chave_pt):
     return NIVEIS.get(lang, NIVEIS[FALLBACK]).get(chave_pt, chave_pt)
+
+
+def fmt_int(v, lang="pt"):
+    """Inteiro com separador de milhar por idioma: 5291 -> '5.291' (pt/es) / '5,291' (en)."""
+    s = f"{int(round(v)):,}"
+    return s if lang == "en" else s.replace(",", ".")

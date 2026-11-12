@@ -12,20 +12,22 @@ contraste WCAG AAA, layout mobile-first.
 Rodar local:   python app.py                 (DASH_DEBUG=1 liga o modo debug)
 Deploy:        gunicorn app:server
 """
+import json
 import logging
 import os
 
 from dash import Dash, dcc, html, Input, Output, State, ctx, no_update, Patch
-from flask import request
+from flask import request, send_file
 from flask_compress import Compress
 
+import conteudo
 from i18n import tr, resolver
 from dados import (prev, hist, mapa_cid, mapa_uf, nome_uf, UFS, COBERTAS, NAO_COBERTAS,
                    cidades_por_uf, nome_por_geo, GEO0, DATA_ORIGEM, META, TETO_FATOR,
                    GEOJSON_UF, IDX_CHOROPLETH)
-from figuras import (figura_mapa, figura_detalhe, cartao_info, tema as _tema, PLOT,
+from figuras import (figura_mapa, figura_detalhe, cartao_info, horizontes, tema as _tema, PLOT,
                      CORES_NIVEL, ORDEM_NIVEL, centro_zoom)
-from layout import construir_conteudo, serve_layout, opcoes_uf
+from layout import construir_conteudo, serve_layout, opcoes_uf, cabecalho_corrido, nav_links
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
                     format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -34,9 +36,25 @@ log = logging.getLogger("dengue.app")
 app = Dash(__name__, title="Previsão de dengue no Brasil — LSTM",
            update_title=None, suppress_callback_exceptions=True,
            meta_tags=[{"name": "viewport",
-                       "content": "width=device-width, initial-scale=1, viewport-fit=cover"}],
-           external_stylesheets=[
-               "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"])
+                       "content": "width=device-width, initial-scale=1, viewport-fit=cover"},
+                      # metadados acadêmicos (Google Scholar / OJS). SEM citation_pdf_url (não há PDF).
+                      {"name": "citation_title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"name": "citation_author", "content": "Colque, Fernando Aramis"},
+                      {"name": "citation_publication_date", "content": "2026/10/21"},
+                      {"name": "citation_language", "content": "pt"},
+                      {"name": "citation_keywords",
+                       "content": "dengue; time-series forecasting; LSTM; conformal prediction; "
+                                  "epidemiological surveillance"},
+                      {"name": "citation_dissertation_institution",
+                       "content": "Universidade Tecnológica Federal do Paraná"},
+                      {"name": "DC.title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"name": "DC.creator", "content": "Colque, Fernando Aramis"},
+                      {"name": "DC.date", "content": "2026-10-21"},
+                      {"name": "DC.language", "content": "pt"},
+                      {"property": "og:type", "content": "article"},
+                      {"property": "og:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]}])
+# Fontes auto-hospedadas em assets/fonts/ (self-host, WS2/F1): o Dash carrega assets/fonts.css
+# automaticamente; sem dependência do Google Fonts (ver CSP: font-src 'self', style-src sem o Google).
 server = app.server
 Compress(server)   # gzip/brotli nas respostas (corta o payload do geojson/JS)
 
@@ -60,6 +78,19 @@ app.index_string = """<!DOCTYPE html>
 </head>
 <body>{%app_entry%}<footer>{%config%}{%scripts%}{%renderer%}</footer></body>
 </html>"""
+
+# JSON-LD ScholarlyArticle (estático, gerado em Python — não usa dado do usuário). Injetado após o CSS.
+_JSONLD = json.dumps({
+    "@context": "https://schema.org", "@type": "ScholarlyArticle",
+    "headline": conteudo.T_ARTIGO["artigo_titulo"]["pt"],
+    "author": {"@type": "Person", "name": "Fernando Aramis Colque",
+               **({"identifier": conteudo.ORCID_URL} if conteudo.ORCID else {})},
+    "inLanguage": "pt", "datePublished": "2026-10-21", "url": conteudo.PUBLIC_URL + "/",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "publisher": {"@type": "Organization", "name": "Universidade Tecnológica Federal do Paraná"},
+}, ensure_ascii=False)
+app.index_string = app.index_string.replace(
+    "{%css%}", '{%css%}\n  <script type="application/ld+json">' + _JSONLD + "</script>")
 
 
 @server.after_request
@@ -90,8 +121,9 @@ def _cabecalhos_seguranca(resp):
         "Content-Security-Policy-Report-Only",
         "default-src 'self'; "
         "img-src 'self' data: blob: https://*.basemaps.cartocdn.com; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-        "font-src 'self' https://fonts.gstatic.com; "
+        # fontes auto-hospedadas (WS2/F1): sem Google em style-src/font-src
+        "style-src 'self' 'unsafe-inline'; "
+        "font-src 'self'; "
         # script-src: 'unsafe-inline'/'unsafe-eval' são EXIGIDOS pelo renderer do Dash (ver docstring)
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
         # worker-src blob: é EXIGIDO pelos Web Workers do MapLibre GL (camadas do mapa)
@@ -116,6 +148,13 @@ def _health():
     return "ok", 200
 
 
+@server.route("/CITATION.cff")
+def _citation_cff():
+    """Serve o CITATION.cff da raiz (para 'Como citar'). Herda os cabeçalhos de segurança."""
+    return send_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), "CITATION.cff"),
+                     mimetype="text/plain")
+
+
 app.layout = serve_layout
 log.info("app pronto · %d cidades · origem %s%s", len(mapa_cid), DATA_ORIGEM,
          f" · coletado {META.get('coletado_em')}" if META.get("coletado_em") else "")
@@ -129,9 +168,12 @@ def set_lang(a, b, c):
     return {"lang-pt": "pt", "lang-en": "en", "lang-es": "es"}[ctx.triggered_id]
 
 
-@app.callback(Output("app-content", "children"), Input("lang", "data"))
+@app.callback(Output("app-content", "children"),
+              Output("running-header", "children"), Output("topnav", "children"),
+              Input("lang", "data"))
 def render_content(lang):
-    return construir_conteudo(resolver(lang))
+    lang = resolver(lang)
+    return construir_conteudo(lang), cabecalho_corrido(lang), nav_links(lang)
 
 
 app.clientside_callback(
@@ -217,13 +259,32 @@ def popular_cidades(uf, lang):
     return opts, f"UF-{uf}"
 
 
-@app.callback(Output("dd-uf", "value"), Input("mapa", "clickData"), prevent_initial_call=True)
-def estado_clicado(click):
-    if click:
-        pt = click["points"][0]
-        if "customdata" not in pt and "location" in pt:
-            return pt["location"]
-    return no_update
+_UFS_SET = set(UFS)
+
+
+def _geo_valido(g):
+    """WS6: valida geo vindo do cliente (POST forjável) → permite fallback seguro, nunca exceção."""
+    if not g:
+        return False
+    if isinstance(g, str) and g.startswith("UF-"):
+        return g[3:] in _UFS_SET
+    return str(g) in nome_por_geo
+
+
+# WS5: um ÚNICO handler de clique no mapa — bolha de cidade → dd-cidade; estado → dd-uf (ambos validados).
+@app.callback(Output("dd-uf", "value"), Output("dd-cidade", "value", allow_duplicate=True),
+              Input("mapa", "clickData"), prevent_initial_call=True)
+def clique_mapa(click):
+    if not click:
+        return no_update, no_update
+    pt = click["points"][0]
+    cd = pt.get("customdata")
+    if cd is not None and str(cd) in nome_por_geo:     # bolha de cidade
+        return no_update, str(cd)
+    loc = pt.get("location")
+    if loc in _UFS_SET:                                 # estado (choropleth)
+        return loc, no_update
+    return no_update, no_update
 
 
 # reconstrói a figura do mapa só quando muda o IDIOMA (traduz hover/legenda/traços) — carrega o
@@ -246,35 +307,21 @@ def zoom_uf(uf):
     return patch
 
 
-@app.callback(Output("sel", "data"), Input("mapa", "clickData"), Input("dd-cidade", "value"),
-              prevent_initial_call=True)
-def selecionar(click, cidade):
-    if ctx.triggered_id == "mapa" and click:
-        pt = click["points"][0]
-        if "customdata" in pt:
-            return str(pt["customdata"])
-        return no_update
-    return cidade
-
-
-# clicar numa bolha de cidade reflete no dropdown de cidade (mantém seletor e cartão em sincronia)
-@app.callback(Output("dd-cidade", "value", allow_duplicate=True),
-              Input("mapa", "clickData"), prevent_initial_call=True)
-def sync_cidade(click):
-    if click:
-        pt = click["points"][0]
-        if "customdata" in pt:                 # bolha de cidade (estado não tem customdata)
-            return str(pt["customdata"])
-    return no_update
+# a seleção vem SEMPRE do dd-cidade (o clique no mapa já atualiza o dd-cidade acima → fluxo único)
+@app.callback(Output("sel", "data"), Input("dd-cidade", "value"), prevent_initial_call=True)
+def selecionar(cidade):
+    return cidade if _geo_valido(cidade) else no_update
 
 
 @app.callback(Output("cartao", "children"), Output("detalhe", "figure"),
+              Output("horizontes", "children"),
               Input("sel", "data"), Input("lang", "data"), Input("theme-eff", "data"))
 def atualizar(geo_id, lang, tema):
     lang, tema = resolver(lang), (tema or "light")
-    if not geo_id:
-        geo_id = mapa_cid.sort_values("prev", ascending=False)["geo_id"].iloc[0]
-    return cartao_info(geo_id, lang), figura_detalhe(geo_id, lang, tema)
+    if not _geo_valido(geo_id):                 # WS6: geo ausente/forjado → seleção inicial segura
+        geo_id = GEO0
+    return (cartao_info(geo_id, lang), figura_detalhe(geo_id, lang, tema),
+            horizontes(geo_id, lang))
 
 
 if __name__ == "__main__":

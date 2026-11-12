@@ -8,6 +8,7 @@ as figuras e os callbacks consomem.
 """
 import json
 import os
+from datetime import date, timedelta
 
 import numpy as np
 import pandas as pd
@@ -78,3 +79,32 @@ IDX_CHOROPLETH = 1 if NAO_COBERTAS else 0
 cidades_por_uf = (mapa_cid.sort_values("nome").groupby("uf")[["nome", "geo_id"]]
                   .apply(lambda d: list(zip(d["nome"], d["geo_id"]))).to_dict())
 nome_por_geo = dict(zip(prev["geo_id"], prev["nome"]))
+
+# ---- níveis de alerta (aqui, não em figuras.py, para derivar RESUMO sem import circular) --------
+CORES_NIVEL = {"Verde": "#2e9e5b", "Amarelo": "#d9a404", "Laranja": "#ef7d2d", "Vermelho": "#d6364c"}
+ORDEM_NIVEL = ["Verde", "Amarelo", "Laranja", "Vermelho"]
+
+
+# ---- derivados de APRESENTAÇÃO (F3): semana epidemiológica + resumo da situação -----------------
+def semana_epi(d):
+    """Semana epidemiológica (SINAN/MMWR): semanas domingo–sábado; a SE 1 é a 1ª com ≥ 4 dias no ano.
+    Retorna (ano_epi, semana)."""
+    def inicio(ano):
+        j4 = date(ano, 1, 4)
+        return j4 - timedelta(days=(j4.weekday() + 1) % 7)   # domingo <= 4/jan
+    ano = d.year
+    if d < inicio(ano):
+        ano -= 1
+    elif d >= inicio(ano + 1):
+        ano += 1
+    return ano, (d - inicio(ano)).days // 7 + 1
+
+
+SE_ORIGEM = semana_epi(prev["data_origem"].max().date())          # (ano, semana) da origem
+DATA_PREV_H1 = mapa_cid["data_prev"].min().date()                 # data da previsão t+1
+SE_H1 = semana_epi(DATA_PREV_H1)                                   # SE da próxima semana
+RESUMO = {
+    "total_h1": int(mapa_cid["prev"].sum()),
+    "n_cidades": int(len(mapa_cid)),
+    "por_nivel": {nv: int((mapa_cid["nivel_alerta"] == nv).sum()) for nv in ORDEM_NIVEL},
+}

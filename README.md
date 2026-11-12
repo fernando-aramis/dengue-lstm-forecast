@@ -12,8 +12,11 @@
 > rede **LSTM univariada** sobre a série de casos; o painel (**Dash + Plotly**) apenas *lê* os
 > resultados já calculados. O trabalho estende ao **mapa nacional** o estudo *"Previsão semanal de
 > casos de dengue em Curitiba com redes LSTM"* (IAGA04 — Aprendizado Profundo, Especialização em IA
-> Generativa Aplicada, **UTFPR**, 2026). Interface **trilíngue (PT/EN/ES)**, tema claro/escuro e
-> contraste **WCAG 2.x AAA**.
+> Generativa Aplicada, **UTFPR**, 2026). A página é um **artigo científico no padrão JBCS com o
+> painel interativo embutido**: resumo da situação por nível, Figura 1 (mapa + detalhe com recência
+> em Semana Epidemiológica, horizontes t+1…t+4 e Tabela 1 como alternativa textual ao mapa), seções
+> numeradas, declarações, referências com DOI e "Como citar" (ABNT/BibTeX/CITATION.cff). Interface
+> **trilíngue (PT/EN/ES)**, tema claro/escuro, fontes auto-hospedadas e contraste **WCAG 2.x AAA**.
 
 O mapa tem **duas camadas**: um *choropleth* estadual (fundo, colorido pelo total previsto) e
 **bolhas** por cidade (frente, pela cor do nível de alerta). Além do mapa, a página traz o
