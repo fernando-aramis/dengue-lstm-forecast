@@ -527,3 +527,20 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .artigo > * { min-width: 0; }
 .artigo-coluna, .artigo-coluna section, .cite-bloco, .como-citar { min-width: 0; }
 .bibtex { max-width: 100%; }
+
+/* ==================================================== F6 — responsivo fino + impressão */
+@media (max-width: 559px) {
+  .horizontes { grid-template-columns: 1fr 1fr; }       /* t+1..t+4 em 2x2 no telefone */
+}
+@media print {
+  .topbar, .running-header, .controles, .map-hint, .serie-legend, .hero-cta, .btn,
+  .dash-clipboard, .nav-mobile, .nav-desktop, .faixa, .faixa-fim, .como-ler, .recencia,
+  .graph-mapa, .toc { display: none !important; }
+  body { background: #fff; color: #000; }
+  header.hero, .artigo, .situacao, .card, .finding, .resumo, .como-citar, .fig2, .stat {
+    background: #fff !important; color: #000 !important; box-shadow: none !important; border-color: #ccc; }
+  header.hero h1, .hero .lede, .artigo-titulo, .prosa-p, .ref, .sec-titulo, .stat .big {
+    color: #000 !important; }
+  .artigo { border: none; display: block; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .7em; color: #555; word-break: break-all; }
+}
