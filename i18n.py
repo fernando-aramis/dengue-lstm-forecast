@@ -24,6 +24,50 @@ T = {
     "tema_system": {"pt": "Modo do sistema", "en": "System mode", "es": "Modo del sistema"},
     "tema_dark": {"pt": "Modo escuro", "en": "Dark mode", "es": "Modo oscuro"},
 
+    # ---- casca JBCS (F2): skip link, navegação, cabeçalho corrido, rodapé ----
+    "skip": {"pt": "Pular para o conteúdo", "en": "Skip to content", "es": "Saltar al contenido"},
+    "nav_label": {"pt": "Seções da página", "en": "Page sections", "es": "Secciones de la página"},
+    "nav_menu": {"pt": "Menu", "en": "Menu", "es": "Menú"},
+    "nav_painel": {"pt": "Painel", "en": "Panel", "es": "Panel"},
+    "nav_artigo": {"pt": "Artigo", "en": "Article", "es": "Artículo"},
+    "nav_metodos": {"pt": "Métodos", "en": "Methods", "es": "Métodos"},
+    "nav_dados": {"pt": "Dados", "en": "Data", "es": "Datos"},
+    "nav_citar": {"pt": "Como citar", "en": "How to cite", "es": "Cómo citar"},
+    "rh_esq": {"pt": "IAGA04 — Aprendizado Profundo · Especialização em IA Generativa Aplicada · UTFPR, 2026",
+               "en": "IAGA04 — Deep Learning · Graduate Certificate in Applied Generative AI · UTFPR, 2026",
+               "es": "IAGA04 — Aprendizaje Profundo · Especialización en IA Generativa Aplicada · UTFPR, 2026"},
+    "rh_esq_curto": {"pt": "IAGA04 · UTFPR 2026", "en": "IAGA04 · UTFPR 2026", "es": "IAGA04 · UTFPR 2026"},
+    "rh_dir": {"pt": "Dados: Zenodo 10.5281/zenodo.13328231 · {licenca}",
+               "en": "Data: Zenodo 10.5281/zenodo.13328231 · {licenca}",
+               "es": "Datos: Zenodo 10.5281/zenodo.13328231 · {licenca}"},
+    "rodape_sobre_t": {"pt": "Sobre", "en": "About", "es": "Acerca de"},
+    "rodape_sobre_p": {"pt": "Painel acadêmico de previsão semanal de dengue com redes LSTM e "
+                             "intervalos conformais de 90%. Nasceu de um estudo de Curitiba (IAGA04/UTFPR).",
+                       "en": "Academic panel for weekly dengue forecasting with LSTM networks and 90% "
+                             "conformal intervals. Born from a Curitiba case study (IAGA04/UTFPR).",
+                       "es": "Panel académico de pronóstico semanal de dengue con redes LSTM e "
+                             "intervalos conformes del 90%. Nació de un estudio de Curitiba (IAGA04/UTFPR)."},
+    "rodape_dados_t": {"pt": "Dados e fontes", "en": "Data & sources", "es": "Datos y fuentes"},
+    "rodape_dados_p": {"pt": "Casos prováveis do SINAN via InfoDengue; malha estadual do IBGE. "
+                             "Conjunto da Sprint 2024 (Zenodo 10.5281/zenodo.13328231).",
+                       "en": "Probable SINAN cases via InfoDengue; IBGE state boundaries. "
+                             "2024 Sprint dataset (Zenodo 10.5281/zenodo.13328231).",
+                       "es": "Casos probables del SINAN vía InfoDengue; malla estatal del IBGE. "
+                             "Conjunto de la Sprint 2024 (Zenodo 10.5281/zenodo.13328231)."},
+    "rodape_lic_t": {"pt": "Licenças e IA", "en": "Licenses & AI", "es": "Licencias e IA"},
+    "rodape_lic_p": {"pt": "Código sob GPL-3.0; texto sob CC BY 4.0. O assistente Claude (Anthropic) "
+                           "apoiou planejamento, código e revisão.",
+                     "en": "Code under GPL-3.0; text under CC BY 4.0. The Claude assistant (Anthropic) "
+                           "supported planning, code and review.",
+                     "es": "Código bajo GPL-3.0; texto bajo CC BY 4.0. El asistente Claude (Anthropic) "
+                           "apoyó la planificación, el código y la revisión."},
+    "rodape_aviso": {"pt": "Projeto acadêmico — não é ferramenta oficial de vigilância epidemiológica. "
+                           "Para informação oficial, consulte o InfoDengue e as autoridades de saúde.",
+                     "en": "Academic project — not an official epidemiological surveillance tool. "
+                           "For official information, consult InfoDengue and health authorities.",
+                     "es": "Proyecto académico — no es una herramienta oficial de vigilancia epidemiológica. "
+                           "Para información oficial, consulte InfoDengue y las autoridades de salud."},
+
     # ---------------------------------------------------------------- hero
     "chip1": {"pt": "Vigilância epidemiológica", "en": "Epidemiological surveillance",
               "es": "Vigilancia epidemiológica"},

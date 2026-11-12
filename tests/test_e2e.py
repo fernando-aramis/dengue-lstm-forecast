@@ -160,8 +160,7 @@ def test_paineis_mesma_altura_desktop(pagina):
 
 def test_troca_idioma(pagina):
     pagina.set_viewport_size({"width": 1200, "height": 900})
-    pagina.evaluate("()=>localStorage.removeItem('tema')")
-    pagina.goto(URL)
+    pagina.goto(URL)   # navegar ANTES de tocar em localStorage (about:blank nega acesso)
     pagina.wait_for_selector("header.hero h1", timeout=40000)
     pagina.click("#lang-en")
     pagina.wait_for_function(

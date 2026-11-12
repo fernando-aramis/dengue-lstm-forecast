@@ -25,7 +25,7 @@ from dados import (prev, hist, mapa_cid, mapa_uf, nome_uf, UFS, COBERTAS, NAO_CO
                    GEOJSON_UF, IDX_CHOROPLETH)
 from figuras import (figura_mapa, figura_detalhe, cartao_info, tema as _tema, PLOT,
                      CORES_NIVEL, ORDEM_NIVEL, centro_zoom)
-from layout import construir_conteudo, serve_layout, opcoes_uf
+from layout import construir_conteudo, serve_layout, opcoes_uf, cabecalho_corrido, nav_links
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
                     format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -130,9 +130,12 @@ def set_lang(a, b, c):
     return {"lang-pt": "pt", "lang-en": "en", "lang-es": "es"}[ctx.triggered_id]
 
 
-@app.callback(Output("app-content", "children"), Input("lang", "data"))
+@app.callback(Output("app-content", "children"),
+              Output("running-header", "children"), Output("topnav", "children"),
+              Input("lang", "data"))
 def render_content(lang):
-    return construir_conteudo(resolver(lang))
+    lang = resolver(lang)
+    return construir_conteudo(lang), cabecalho_corrido(lang), nav_links(lang)
 
 
 app.clientside_callback(

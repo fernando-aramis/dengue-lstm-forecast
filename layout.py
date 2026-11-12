@@ -62,6 +62,30 @@ def _seg(tid, conteudo, aria):
                        title=aria, **{"aria-label": aria})
 
 
+def cabecalho_corrido(lang):
+    """Running header JBCS (mono): curso/UTFPR à esquerda; dados/licença à direita."""
+    return [
+        html.Span(tr(lang, "rh_esq"), className="rh-esq"),
+        html.Span(tr(lang, "rh_esq_curto"), className="rh-esq-curto"),
+        html.Span(tr(lang, "rh_dir", licenca="CC BY 4.0"), className="rh-dir"),
+    ]
+
+
+_NAV = [("#painel", "nav_painel"), ("#artigo", "nav_artigo"), ("#sec-2", "nav_metodos"),
+        ("#dados", "nav_dados"), ("#como-citar", "nav_citar")]
+
+
+def nav_links(lang):
+    """Navegação por âncora. Desktop = lista; ≤767px = <details> (sem JS)."""
+    def itens():
+        return [html.A(tr(lang, k), href=h, className="nav-a") for h, k in _NAV]
+    return [
+        html.Div(itens(), className="nav-desktop"),
+        html.Details([html.Summary(tr(lang, "nav_menu")),
+                      html.Div(itens(), className="nav-mobile-list")], className="nav-mobile"),
+    ]
+
+
 def barra_controles():
     return html.Div(className="controls", children=[
         html.Div(className="seg-group lang-group", role="group",
@@ -190,12 +214,15 @@ def construir_conteudo(lang):
                 card("➍", tr(lang, "fut4_t"), tr(lang, "fut4_p"))]),
         ]),
 
-        # rodapé
-        html.Footer(children=[
-            html.Div([html.Strong(tr(lang, "foot_title")), tr(lang, "foot_author")]),
-            html.Div(className="refs", children=[
-                html.Span(tr(lang, "foot_ref1")), html.Span(tr(lang, "foot_ref2")),
-                html.Span(tr(lang, "foot_ref3"))]),
+        # rodapé (JBCS/slides): 3 colunas + aviso + faixa verde
+        html.Footer(className="rodape", children=[
+            html.Div(className="rodape-cols", children=[
+                html.Div([html.H3(tr(lang, "rodape_sobre_t")), html.P(tr(lang, "rodape_sobre_p"))]),
+                html.Div([html.H3(tr(lang, "rodape_dados_t")), html.P(tr(lang, "rodape_dados_p"))]),
+                html.Div([html.H3(tr(lang, "rodape_lic_t")), html.P(tr(lang, "rodape_lic_p"))]),
+            ]),
+            html.P(tr(lang, "rodape_aviso"), className="rodape-aviso mono"),
+            html.Div(className="faixa-fim", **{"aria-hidden": "true"}),
         ]),
     ]
 
@@ -203,15 +230,18 @@ def construir_conteudo(lang):
 def serve_layout():
     lang = resolver(flask.request.headers.get("Accept-Language", "") if flask.has_request_context() else "")
     return html.Div([
-        html.Div(className="topbar", children=[html.Div(className="inner", children=[
+        html.A(tr(lang, "skip"), href="#conteudo", className="skip-link"),
+        html.Div(id="running-header", className="running-header", children=cabecalho_corrido(lang)),
+        html.Header(className="topbar", children=[html.Div(className="inner", children=[
             html.Div(className="brand", children=[
                 html.Span(className="brand-dot"),
                 html.Strong(tr(lang, "brand")),
-                html.Span(tr(lang, "curso"), className="muted hide-sm"),
-                html.Span("·", className="sep hide-sm"),
-                html.Span("Fernando Aramis Colque", className="muted hide-sm")]),
+                html.Span(tr(lang, "curso"), className="muted hide-sm")]),
+            html.Nav(id="topnav", className="topnav", children=nav_links(lang),
+                     **{"aria-label": tr(lang, "nav_label")}),
             barra_controles()])]),
-        html.Div(id="app-content", className="wrap", children=construir_conteudo(lang)),
+        html.Main(id="conteudo", children=html.Div(id="app-content", className="wrap",
+                                                   children=construir_conteudo(lang))),
         dcc.Store(id="lang", storage_type="local", data=lang),
         dcc.Store(id="theme"),
         dcc.Store(id="theme-eff"),
