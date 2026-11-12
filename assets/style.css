@@ -391,3 +391,53 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 @media (min-width: 980px) {
   .hero-grid { grid-template-columns: 1fr 440px; gap: 48px; align-items: start; }
 }
+
+/* ==================================================== F4 — Figura 1, glifos, horizontes, Tabela 1 */
+.glifo { display: inline-block; width: 10px; height: 10px; flex: none; background: var(--muted); }
+.glifo.verde { background: #2e9e5b; border-radius: 50%; }
+.glifo.amarelo { background: #d9a404; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.glifo.laranja { background: #ef7d2d; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.glifo.vermelho { background: #d6364c;
+  clip-path: polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%); }
+.glifo.sem-dado { background: transparent; border: 1.5px dashed var(--muted); border-radius: 50%; }
+.pill:has(.glifo)::before { display: none; }
+
+.painel-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap; }
+.recencia { display: inline-flex; align-items: center; gap: 7px; font-size: .72rem;
+  background: var(--info-bg); border: 1px solid var(--info-bd); color: var(--info-fg);
+  padding: 5px 10px; border-radius: 999px; }
+.rec-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex: none; }
+
+.figura { margin: 0; }
+.figura figcaption { font-size: .8125rem; color: var(--muted); line-height: 1.4; margin-top: 12px; }
+.figura figcaption strong { color: var(--ink); font-weight: 700; }
+
+.serie-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 2px 0 8px; }
+.serie-item { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--muted); }
+.serie-sw { width: 18px; flex: none; }
+.serie-sw.obs { border-top: 2px solid var(--ink); }
+.serie-sw.prev { border-top: 2px dashed var(--green-d); }
+.serie-sw.int { height: 10px; background: var(--info-bg); border: 1px solid var(--info-bd); border-radius: 2px; }
+.serie-sw.orig { width: 0; height: 12px; border-left: 2px dotted var(--muted); }
+
+.horizontes { list-style: none; margin: 10px 0 0; padding: 0; display: grid;
+  grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.horiz-item { background: var(--cream-2); border-radius: var(--radius-md); padding: 10px; }
+.horiz-item.h1 { background: var(--info-bg); }
+.horiz-t { display: block; font-size: .68rem; color: var(--muted); }
+.horiz-v { display: block; font-size: 1.05rem; font-weight: 600; color: var(--ink); margin: 2px 0; }
+.horiz-ic { display: block; font-size: .64rem; color: var(--muted); }
+.horiz-nota { margin: 10px 0 0; }
+
+.painel-extra { display: grid; gap: 24px; margin-top: 24px; }
+.tab-rank .tab-cidade { text-align: left; font-weight: 600; }
+.tab-rank td .pill { font-size: .74rem; }
+.como-ler { background: var(--brand); color: var(--on-brand); border-radius: var(--radius); padding: 22px; }
+.como-ler .eyebrow { color: var(--on-brand-muted); margin-bottom: 10px; }
+.como-ler ol { margin: 0; padding-left: 20px; color: var(--on-brand-muted); line-height: 1.5; }
+.como-ler li { margin-bottom: 8px; font-size: .9rem; }
+
+@media (min-width: 980px) {
+  .painel-extra { grid-template-columns: 1fr 420px; align-items: start; }
+}

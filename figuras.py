@@ -7,9 +7,9 @@ import numpy as np
 import plotly.graph_objects as go
 from dash import html
 
-from i18n import tr, nivel as nivel_tr
+from i18n import tr, nivel as nivel_tr, fmt_int
 from dados import (GEOJSON_UF, mapa_uf, mapa_cid, nome_uf, COBERTAS, NAO_COBERTAS,
-                   prev, hist, CORES_NIVEL, ORDEM_NIVEL)
+                   prev, hist, CORES_NIVEL, ORDEM_NIVEL, semana_epi)
 
 # paletas de GRÁFICO por tema (coerentes com o CSS claro/escuro)
 PLOT = {
@@ -22,13 +22,13 @@ PLOT = {
     # default (caixa semitransparente + fonte escura): no ESCURO fica texto escuro sobre fundo
     # escuro (ilegível). Fixamos fundo sólido do tema + fonte 'ink' p/ alto contraste nos dois temas.
     "light": {"ink": "#1C2620", "grid": "#E9E4D6", "axis": "#D9D4C7", "obs": "#1C2620",
-              "prev": "#2F5A42", "band": "rgba(47,90,66,0.16)", "naocob": "#DCD7C6",
+              "prev": "#2F5A42", "band": "rgba(47,90,66,0.16)", "naocob": "#DCD7C6", "paper": "#FBFAF5",
               "mapstyle": "carto-positron", "legbg": "rgba(251,250,245,0.92)", "legbd": "#D9D4C7",
               "mapline": "rgba(64,92,98,0.60)", "maplinew": 0.8,
               "hover_bg": "#FBFAF5", "hover_bd": "#D9D4C7",
               "escala": [[0.0, "#D5E3E2"], [0.5, "#9FC2C6"], [1.0, "#3F6E78"]]},
     "dark":  {"ink": "#ECEFEA", "grid": "#2A3330", "axis": "#3A4541", "obs": "#ECEFEA",
-              "prev": "#7FC894", "band": "rgba(127,200,148,0.22)", "naocob": "#262D30",
+              "prev": "#7FC894", "band": "rgba(127,200,148,0.22)", "naocob": "#262D30", "paper": "#1E2428",
               "mapstyle": "carto-darkmatter", "legbg": "rgba(30,36,40,0.92)", "legbd": "#313A39",
               "mapline": "rgba(255,255,255,0.50)", "maplinew": 0.6,
               "hover_bg": "#222A2D", "hover_bd": "#3A4541",
@@ -113,27 +113,35 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
     p = tema(tema_nome)
     h = hist[hist["geo_id"] == geo_id].sort_values("data")
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
+    sep = ",." if lang in ("pt", "es") else ".,"
     fig = go.Figure()
     if len(pv):
         xb = list(pv["data_prev"]) + list(pv["data_prev"][::-1])
         yb = list(pv["sup"]) + list(pv["inf"][::-1])
         fig.add_trace(go.Scatter(x=xb, y=yb, fill="toself", fillcolor=p["band"],
-                                 line=dict(color="rgba(0,0,0,0)"), name=tr(lang, "g_intervalo"),
-                                 hoverinfo="skip"))
+                                 line=dict(color="rgba(0,0,0,0)"), hoverinfo="skip", showlegend=False))
     if len(h):
-        fig.add_trace(go.Scatter(x=h["data"], y=h["casos"], mode="lines",
+        fig.add_trace(go.Scatter(x=h["data"], y=h["casos"], mode="lines", showlegend=False,
                                  line=dict(color=p["obs"], width=2), name=tr(lang, "g_observado")))
     if len(pv):
         x0 = ([h["data"].iloc[-1]] if len(h) else []) + list(pv["data_prev"])
         y0 = ([h["casos"].iloc[-1]] if len(h) else []) + list(pv["prev"])
-        fig.add_trace(go.Scatter(x=x0, y=y0, mode="lines+markers",
-                                 line=dict(color=p["prev"], width=2.5, dash="dot"),
-                                 marker=dict(size=6), name=tr(lang, "g_previsto")))
+        fig.add_trace(go.Scatter(x=x0, y=y0, mode="lines+markers", showlegend=False,
+                                 line=dict(color=p["prev"], width=2.5, dash="dash"),
+                                 marker=dict(size=7, color=p["paper"], line=dict(color=p["prev"], width=2)),
+                                 name=tr(lang, "g_previsto")))
+    if len(h):                                 # linha de origem (última semana observada) + rótulo SE
+        ultima = h["data"].iloc[-1]
+        fig.add_shape(type="line", x0=ultima, x1=ultima, y0=0, y1=1, yref="paper",
+                      line=dict(color=p["axis"], width=1, dash="dot"))
+        _, se = semana_epi(ultima.date())
+        fig.add_annotation(x=ultima, y=1, yref="paper", text=f"SE {se}", showarrow=False,
+                           xanchor="left", yanchor="bottom",
+                           font=dict(size=10, family="IBM Plex Mono, monospace", color=p["ink"]))
     fig.update_layout(
-        margin=dict(l=8, r=12, t=10, b=8), autosize=True, paper_bgcolor="rgba(0,0,0,0)",
+        margin=dict(l=8, r=12, t=14, b=8), autosize=True, paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)", font=dict(family="Inter, sans-serif", color=p["ink"], size=12),
-        yaxis_title=tr(lang, "g_ytitle"), xaxis_title=None,
-        legend=dict(orientation="h", y=1.08, yanchor="bottom", x=0, font=dict(size=11, color=p["ink"])),
+        yaxis_title=tr(lang, "g_ytitle"), xaxis_title=None, showlegend=False, separators=sep,
         hovermode="x unified",
         hoverlabel=dict(bgcolor=p["hover_bg"], bordercolor=p["hover_bd"],
                         font=dict(family="Inter, sans-serif", size=12, color=p["ink"])),
@@ -141,6 +149,25 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
     fig.update_xaxes(showgrid=False, linecolor=p["axis"])
     fig.update_yaxes(gridcolor=p["grid"], rangemode="tozero", zeroline=False)
     return fig
+
+
+def horizontes(geo_id, lang="pt"):
+    """Lista t+1…t+4 (valor + IC) + frase do alargamento da faixa. Vai abaixo do gráfico de detalhe."""
+    pv = prev[prev["geo_id"] == geo_id].sort_values("h")
+    if pv.empty:
+        return []
+    itens = []
+    for _, r in pv.iterrows():
+        cls = "horiz-item h1" if int(r["h"]) == 1 else "horiz-item"
+        itens.append(html.Li(className=cls, children=[
+            html.Span(f"t+{int(r['h'])} · {r['data_prev'].strftime('%d/%m')}", className="horiz-t mono"),
+            html.Span(fmt_int(r["prev"], lang), className="horiz-v tabular"),
+            html.Span(f"{fmt_int(r['inf'], lang)}–{fmt_int(r['sup'], lang)}", className="horiz-ic mono")]))
+    h1, h4 = pv.iloc[0], pv.iloc[-1]
+    m1, m4 = round((h1["sup"] - h1["inf"]) / 2), round((h4["sup"] - h4["inf"]) / 2)
+    return [html.Ol(itens, className="horizontes"),
+            html.P(tr(lang, "horiz_nota", a=fmt_int(m1, lang), b=fmt_int(m4, lang)),
+                   className="horiz-nota aux")]
 
 
 def cartao_info(geo_id, lang="pt"):
@@ -168,7 +195,8 @@ def cartao_info(geo_id, lang="pt"):
         html.Div(tr(lang, "card_casos", v=int(r["prev"])), className="valor"),
         html.Div(tr(lang, "card_intervalo", inf=int(r["inf"]), sup=int(r["sup"])), className="sub"),
         html.Div([tr(lang, "card_nivel"),
-                  html.Span(nivel_tr(lang, nv), className=f"pill nivel-{nv.lower()}")],
+                  html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
+                             nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}")],
                  className="sub", style={"marginTop": "8px"}),
         html.Div(tr(lang, "nota_nivel"), className="sub nota"),
     ]

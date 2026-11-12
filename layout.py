@@ -8,16 +8,11 @@ from datetime import timedelta
 
 from dash import dcc, html
 
-from i18n import tr, resolver, nivel as nivel_tr
-from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf,
+from i18n import tr, resolver, nivel as nivel_tr, fmt_int
+from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf, mapa_cid,
                    RESUMO, SE_H1, SE_ORIGEM, DATA_PREV_H1)
-from figuras import figura_mapa, figura_detalhe, cartao_info, CORES_NIVEL, ORDEM_NIVEL
-
-
-def fmt_int(v, lang):
-    """Inteiro com separador de milhar por idioma: 5291 -> '5.291' (pt/es) / '5,291' (en)."""
-    s = f"{int(round(v)):,}"
-    return s if lang == "en" else s.replace(",", ".")
+from figuras import (figura_mapa, figura_detalhe, cartao_info, horizontes,
+                     CORES_NIVEL, ORDEM_NIVEL)
 
 
 # ---------------------------------------------------------------- blocos reutilizáveis
@@ -42,7 +37,8 @@ def situacao(lang):
                                   style={"flexGrow": c, "background": CORES_NIVEL[nv]}))
             aria.append(f"{c} {nivel_tr(lang, nv)}")
     linhas = [html.Div(className="sit-linha", children=[
-        html.Span(nivel_tr(lang, nv), className=f"pill nivel-{nv.lower()}"),
+        html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
+                   nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}"),
         html.Span(f"{por.get(nv, 0)} "
                   f"{tr(lang, 'palavra_cidade' if por.get(nv, 0) == 1 else 'palavra_cidades')}",
                   className="sit-n tabular")]) for nv in ORDEM_NIVEL]
@@ -146,10 +142,44 @@ def barra_controles():
 def legenda_niveis(lang):
     """Legenda dos níveis de alerta, em HTML sob o mapa (fora do canvas do Plotly).
     Cor + rótulo (segundo canal além da cor, ajuda daltônicos) e sem colidir com a atribuição."""
-    itens = [html.Span([html.Span(className="leg-dot", style={"background": CORES_NIVEL[nv]}),
+    itens = [html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
                         nivel_tr(lang, nv)], className="leg-item") for nv in ORDEM_NIVEL]
+    itens.append(html.Span([html.Span(className="glifo sem-dado", **{"aria-hidden": "true"}),
+                            tr(lang, "leg_sem_dado")], className="leg-item"))
     return html.Div(className="map-legend",
                     children=[html.Span(tr(lang, "legend_title"), className="leg-label"), *itens])
+
+
+def legenda_serie(lang):
+    """Legenda do gráfico de detalhe em HTML (fora do canvas) — Observado/Previsto/Intervalo/Origem."""
+    _, se = SE_ORIGEM
+    def item(cls, texto):
+        return html.Span([html.Span(className=f"serie-sw {cls}"), texto], className="serie-item")
+    return html.Div(className="serie-legend", children=[
+        item("obs", tr(lang, "serie_obs")), item("prev", tr(lang, "serie_prev")),
+        item("int", tr(lang, "serie_int")), item("orig", tr(lang, "serie_origem", se=se))])
+
+
+def tabela_ranking(lang, n=8):
+    """Tabela 1 — maiores previsões (alternativa textual acessível ao mapa)."""
+    _, se = SE_H1
+    top = mapa_cid.sort_values("prev", ascending=False).head(n)
+    linhas = []
+    for _, r in top.iterrows():
+        nv = r["nivel_alerta"]
+        linhas.append(html.Tr([
+            html.Td(f"{r['nome']} ({r['uf']})", className="tab-cidade"),
+            html.Td(fmt_int(r["prev"], lang), className="tabular"),
+            html.Td(fmt_int(r["inf"], lang), className="tabular"),
+            html.Td(fmt_int(r["sup"], lang), className="tabular"),
+            html.Td(html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
+                               nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}"))]))
+    return html.Div(className="tbl-wrap", children=[html.Table(className="res tab-rank", children=[
+        html.Caption([html.Strong("Tabela 1. "), tr(lang, "tab1_caption", se=se)]),
+        html.Thead(html.Tr([html.Th(tr(lang, "tab1_cidade")), html.Th(tr(lang, "tab1_prev")),
+                            html.Th(tr(lang, "tab1_inf")), html.Th(tr(lang, "tab1_sup")),
+                            html.Th(tr(lang, "tab1_nivel"))])),
+        html.Tbody(linhas)])])
 
 
 def construir_conteudo(lang):
@@ -200,32 +230,49 @@ def construir_conteudo(lang):
         # ---- conteúdo em coluna de leitura (.wrap) ----
         html.Div(className="wrap", children=[
 
-        # mapa + detalhe
-        html.Section(className="enter", children=[
-            html.Div(className="sec-head", children=[
-                html.Span(tr(lang, "map_kicker"), className="kicker"),
-                html.H2(tr(lang, "map_h2"))]),
+        # painel interativo (Figura 1)
+        html.Section(id="painel", className="enter", **{"aria-labelledby": "painel-titulo"}, children=[
+            html.Div(className="painel-head", children=[
+                html.Div(className="sec-head", children=[
+                    html.Span(tr(lang, "fig1_eyebrow"), className="eyebrow"),
+                    html.H2(tr(lang, "map_h2"), id="painel-titulo")]),
+                html.Span([html.Span(className="rec-dot", **{"aria-hidden": "true"}),
+                           tr(lang, "recencia", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])],
+                          className="recencia mono")]),
             html.P(tr(lang, "map_sub", origem=DATA_ORIGEM), className="sec-sub"),
-            html.Div(className="grid", children=[
-                html.Div(className="panel panel-mapa", children=[
-                    html.Div(className="pad", children=[
-                        html.Div(className="controles", children=[
-                            html.Div([html.Label(tr(lang, "lbl_estado")),
-                                      dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value="BR",
-                                                   clearable=False)]),
-                            html.Div([html.Label(tr(lang, "lbl_cidade")),
-                                      dcc.Dropdown(id="dd-cidade", placeholder=tr(lang, "ph_cidade"),
-                                                   options=opcoes_cidade_br(), value=GEO0,
-                                                   clearable=False)])])]),
-                    dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(lang=lang),
-                              config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
-                    legenda_niveis(lang),
-                    html.Div(tr(lang, "map_hint"), className="map-hint")]),
-                html.Div(className="panel panel-detalhe", children=[
-                    html.Div(id="cartao", className="cartao", children=cartao_info(GEO0, lang)),
-                    dcc.Graph(id="detalhe", className="graph-detalhe",
-                              figure=figura_detalhe(GEO0, lang=lang),
-                              config={"displayModeBar": False, "responsive": True})]),
+            html.Figure(className="figura", children=[
+                html.Div(className="grid", children=[
+                    html.Div(className="panel panel-mapa", children=[
+                        html.Div(className="pad", children=[
+                            html.Div(className="controles", children=[
+                                html.Div([html.Label(tr(lang, "lbl_estado")),
+                                          dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value="BR",
+                                                       clearable=False)]),
+                                html.Div([html.Label(tr(lang, "lbl_cidade")),
+                                          dcc.Dropdown(id="dd-cidade", placeholder=tr(lang, "ph_cidade"),
+                                                       options=opcoes_cidade_br(), value=GEO0,
+                                                       clearable=False)])])]),
+                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(lang=lang),
+                                  config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
+                        legenda_niveis(lang),
+                        html.Div(tr(lang, "map_hint"), className="map-hint")]),
+                    html.Div(className="panel panel-detalhe", children=[
+                        html.Div(id="cartao", className="cartao", children=cartao_info(GEO0, lang)),
+                        legenda_serie(lang),
+                        dcc.Graph(id="detalhe", className="graph-detalhe",
+                                  figure=figura_detalhe(GEO0, lang=lang),
+                                  config={"displayModeBar": False, "responsive": True}),
+                        html.Div(id="horizontes", children=horizontes(GEO0, lang))]),
+                ]),
+                html.Figcaption([html.Strong("Figura 1. "),
+                                 tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
+            ]),
+            html.Div(className="painel-extra", children=[
+                tabela_ranking(lang),
+                html.Div(className="como-ler", children=[
+                    html.Span(tr(lang, "como_ler_t"), className="eyebrow eyebrow--inverse"),
+                    html.Ol([html.Li(tr(lang, "como_ler_1")), html.Li(tr(lang, "como_ler_2")),
+                             html.Li(tr(lang, "como_ler_3"))])]),
             ]),
         ]),
 
