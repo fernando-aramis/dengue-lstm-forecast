@@ -54,12 +54,22 @@ PARES_NORMAL = [
     ("ícone ink/green-l", INK, "#A9CDA4"),
     ("pill ink/verde", INK, "#D6ECDC"), ("pill ink/amarelo", INK, "#F6E8BE"),
     ("pill ink/laranja", INK, "#FBDFCB"), ("pill ink/vermelho", INK, "#F6D4D9"),
+    # JBCS × slides (F1) — pares novos, tema claro (≥ 7:1)
+    ("on-brand/brand (hero)", "#F3EFE6", "#1F3B2C"),
+    ("on-brand-muted/brand", "#C4CEC5", "#1F3B2C"),
+    ("btn-fg/btn-bg", "#FBFAF6", "#2F5A42"),
+    ("btn-on-brand-fg/btn-on-brand-bg", "#1C2620", "#A9CDA4"),
+    ("green-ink/info-bg (recência)", "#2B5540", "#EAF2EC"),
+    ("mono muted/cream-2", "#414741", "#E9E4D6"),
+    ("rodapé on-brand-muted/ink", "#C4CEC5", "#1C2620"),
+    ("rodapé accent/ink", "#A9CDA4", "#1C2620"),
 ]
 # texto GRANDE (≥ 24px ou ≥ 18,66px bold) — AAA ≥ 4,5:1
 PARES_GRANDE = [
     ("hero h1 ink/cream", INK, CREAM),
     ("stat arrow terra/cream", "#A8501A", CREAM),
     ("stat arrow terra/paper", "#A8501A", PAPER),
+    ("H1 acento accent/brand (grande)", "#A9CDA4", "#1F3B2C"),
 ]
 
 
@@ -86,6 +96,14 @@ PARES_DARK = [
     ("ícone ink/green-l", D_INK, "#274234"),
     ("pill ink/verde", D_INK, "#173322"), ("pill ink/amarelo", D_INK, "#33280B"),
     ("pill ink/laranja", D_INK, "#36220F"), ("pill ink/vermelho", D_INK, "#361820"),
+    # JBCS × slides (F1) — pares novos, tema escuro (≥ 7:1)
+    ("on-brand/brand (hero)", "#ECEFEA", "#1D3227"),
+    ("on-brand-muted/brand", "#B6BEB7", "#1D3227"),
+    ("accent/brand (H1 acento)", "#8FD3A4", "#1D3227"),
+    ("btn-fg/btn-bg", "#0E1113", "#8FD3A4"),
+    ("green-ink/cream-2", "#8FD3A4", "#222A2D"),
+    ("bibtex on-brand/#0E1113", "#ECEFEA", "#0E1113"),
+    ("rodapé muted/#0E1113", "#B6BEB7", "#0E1113"),
 ]
 
 
@@ -96,8 +114,10 @@ def test_contraste_dark_AAA():
 
 def test_css_usa_tokens_AAA():
     css = open(os.path.join(WEBAPP, "assets", "style.css"), encoding="utf-8").read()
-    for hexv in ("#414741", "#2B5540", "#2F5A42", "#D6ECDC", "#F6D4D9"):
+    for hexv in ("#414741", "#2B5540", "#2F5A42", "#D6ECDC", "#F6D4D9",
+                 "#1F3B2C", "#C4CEC5", "#1D3227"):          # tokens de marca JBCS (F1)
         assert hexv in css, f"token AAA ausente no CSS: {hexv}"
+    assert "--font-serif" in css, "token de fonte serif ausente (self-host F1)"
     assert "min-width: 481px" in css and "min-width: 980px" in css, "breakpoints mobile-first ausentes"
 
 

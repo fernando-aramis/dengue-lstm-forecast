@@ -34,9 +34,9 @@ log = logging.getLogger("dengue.app")
 app = Dash(__name__, title="Previsão de dengue no Brasil — LSTM",
            update_title=None, suppress_callback_exceptions=True,
            meta_tags=[{"name": "viewport",
-                       "content": "width=device-width, initial-scale=1, viewport-fit=cover"}],
-           external_stylesheets=[
-               "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"])
+                       "content": "width=device-width, initial-scale=1, viewport-fit=cover"}])
+# Fontes auto-hospedadas em assets/fonts/ (self-host, WS2/F1): o Dash carrega assets/fonts.css
+# automaticamente; sem dependência do Google Fonts (ver CSP: font-src 'self', style-src sem o Google).
 server = app.server
 Compress(server)   # gzip/brotli nas respostas (corta o payload do geojson/JS)
 
@@ -90,8 +90,9 @@ def _cabecalhos_seguranca(resp):
         "Content-Security-Policy-Report-Only",
         "default-src 'self'; "
         "img-src 'self' data: blob: https://*.basemaps.cartocdn.com; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-        "font-src 'self' https://fonts.gstatic.com; "
+        # fontes auto-hospedadas (WS2/F1): sem Google em style-src/font-src
+        "style-src 'self' 'unsafe-inline'; "
+        "font-src 'self'; "
         # script-src: 'unsafe-inline'/'unsafe-eval' são EXIGIDOS pelo renderer do Dash (ver docstring)
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
         # worker-src blob: é EXIGIDO pelos Web Workers do MapLibre GL (camadas do mapa)
