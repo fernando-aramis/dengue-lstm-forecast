@@ -17,6 +17,7 @@ Env opcionais:
 """
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
 import numpy as np
@@ -38,6 +39,7 @@ HIST_SEMANAS = 20
 EY_START = int(os.environ.get("EY_START", 2014))
 RAPIDO = os.environ.get("MODO_RAPIDO") == "1"
 EPOCAS, PACIENCIA = (120, 12) if RAPIDO else (500, 30)
+PREFETCH_WORKERS = int(os.environ.get("PIPELINE_PREFETCH_WORKERS", "6"))   # paralelismo só da COLETA
 
 
 def nivel_alerta(casos_semana, pop):
@@ -119,6 +121,21 @@ def main():
     print(f"Processando {len(cidades)} cidade(s) · EY_START={EY_START} · "
           f"{'rápido' if RAPIDO else 'completo'}")
     hist_rows, prev_rows, por_uf, edas, falhas = [], [], {}, {}, []
+
+    # WS9: coleta (I/O) em PARALELO → popula o cache do infodengue; o treino (TF) segue SEQUENCIAL.
+    # Com o cache, as chamadas de buscar_cidade dentro do loop viram cache-hit (não rebatem na API).
+    if infodengue.CACHE_ON and len(cidades) > 1:
+        geocodes = [c[2] for c in cidades]
+        print(f"  Pré-buscando {len(geocodes)} cidade(s) em paralelo ({PREFETCH_WORKERS} workers, cache)…")
+
+        def _prefetch(g):
+            try:
+                infodengue.buscar_cidade(g, ey_start=EY_START)
+            except Exception as e:                       # noqa: BLE001  (não-fatal: o loop re-tenta)
+                log.warning("prefetch falhou p/ %s: %s", g, e)
+
+        with ThreadPoolExecutor(max_workers=PREFETCH_WORKERS) as ex:
+            list(ex.map(_prefetch, geocodes))
 
     for i, (nome, uf, geocode, lat, lon, pop_aprox) in enumerate(cidades, 1):
         try:
