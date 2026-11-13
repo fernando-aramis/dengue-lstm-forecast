@@ -122,13 +122,12 @@ body {
 .mono { font-family: var(--font-mono); }
 .tabular { font-variant-numeric: tabular-nums; }
 .aux { font-size: .8125rem; color: var(--text-muted); line-height: 1.46; }
-.eyebrow { font-family: var(--font-sans); font-weight: 700; font-size: .6875rem;
-  text-transform: uppercase; letter-spacing: .12em; color: var(--green-ink);
-  display: inline-flex; align-items: center; gap: 7px; }
-.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor; flex: none; }
-.eyebrow--inverse { color: var(--on-brand-muted); }
-.eyebrow--alarm { color: var(--terra); }
+/* Tipografia (F3): quebra equilibrada em títulos, viúvas evitadas no corpo,
+   numerais tabulares onde há número. */
+h1, h2, h3, .artigo-titulo, .sec-titulo, .sit-total, .como-ler-t { text-wrap: balance; }
+.prosa-p, .ref, .lede, .sec-sub, .resumo .serif, .card p, .finding p, .decl p, .cartao .nota {
+  text-wrap: pretty; }
+.recencia, .horiz-v, .cartao .valor { font-variant-numeric: tabular-nums; }
 img, svg, canvas { max-width: 100%; }
 a { color: var(--green-ink); }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
@@ -174,10 +173,8 @@ header.hero { padding: 28px 0 20px; }
 header.hero h1 { margin: 0 0 10px; font-size: clamp(1.55rem, 6vw, 2.5rem);
   letter-spacing: -0.02em; line-height: 1.1; font-weight: 700; max-width: 22ch; }
 header.hero .lede { margin: 0; color: var(--text-muted); font-size: 1rem; max-width: 62ch; }
-.chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 4px; }
 .chip { font-size: .76rem; font-weight: 600; padding: 5px 11px; border-radius: 999px;
   background: var(--surface-raised); border: 1px solid var(--border); color: var(--text-muted); }
-.chip.solid { background: var(--green-d); color: #fff; border-color: transparent; }
 
 .aviso { margin-top: 18px; padding: 10px 14px; border-radius: 10px; font-size: .84rem;
   line-height: 1.45; display: flex; gap: 8px; align-items: baseline;
@@ -185,21 +182,24 @@ header.hero .lede { margin: 0; color: var(--text-muted); font-size: 1rem; max-wi
 .aviso.info { background: var(--info-bg); border-color: var(--info-bd); color: var(--info-fg); }
 .aviso > span:first-child { flex: none; }
 
-/* ---------------------------------------------------------------- stat tiles */
-.stats { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 22px 0 10px; }
-.stat { background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 15px 16px 13px; box-shadow: var(--shadow); }
-.stat .big { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
-.stat .big .arrow { color: var(--terra); }
-.stat .lbl { margin-top: 7px; font-size: .82rem; color: var(--text-muted); line-height: 1.4; }
-.stat.accent .big { color: var(--green-ink); }
+/* ------------------------------------------------- faixa de resultados (A10)
+   Resultados-chave do estudo em faixa plana: um container 1px, divisórias de 1px
+   (gap sobre fundo = cor da borda, robusto a qualquer nº de colunas), sem sombra,
+   numerais tabulares. Cor só com significado — terracota marca o excepcional
+   (o salto de casos e o pico fora da faixa de treino). */
+.stats { display: grid; grid-template-columns: 1fr; gap: 1px; margin: 22px 0 10px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--border); overflow: hidden; }
+.stat { background: var(--surface-raised); padding: 15px 18px; }
+.stat .big { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;
+  font-variant-numeric: tabular-nums; }
+.stat .big .arrow { color: var(--terra); margin: 0 2px; }
+.stat .lbl { margin-top: 6px; font-size: .82rem; color: var(--text-muted); line-height: 1.4; }
 
 /* ---------------------------------------------------------------- sections */
 section { margin-top: 34px; }
 .sec-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .sec-head h2 { margin: 0; font-size: clamp(1.15rem, 4.5vw, 1.28rem); letter-spacing: -0.01em; }
-.sec-head .kicker { font-size: .74rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .08em; color: var(--green-ink); }
 .sec-sub { color: var(--text-muted); font-size: .9rem; margin: -4px 0 16px; max-width: 70ch; }
 
 /* ---------------------------------------------------------------- map + detail grid */
@@ -268,10 +268,15 @@ section { margin-top: 34px; }
 
 /* ---------------------------------------------------------------- findings */
 .findings { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.finding { background: var(--surface-raised); border: 1px solid var(--border); border-left: 4px solid var(--green);
+/* A9: superfície plana (borda 1px) + marcador de estado desenhado no título
+   (ponto = achado; triângulo terracota = cautela). Sem border-left colorido (ban). */
+.finding { background: var(--surface-raised); border: 1px solid var(--border);
   border-radius: 12px; padding: 14px 16px; }
-.finding.warn { border-left-color: var(--terra); }
-.finding h3 { margin: 0 0 4px; font-size: .95rem; }
+.finding h3 { margin: 0 0 4px; font-size: .95rem; display: flex; align-items: center; gap: 8px; }
+.finding h3::before { content: ""; width: 9px; height: 9px; flex: none;
+  background: var(--green); border-radius: 50%; }
+.finding.warn h3::before { background: var(--terra); border-radius: 0;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%); }
 .finding p { margin: 0; font-size: .87rem; color: var(--text-muted); line-height: 1.45; }
 
 /* ---------------------------------------------------------------- results table */
@@ -332,10 +337,11 @@ footer .refs span { display: block; }
   .findings { grid-template-columns: 1fr 1fr; }
 }
 @media (min-width: 980px) {           /* tablet paisagem */
+  /* faixa horizontal: 4 resultados lado a lado (divisórias via gap de 1px) */
   .stats, .cards { grid-template-columns: repeat(4, 1fr); }
   .grid { grid-template-columns: 1.55fr 1fr; gap: 18px; align-items: stretch; }
   .grid .panel { min-height: 72vh; }
-  .stat .big { font-size: 1.7rem; }
+  .stat .big { font-size: 1.6rem; }
 }
 @media (min-width: 1200px) {          /* desktop */
   .wrap { padding: 0 24px 56px; }
@@ -344,10 +350,10 @@ footer .refs span { display: block; }
 
 /* ---------------------------------------------------------------- motion (discreta, 1x) */
 @media (prefers-reduced-motion: no-preference) {
+  /* um único momento autoral (o painel), partindo de estado quase-visível.
+     A entrada repetida dos KPIs saiu (A16 parcial): com a faixa de 1px, o
+     opacity:0 revelava o fundo das divisórias — flash evitado. */
   .enter { opacity: 0; transform: translateY(10px); animation: rise .5s var(--ease-out) forwards; }
-  .stats .stat { opacity: 0; transform: translateY(10px); animation: rise .5s var(--ease-out) forwards; }
-  .stats .stat:nth-child(1){ animation-delay: .04s } .stats .stat:nth-child(2){ animation-delay: .10s }
-  .stats .stat:nth-child(3){ animation-delay: .16s } .stats .stat:nth-child(4){ animation-delay: .22s }
   @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 }
 
@@ -357,9 +363,11 @@ footer .refs span { display: block; }
   text-decoration: none; transform: translateY(-160%); transition: transform .15s var(--ease-out); }
 .skip-link:focus { transform: translateY(0); }
 
+/* A11 — cabeçalho corrido (cromo JBCS) oculto no mobile; aparece a partir de 768px.
+   Mono preservada aqui: é a exceção JBCS legítima (A8). */
 .running-header { background: var(--brand); color: var(--on-brand-muted);
   font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .04em;
-  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  display: none; justify-content: space-between; align-items: center; gap: 12px;
   padding: 7px var(--gutter); }
 .running-header .rh-esq { display: none; }
 .running-header .rh-esq-curto { display: inline; }
@@ -414,6 +422,7 @@ footer .refs span { display: block; }
 .faixa-fim { height: 6px; background: var(--strip); margin-top: 16px; }
 
 @media (min-width: 768px) {
+  .running-header { display: flex; }
   .running-header .rh-esq { display: inline; }
   .running-header .rh-esq-curto { display: none; }
   .nav-desktop { display: flex; }
@@ -432,11 +441,8 @@ header.hero h1 { color: var(--on-brand); font-size: clamp(2rem, 5vw, 3rem); line
 header.hero h1 .acento { color: var(--accent-on-brand); font-weight: 700; }
 header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-width: 60ch; }
 .hero-grid { display: grid; gap: 28px; }
-.hero-main { min-width: 0; }
-.hero-main .eyebrow { margin: 14px 0; }
-.chip--inverse { background: transparent; color: var(--on-brand-muted);
-  border: 1px solid rgba(255,255,255,.28); }
-.hero-autor { display: flex; flex-direction: column; gap: 2px; margin: 20px 0; font-size: .9rem; }
+.hero-lead, .hero-foot { min-width: 0; }
+.hero-autor { display: flex; flex-direction: column; gap: 2px; margin: 0 0 16px; font-size: .9rem; }
 .hero-autor strong { color: var(--on-brand); }
 .hero-afil { color: var(--on-brand-muted); font-size: .84rem; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -452,7 +458,8 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 
 .situacao { background: var(--surface-raised); color: var(--text); border-radius: var(--radius);
   padding: 22px; align-self: start; box-shadow: var(--shadow); }
-.situacao .eyebrow { margin-bottom: 10px; }
+.sit-quando { display: block; font-size: .78rem; font-weight: 600; color: var(--text-muted);
+  margin-bottom: 10px; font-variant-numeric: tabular-nums; }
 .sit-total { font-size: clamp(2rem, 6vw, 2.6rem); font-weight: 700; line-height: 1; color: var(--text); }
 .sit-sub { color: var(--text-muted); font-size: .9rem; margin: 4px 0 14px; }
 .sit-barra { display: flex; height: 14px; border-radius: 4px; overflow: hidden; gap: 2px; margin-bottom: 14px; }
@@ -469,16 +476,17 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .aviso.warn { background: var(--aviso-bg); border-color: var(--aviso-bd); color: var(--aviso-fg); }
 .aviso.warn strong { color: var(--aviso-fg); }
 
-.stat--brand { background: var(--brand); border-color: transparent; }
-.stat--brand .big { color: var(--on-brand); }
-.stat--brand .lbl { color: var(--on-brand-muted); }
 .stat--alarm .big { color: var(--terra); }
 
 @media (min-width: 768px) {
   .avisos { grid-template-columns: 1fr 1fr; }
 }
 @media (min-width: 980px) {
-  .hero-grid { grid-template-columns: 1fr 440px; gap: 48px; align-items: start; }
+  .hero-grid { grid-template-columns: 1fr 440px; gap: 20px 48px; align-items: start;
+    grid-template-areas: "lead sit" "foot sit"; }
+  .hero-lead { grid-area: lead; }
+  .hero-foot { grid-area: foot; align-self: start; }
+  .situacao  { grid-area: sit; }
 }
 
 /* ==================================================== F4 — Figura 1, glifos, horizontes, Tabela 1 */
@@ -523,7 +531,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .tab-rank .tab-cidade { text-align: left; font-weight: 600; }
 .tab-rank td .pill { font-size: .74rem; }
 .como-ler { background: var(--brand); color: var(--on-brand); border-radius: var(--radius); padding: 22px; }
-.como-ler .eyebrow { color: var(--on-brand-muted); margin-bottom: 10px; }
+.como-ler-t { margin: 0 0 10px; font-size: .98rem; color: var(--on-brand); }
 .como-ler ol { margin: 0; padding-left: 20px; color: var(--on-brand-muted); line-height: 1.5; }
 .como-ler li { margin-bottom: 8px; font-size: .9rem; }
 
@@ -553,7 +561,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .orcid { display: inline-grid; place-items: center; text-decoration: none; flex: none; padding: 4px; }
 .orcid-id { display: block; width: 16px; height: 16px; }
 
-.resumo { background: var(--surface); border-left: 3px solid var(--green); border-radius: var(--radius-sm); padding: 22px; }
+.resumo { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 22px; }
 .resumo .serif { margin: 0 0 12px; font-size: 1rem; line-height: 1.62; }
 .keywords { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .kw-rotulo { font-weight: 600; font-size: .85rem; }
