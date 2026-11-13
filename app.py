@@ -231,6 +231,20 @@ app.clientside_callback(
     Output("theme-eff", "data"),
     Input("theme", "data"), Input("boot", "n_intervals"))
 
+# A5 — fallback do mapa: se o WebGL não estiver disponível (navegador travado, headless sem GPU),
+# o MapLibre não renderiza. Esconde o <Graph> do mapa e mostra a mensagem #mapa-fallback (que aponta
+# para os seletores e a Tabela 1, ambos independentes de WebGL). hidden=ok: visível só quando falha.
+app.clientside_callback(
+    "function(n){try{"
+    "var c=document.createElement('canvas');"
+    "var gl=c.getContext('webgl2')||c.getContext('webgl')||c.getContext('experimental-webgl');"
+    "var ok=!!gl;"
+    "if(!ok){var m=document.querySelector('.panel-mapa .graph-mapa'); if(m) m.style.display='none';}"
+    "return ok;"
+    "}catch(e){var m=document.querySelector('.panel-mapa .graph-mapa'); if(m) m.style.display='none'; return false;}}",
+    Output("mapa-fallback", "hidden"),
+    Input("boot", "n_intervals"))
+
 app.clientside_callback(
     "function(choice){var c=choice||(localStorage.getItem('tema')||'system');var on='seg on',off='seg';"
     "return [c=='light'?on:off, c=='system'?on:off, c=='dark'?on:off];}",

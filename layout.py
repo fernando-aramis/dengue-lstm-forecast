@@ -444,6 +444,8 @@ def construir_conteudo(lang):
                                           dcc.Dropdown(id="dd-cidade", placeholder=tr(lang, "ph_cidade"),
                                                        options=opcoes_cidade_br(), value=GEO0,
                                                        clearable=False)])])]),
+                        html.Div(id="mapa-fallback", className="mapa-fallback", hidden=True,
+                                 role="status", children=html.P(tr(lang, "mapa_sem_webgl"))),
                         dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(lang=lang),
                                   config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
                         legenda_niveis(lang),

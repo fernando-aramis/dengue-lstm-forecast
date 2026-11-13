@@ -221,6 +221,13 @@ T = {
     "map_hint": {"pt": "Fallback: estados sem cidade coberta mostram a previsão estadual agregada.",
                  "en": "Fallback: states without a covered city show the aggregated state forecast.",
                  "es": "Reserva: los estados sin ciudad cubierta muestran el pronóstico estatal agregado."},
+    "mapa_sem_webgl": {
+        "pt": "O mapa não pôde ser exibido (o navegador bloqueou o WebGL). Os seletores de estado e "
+              "cidade acima continuam funcionando, e a Tabela 1 abaixo lista as previsões.",
+        "en": "The map could not be shown (your browser blocked WebGL). The state and city selectors "
+              "above still work, and Table 1 below lists the forecasts.",
+        "es": "No se pudo mostrar el mapa (el navegador bloqueó WebGL). Los selectores de estado y "
+              "ciudad de arriba siguen funcionando, y la Tabla 1 de abajo lista los pronósticos."},
     "legend_title": {"pt": "Nível previsto (cidade)", "en": "Forecast level (city)",
                      "es": "Nivel previsto (ciudad)"},
     "estados_trace": {"pt": "Estados", "en": "States", "es": "Estados"},
