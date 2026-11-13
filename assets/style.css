@@ -84,11 +84,11 @@ body {
 img, svg, canvas { max-width: 100%; }
 a { color: var(--green-ink); }
 :focus-visible { outline: 3px solid var(--green-ink); outline-offset: 2px; border-radius: 6px; }
-/* a11y C2 — reuse the site's brand focus ring where embedded components ship
-   their own: react-select dropdown (1px purple) and the Plotly attribution
-   <summary> (browser-default blue glow). Scoped; other focus styles untouched. */
-.dash-dropdown .Select.is-focused:not(.is-open) > .Select-control,
-.dash-dropdown .Select-control:focus-within,
+/* a11y — reuse the site's brand focus ring where embedded components ship their
+   own: the Dash 4.5 dropdown trigger button (now the keyboard tab stop, see
+   assets/a11y_dropdown.js) and the Plotly attribution <summary> (browser-default
+   blue glow). Scoped; other focus styles untouched. */
+button.dash-dropdown:focus-visible,
 .js-plotly-plot summary:focus-visible,
 .dash-graph summary:focus-visible {
   outline: 3px solid var(--green-ink); outline-offset: 2px; border-radius: 6px; box-shadow: none; }
@@ -468,9 +468,8 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .artigo-titulo { font-size: clamp(1.5rem, 3.4vw, 2.125rem); line-height: 1.18; margin: 6px 0; color: var(--ink); }
 .autor { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: .95rem; }
 .autor-afil { color: var(--muted); font-size: .85rem; }
-.orcid { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%;
-  background: #A6CE39; text-decoration: none; flex: none; }
-.orcid-id { color: #fff; font-size: 8px; font-weight: 700; line-height: 1; }
+.orcid { display: inline-grid; place-items: center; text-decoration: none; flex: none; }
+.orcid-id { display: block; width: 16px; height: 16px; }
 
 .resumo { background: var(--cream); border-left: 3px solid var(--green); border-radius: var(--radius-sm); padding: 22px; }
 .resumo .serif { margin: 0 0 12px; font-size: 1rem; line-height: 1.62; }

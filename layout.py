@@ -190,7 +190,7 @@ def _data_abnt():
 def selo_orcid():
     if not ORCID:
         return None
-    return html.A(html.Span("iD", className="orcid-id", **{"aria-hidden": "true"}),
+    return html.A(html.Img(src="/assets/icons/orcid.svg", className="orcid-id", alt=""),
                   href=ORCID_URL, className="orcid",
                   target="_blank", rel="noopener noreferrer", title=f"ORCID {ORCID}",
                   **{"aria-label": f"ORCID: {ORCID}"})
@@ -427,10 +427,12 @@ def construir_conteudo(lang):
                 html.Div(className="grid", children=[
                     html.Div(className="panel panel-mapa", children=[
                         html.Div(className="pad", children=[
-                            # a11y: react-select (dcc.Dropdown) coloca um <input>
-                            # focável dentro de um container aria-hidden="true"
-                            # (axe: aria-hidden-focus). Mitigado no cliente por
-                            # assets/a11y_dropdown.js (Dash 4.5 ainda traz o bug).
+                            # a11y: no Dash 4.5 o dcc.Dropdown vira um <button>
+                            # tabindex=-1 (com a ARIA de combobox) + um <input>
+                            # focus-target tabindex=0 aria-hidden="true" (axe:
+                            # aria-hidden-focus). assets/a11y_dropdown.js inverte
+                            # isso no cliente: botão vira o tab stop, shim fica
+                            # inerte — teclado preservado (bug upstream do Dash).
                             html.Div(className="controles", children=[
                                 html.Div([html.Label(tr(lang, "lbl_estado")),
                                           dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value="BR",
