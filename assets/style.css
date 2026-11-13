@@ -141,6 +141,37 @@ button.dash-dropdown:focus-visible,
   outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; box-shadow: none; }
 .js-plotly-plot summary:focus:not(:focus-visible) { outline: none; }
 .hide-sm { display: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* A14 — superfícies do browser a partir dos tokens (acompanham os 2 temas) + hardening mobile.
+   Seleção, cursor de texto, controles nativos, barra de rolagem e offset de sublinhado deixam
+   de usar os defaults do navegador. */
+::selection { background: var(--green-l); color: var(--text); }
+html { caret-color: var(--green-ink); accent-color: var(--green-ink);
+  scrollbar-color: var(--text-muted) transparent; -webkit-tap-highlight-color: transparent; }
+a { text-underline-offset: .15em; text-decoration-thickness: 1px; }
+a, button, summary, label[for], .seg, .btn { touch-action: manipulation; }
+.tbl-wrap, .bibtex, .nav-mobile-list, .prefs-pop, .a11y-pop { overscroll-behavior: contain; }
+/* viewport-fit=cover: respeita o recorte lateral (notch) onde o gutter é var(--gutter) */
+@supports (padding: max(0px)) {
+  :root { --gutter: max(16px, env(safe-area-inset-left), env(safe-area-inset-right)); }
+}
+
+/* A12 — ícones desenhados (SVG via CSS mask; cor = currentColor, acompanha o tema).
+   Substituem os glifos Unicode (☀ 🖥 ☾ ↗ ⚠ ℹ). Botões só-ícone têm aria-label. */
+.seg-ico, .aviso-ico, .ico-ext { background: currentColor;
+  -webkit-mask: var(--ico) center/contain no-repeat; mask: var(--ico) center/contain no-repeat; }
+.seg-ico { display: inline-block; width: 18px; height: 18px; }
+.aviso-ico { display: inline-block; width: 18px; height: 18px; flex: none;
+  align-self: flex-start; margin-top: 2px; }
+.ico-ext { display: inline-block; width: .72em; height: .72em; margin-left: .28em; vertical-align: -0.04em; }
+.ico-sun { --ico: url("/assets/icons/sun.svg"); }
+.ico-monitor { --ico: url("/assets/icons/monitor.svg"); }
+.ico-moon { --ico: url("/assets/icons/moon.svg"); }
+.ico-info { --ico: url("/assets/icons/info.svg"); }
+.ico-warn { --ico: url("/assets/icons/warning.svg"); }
+.ico-ext { --ico: url("/assets/icons/external-link.svg"); }
 
 .wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter) 48px; }
 

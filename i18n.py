@@ -255,6 +255,11 @@ T = {
                        "en": "90% interval: {inf}–{sup} cases",
                        "es": "Intervalo del 90%: {inf} – {sup} casos"},
     "card_nivel": {"pt": "Nível: ", "en": "Level: ", "es": "Nivel: "},
+    "cartao_resumo_aria": {
+        "pt": "{nome}: {v} casos previstos para a próxima semana, nível {nivel}.",
+        "en": "{nome}: {v} cases forecast for next week, level {nivel}.",
+        "es": "{nome}: {v} casos previstos para la próxima semana, nivel {nivel}."},
+    "copiado": {"pt": "Copiado.", "en": "Copied.", "es": "Copiado."},
     "escopo_municipio": {"pt": "Município", "en": "Municipality", "es": "Municipio"},
     "escopo_estado": {"pt": "Estado", "en": "State", "es": "Estado"},
     "escopo_cidades": {"pt": "Cidades monitoradas", "en": "Monitored cities", "es": "Ciudades monitoreadas"},

@@ -204,3 +204,13 @@ def cartao_info(geo_id, lang="pt"):
         html.Div(tr(lang, "nota_nivel"), className="sub nota"),
     ]
     return cartao
+
+
+def resumo_cartao(geo_id, lang="pt"):
+    """Resumo curto do cartão para anúncio em aria-live (ao trocar de cidade)."""
+    p1 = prev[(prev["geo_id"] == geo_id) & (prev["h"] == 1)]
+    if p1.empty:
+        return ""
+    r = p1.iloc[0]
+    return tr(lang, "cartao_resumo_aria", nome=r["nome"],
+              v=fmt_int(r["prev"], lang), nivel=nivel_tr(lang, r["nivel_alerta"]))

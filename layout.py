@@ -87,7 +87,8 @@ def _aviso(lang):
     strong = tr(lang, "aviso_strong")
     resto = full[len(strong):] if full.startswith(strong) else full
     return html.Div(className="aviso info", children=[
-        html.Span("ℹ"), html.Span([html.Strong(strong), resto])])
+        html.Span(className="aviso-ico ico-info", **{"aria-hidden": "true"}),
+        html.Span([html.Strong(strong), resto])])
 
 
 def _seg(tid, conteudo, aria):
@@ -138,9 +139,12 @@ def barra_controles(lang):
                              _seg("lang-es", "ES", "Español")]),
                 html.Div(className="seg-group theme-group", role="group",
                          **{"aria-label": "Tema / Theme / Tema"}, children=[
-                             _seg("theme-light", "☀", "Light"),
-                             _seg("theme-system", "🖥", "System"),
-                             _seg("theme-dark", "☾", "Dark"),
+                             _seg("theme-light", html.Span(className="seg-ico ico-sun",
+                                  **{"aria-hidden": "true"}), tr(lang, "tema_light")),
+                             _seg("theme-system", html.Span(className="seg-ico ico-monitor",
+                                  **{"aria-hidden": "true"}), tr(lang, "tema_system")),
+                             _seg("theme-dark", html.Span(className="seg-ico ico-moon",
+                                  **{"aria-hidden": "true"}), tr(lang, "tema_dark")),
                              html.Span(id="theme-label", className="seg-label")]),
             ]),
         ]),
@@ -293,7 +297,7 @@ def tabela2(lang):
 
 
 def _link_ext(texto, href):
-    return html.A([texto, html.Span(" ↗", **{"aria-hidden": "true"})], href=href,
+    return html.A([texto, html.Span(className="ico-ext", **{"aria-hidden": "true"})], href=href,
                   target="_blank", rel="noopener noreferrer")
 
 
@@ -370,13 +374,14 @@ def artigo(lang):
         html.H2(tr(lang, "citar_t"), className="sec-titulo"),
         html.Div(className="cite-bloco", children=[
             html.P(abnt(_data_abnt()), id="cite-abnt", className="serif"),
-            html.Div([dcc.Clipboard(target_id="cite-abnt", title=tr(lang, "copiar_abnt")),
+            html.Div([dcc.Clipboard(id="clip-abnt", target_id="cite-abnt", title=tr(lang, "copiar_abnt")),
                       html.Span(tr(lang, "copiar_abnt"), className="aux")], className="cite-copy")]),
         html.Div(className="cite-bloco", children=[
             html.Pre(html.Code(BIBTEX), id="cite-bibtex", className="bibtex notranslate", tabIndex=0,
                      **{"role": "region", "aria-label": tr(lang, "bibtex_aria")}),
-            html.Div([dcc.Clipboard(target_id="cite-bibtex", title=tr(lang, "copiar_bibtex")),
+            html.Div([dcc.Clipboard(id="clip-bibtex", target_id="cite-bibtex", title=tr(lang, "copiar_bibtex")),
                       html.Span(tr(lang, "copiar_bibtex"), className="aux")], className="cite-copy")]),
+        html.Div(id="copia-status", className="sr-only", **{"role": "status", "aria-live": "polite"}),
         html.A(tr(lang, "baixar_cff"), href=LINKS["cff"], className="btn btn--primary cite-cff")])
 
     coluna = html.Div(className="artigo-coluna", children=[
@@ -417,7 +422,7 @@ def construir_conteudo(lang):
         html.Section(id="indicadores", className="wrap indicadores", children=[
             html.Div(className="avisos", children=[
                 html.Div(className="aviso warn", children=[
-                    html.Span("⚠"),
+                    html.Span(className="aviso-ico ico-warn", **{"aria-hidden": "true"}),
                     html.Span([html.Strong(tr(lang, "aviso_warn_t")), " ",
                                tr(lang, "aviso_warn_p")])]),
                 _aviso(lang),
@@ -471,6 +476,9 @@ def construir_conteudo(lang):
                         html.Div(tr(lang, "map_hint"), className="map-hint")]),
                     html.Div(className="panel panel-detalhe", children=[
                         html.Div(id="cartao", className="cartao", children=cartao_info(GEO0, lang)),
+                        # anúncio para leitor de tela quando a cidade muda (NEW-1)
+                        html.Div(id="cartao-status", className="sr-only",
+                                 **{"role": "status", "aria-live": "polite", "aria-atomic": "true"}),
                         legenda_serie(lang),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
                                   figure=figura_detalhe(GEO0, lang=lang),
