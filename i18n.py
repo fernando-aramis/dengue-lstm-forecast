@@ -25,6 +25,11 @@ T = {
     "tema_light": {"pt": "Modo claro", "en": "Light mode", "es": "Modo claro"},
     "tema_system": {"pt": "Modo do sistema", "en": "System mode", "es": "Modo del sistema"},
     "tema_dark": {"pt": "Modo escuro", "en": "Dark mode", "es": "Modo oscuro"},
+    "a11y_label": {"pt": "Acessibilidade", "en": "Accessibility", "es": "Accesibilidad"},
+    "a11y_titulo": {"pt": "Acessibilidade", "en": "Accessibility", "es": "Accesibilidad"},
+    "a11y_cvd": {"pt": "Cores para daltonismo", "en": "Colorblind-safe colors",
+                 "es": "Colores para daltonismo"},
+    "a11y_motion": {"pt": "Reduzir movimento", "en": "Reduce motion", "es": "Reducir movimiento"},
 
     # ---- casca JBCS (F2): skip link, navegação, cabeçalho corrido, rodapé ----
     "skip": {"pt": "Pular para o conteúdo", "en": "Skip to content", "es": "Saltar al contenido"},

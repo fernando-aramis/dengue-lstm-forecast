@@ -67,6 +67,17 @@
   color-scheme: dark;
 }
 
+/* Menu a11y — paleta p/ daltonismo (opt-in): redefine os SEMÂNTICOS de nível (recolore legenda,
+   pílulas e glifos; o mapa usa CORES_NIVEL_CVD via figura_mapa). Verificada por simulação CVD. */
+:root[data-cvd="on"] {
+  --level-green: #2E8B57; --level-yellow: #F5D800; --level-orange: #D9641E; --level-red: #B3203F;
+}
+/* Menu a11y — reduzir movimento (opt-in, além do prefers-reduced-motion do SO) */
+:root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after {
+  animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important; scroll-behavior: auto !important;
+}
+
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
@@ -206,6 +217,8 @@ section { margin-top: 34px; }
   background: var(--aviso-bg); }
 .mapa-fallback p { margin: 0; max-width: 46ch; color: var(--aviso-fg); font-size: .9rem; line-height: 1.5;
   text-align: center; }
+/* some o mapa de forma estável (imune ao re-render do React) quando o WebGL falha */
+:root[data-webgl="off"] .panel-mapa .graph-mapa { display: none !important; }
 .graph-detalhe { flex: 1 1 auto; min-height: 210px; }
 .graph-mapa .js-plotly-plot, .graph-detalhe .js-plotly-plot { height: 100% !important; width: 100% !important; }
 .graph-mapa .svg-container, .graph-detalhe .svg-container { height: 100% !important; }
@@ -366,6 +379,30 @@ footer .refs span { display: block; }
   background: var(--topbar-bg); border: 1px solid rgba(255,255,255,.14); border-radius: var(--radius-md);
   padding: 8px; display: flex; flex-direction: column; gap: 2px; box-shadow: var(--shadow); min-width: 160px; }
 .nav-mobile-list .nav-a { padding: 10px 12px; min-height: 44px; display: flex; align-items: center; }
+
+/* menu de acessibilidade — botão compacto que abre um popover (opções só ao abrir) */
+.a11y-menu { position: relative; }
+.a11y-menu > summary { list-style: none; cursor: pointer; width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 999px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); }
+.a11y-menu > summary::-webkit-details-marker { display: none; }
+.a11y-menu > summary:hover, .a11y-menu[open] > summary { background: rgba(255,255,255,.14); }
+.a11y-ico { width: 20px; height: 20px; background: var(--topbar-muted);
+  -webkit-mask: url("/assets/icons/a11y.svg") center/contain no-repeat;
+          mask: url("/assets/icons/a11y.svg") center/contain no-repeat; }
+.a11y-menu > summary:hover .a11y-ico, .a11y-menu[open] .a11y-ico { background: var(--topbar-fg); }
+.a11y-pop { position: absolute; right: 0; margin-top: 8px; z-index: 60; min-width: 220px;
+  background: var(--surface-raised); color: var(--text); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 12px 14px; box-shadow: var(--shadow); }
+.a11y-pop-t { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--text-muted); margin-bottom: 10px; }
+.a11y-list { display: flex; flex-direction: column; gap: 4px; }
+.a11y-list .dash-options-list-option { display: flex; align-items: center; gap: 8px; min-height: 36px;
+  padding: 4px 6px; font-size: .9rem; color: var(--text); cursor: pointer; border-radius: var(--radius-sm); }
+.a11y-list .dash-options-list-option:hover { background: var(--surface-sunken); }
+.a11y-list .dash-options-list-option-wrapper { display: inline-flex; align-items: center; }
+.a11y-list .a11y-cb { width: 18px; height: 18px; accent-color: var(--green-ink); flex: none; cursor: pointer; }
+.a11y-list .a11y-lbl { color: var(--text); }
 
 .rodape { background: var(--topbar-bg); color: var(--on-brand-muted); margin-top: 48px;
   padding: 40px var(--gutter) 0; }

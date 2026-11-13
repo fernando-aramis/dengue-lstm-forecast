@@ -118,7 +118,7 @@ def nav_links(lang):
     ]
 
 
-def barra_controles():
+def barra_controles(lang):
     return html.Div(className="controls", children=[
         html.Div(className="seg-group lang-group", role="group",
                  **{"aria-label": "Idioma / Language / Idioma"}, children=[
@@ -131,6 +131,18 @@ def barra_controles():
                      _seg("theme-system", "🖥", "System"),
                      _seg("theme-dark", "☾", "Dark"),
                      html.Span(id="theme-label", className="seg-label")]),
+        html.Details(className="a11y-menu", children=[
+            html.Summary(className="a11y-summary", title=tr(lang, "a11y_label"),
+                         **{"aria-label": tr(lang, "a11y_label")},
+                         children=html.Span(className="a11y-ico", **{"aria-hidden": "true"})),
+            html.Div(className="a11y-pop", children=[
+                html.Span(tr(lang, "a11y_titulo"), id="a11y-pop-title", className="a11y-pop-t"),
+                dcc.Checklist(id="a11y-opts", className="a11y-list", value=[],
+                              inputClassName="a11y-cb", labelClassName="a11y-lbl",
+                              options=[{"label": tr(lang, "a11y_cvd"), "value": "cvd"},
+                                       {"label": tr(lang, "a11y_motion"), "value": "motion"}]),
+            ]),
+        ]),
     ])
 
 
@@ -502,12 +514,13 @@ def serve_layout():
                 html.Span(tr(lang, "curso"), className="muted hide-sm")]),
             html.Nav(id="topnav", className="topnav", children=nav_links(lang),
                      **{"aria-label": tr(lang, "nav_label")}),
-            barra_controles()])]),
+            barra_controles(lang)])]),
         html.Main(id="conteudo", children=html.Div(id="app-content",
                                                    children=construir_conteudo(lang))),
         dcc.Store(id="lang", storage_type="local", data=lang),
         dcc.Store(id="theme"),
         dcc.Store(id="theme-eff"),
+        dcc.Store(id="cvd"),
         dcc.Store(id="sel"),
         dcc.Interval(id="boot", interval=80, n_intervals=0, max_intervals=1),
     ])

@@ -10,7 +10,7 @@ from dash import html
 from i18n import tr, nivel as nivel_tr, fmt_int, fmt_data
 from formato import plotly_separators
 from dados import (GEOJSON_UF, mapa_uf, mapa_cid, nome_uf, COBERTAS, NAO_COBERTAS,
-                   prev, hist, CORES_NIVEL, ORDEM_NIVEL, semana_epi)
+                   prev, hist, CORES_NIVEL, CORES_NIVEL_CVD, ORDEM_NIVEL, semana_epi)
 
 # paletas de GRÁFICO por tema (coerentes com o CSS claro/escuro)
 PLOT = {
@@ -52,8 +52,9 @@ def centro_zoom(uf_sel=None):
 
 
 # ---------------------------------------------------------------- mapa
-def figura_mapa(uf_sel=None, lang="pt", tema_nome="light"):
+def figura_mapa(uf_sel=None, lang="pt", tema_nome="light", cvd=False):
     p = tema(tema_nome)
+    cores = CORES_NIVEL_CVD if cvd else CORES_NIVEL   # paleta p/ daltonismo (opt-in)
     fig = go.Figure()
 
     # camada 0: estados SEM cidade monitorada (fallback) — neutro, apenas contexto
@@ -90,7 +91,7 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light"):
                   for v in d["prev"]])
         fig.add_trace(go.Scattermap(
             lat=d["lat"], lon=d["lon"], mode="markers",
-            marker=dict(size=(9 + (d["prev"] ** 0.5)).clip(9, 40), color=CORES_NIVEL[nv], opacity=0.92),
+            marker=dict(size=(9 + (d["prev"] ** 0.5)).clip(9, 40), color=cores[nv], opacity=0.92),
             name=nivel_tr(lang, nv), customdata=d["geo_id"],
             text=txt, hovertemplate="%{text}<extra></extra>",
         ))

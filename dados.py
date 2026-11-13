@@ -82,6 +82,9 @@ nome_por_geo = dict(zip(prev["geo_id"], prev["nome"]))
 
 # ---- níveis de alerta (aqui, não em figuras.py, para derivar RESUMO sem import circular) --------
 CORES_NIVEL = {"Verde": "#2e9e5b", "Amarelo": "#d9a404", "Laranja": "#ef7d2d", "Vermelho": "#d6364c"}
+# Paleta alternativa para daltonismo (opt-in via menu de acessibilidade). Verificada por simulação
+# de deuteranopia/protanopia: pior par 59.3 (vs 17.4 da padrão — amarelo/laranja colapsavam).
+CORES_NIVEL_CVD = {"Verde": "#2E8B57", "Amarelo": "#F5D800", "Laranja": "#D9641E", "Vermelho": "#B3203F"}
 ORDEM_NIVEL = ["Verde", "Amarelo", "Laranja", "Vermelho"]
 
 

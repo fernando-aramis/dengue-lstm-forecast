@@ -70,6 +70,8 @@ app.index_string = """<!DOCTYPE html>
     var dark = c==='dark' || (c==='system' && mq.matches);
     var tc = function(d){var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', d?'#0E1113':'#1C2620');};
     document.documentElement.setAttribute('data-theme', dark?'dark':'light'); tc(dark);
+    if(localStorage.getItem('cvd')==='on') document.documentElement.setAttribute('data-cvd','on');
+    if(localStorage.getItem('motion')==='off') document.documentElement.setAttribute('data-motion','off');
     mq.addEventListener('change', function(e){
       if((localStorage.getItem('tema')||'system')==='system'){
         var d=e.matches; document.documentElement.setAttribute('data-theme', d?'dark':'light'); tc(d);}
@@ -238,12 +240,47 @@ app.clientside_callback(
     "function(n){try{"
     "var c=document.createElement('canvas');"
     "var gl=c.getContext('webgl2')||c.getContext('webgl')||c.getContext('experimental-webgl');"
-    "var ok=!!gl;"
-    "if(!ok){var m=document.querySelector('.panel-mapa .graph-mapa'); if(m) m.style.display='none';}"
+    "var ok=!!gl; var de=document.documentElement;"
+    "if(ok){de.removeAttribute('data-webgl');} else {de.setAttribute('data-webgl','off');}"
     "return ok;"
-    "}catch(e){var m=document.querySelector('.panel-mapa .graph-mapa'); if(m) m.style.display='none'; return false;}}",
+    "}catch(e){document.documentElement.setAttribute('data-webgl','off'); return false;}}",
     Output("mapa-fallback", "hidden"),
     Input("boot", "n_intervals"))
+
+# ---------------------------------------------------------------- menu de acessibilidade (F-A11y)
+# Aplica as opções: data-cvd (paleta p/ daltonismo) e data-motion=off (reduzir movimento) no <html>,
+# persiste em localStorage e devolve o flag `cvd` (para o rebuild do mapa). data-motion=off é lido
+# também pelo script pré-paint (sem flash).
+app.clientside_callback(
+    "function(vals){try{"
+    "vals = vals || []; var de=document.documentElement;"
+    "var cvd = vals.indexOf('cvd')>=0, motion = vals.indexOf('motion')>=0;"
+    "if(cvd){de.setAttribute('data-cvd','on'); localStorage.setItem('cvd','on');}"
+    "else {de.removeAttribute('data-cvd'); localStorage.setItem('cvd','off');}"
+    "if(motion){de.setAttribute('data-motion','off'); localStorage.setItem('motion','off');}"
+    "else {de.removeAttribute('data-motion'); localStorage.setItem('motion','on');}"
+    "return cvd;}catch(e){return false;}}",
+    Output("cvd", "data"),
+    Input("a11y-opts", "value"),
+    prevent_initial_call=True)
+
+# restaura as opções do localStorage no boot (dispara o callback acima)
+app.clientside_callback(
+    "function(n){try{var v=[];"
+    "if(localStorage.getItem('cvd')==='on') v.push('cvd');"
+    "if(localStorage.getItem('motion')==='off') v.push('motion');"
+    "return v;}catch(e){return [];}}",
+    Output("a11y-opts", "value"),
+    Input("boot", "n_intervals"))
+
+
+# relocaliza rótulos do menu a11y quando o idioma muda (a barra_controles não é re-renderizada)
+@app.callback(Output("a11y-opts", "options"), Output("a11y-pop-title", "children"),
+              Input("lang", "data"))
+def localiza_a11y(lang):
+    lg = resolver(lang)
+    return ([{"label": tr(lg, "a11y_cvd"), "value": "cvd"},
+             {"label": tr(lg, "a11y_motion"), "value": "motion"}], tr(lg, "a11y_titulo"))
 
 app.clientside_callback(
     "function(choice){var c=choice||(localStorage.getItem('tema')||'system');var on='seg on',off='seg';"
@@ -330,10 +367,11 @@ def clique_mapa(click):
 # reconstrói a figura do mapa só quando muda o IDIOMA (traduz hover/legenda/traços) — carrega o
 # tema efetivo; tema puro é tratado por tema_mapa via Patch.
 @app.callback(Output("mapa", "figure"),
-              Input("lang", "data"), State("dd-uf", "value"), State("theme-eff", "data"),
+              Input("lang", "data"), Input("cvd", "data"),
+              State("dd-uf", "value"), State("theme-eff", "data"),
               prevent_initial_call=True)
-def remapa_idioma(lang, uf, tema):
-    return figura_mapa(uf, resolver(lang), tema or "light")
+def remapa_idioma(lang, cvd, uf, tema):
+    return figura_mapa(uf, resolver(lang), tema or "light", cvd=bool(cvd))
 
 
 # mudança de UF: só recentra/dá zoom via Patch — NÃO reenvia o geojson (~128 KB) a cada clique.
