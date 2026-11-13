@@ -121,17 +121,29 @@ def nav_links(lang):
 
 def barra_controles(lang):
     return html.Div(className="controls", children=[
-        html.Div(className="seg-group lang-group", role="group",
-                 **{"aria-label": "Idioma / Language / Idioma"}, children=[
-                     _seg("lang-pt", "PT", "Português"),
-                     _seg("lang-en", "EN", "English"),
-                     _seg("lang-es", "ES", "Español")]),
-        html.Div(className="seg-group theme-group", role="group",
-                 **{"aria-label": "Tema / Theme / Tema"}, children=[
-                     _seg("theme-light", "☀", "Light"),
-                     _seg("theme-system", "🖥", "System"),
-                     _seg("theme-dark", "☾", "Dark"),
-                     html.Span(id="theme-label", className="seg-label")]),
+        # A11 — no mobile, idioma/tema recolhem num disclosure (<details>, gatilho só-mobile,
+        # sem JS, aria-expanded nativo); no desktop voltam inline (CSS display:contents). Os
+        # grupos ficam sempre no DOM e dentro de barra_controles (fora da área re-renderizada)
+        # → os callbacks de tema/idioma por id seguem intactos.
+        html.Div(className="prefs-wrap", children=[
+            html.Details(className="prefs", children=html.Summary(
+                className="prefs-trigger", title=tr(lang, "prefs_label"),
+                **{"aria-label": tr(lang, "prefs_label")},
+                children=html.Span(className="prefs-ico", **{"aria-hidden": "true"}))),
+            html.Div(className="prefs-pop", children=[
+                html.Div(className="seg-group lang-group", role="group",
+                         **{"aria-label": "Idioma / Language / Idioma"}, children=[
+                             _seg("lang-pt", "PT", "Português"),
+                             _seg("lang-en", "EN", "English"),
+                             _seg("lang-es", "ES", "Español")]),
+                html.Div(className="seg-group theme-group", role="group",
+                         **{"aria-label": "Tema / Theme / Tema"}, children=[
+                             _seg("theme-light", "☀", "Light"),
+                             _seg("theme-system", "🖥", "System"),
+                             _seg("theme-dark", "☾", "Dark"),
+                             html.Span(id="theme-label", className="seg-label")]),
+            ]),
+        ]),
         html.Details(className="a11y-menu", children=[
             html.Summary(className="a11y-summary", title=tr(lang, "a11y_label"),
                          **{"aria-label": tr(lang, "a11y_label")},

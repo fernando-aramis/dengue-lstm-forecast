@@ -25,6 +25,7 @@ T = {
     "tema_light": {"pt": "Modo claro", "en": "Light mode", "es": "Modo claro"},
     "tema_system": {"pt": "Modo do sistema", "en": "System mode", "es": "Modo del sistema"},
     "tema_dark": {"pt": "Modo escuro", "en": "Dark mode", "es": "Modo oscuro"},
+    "prefs_label": {"pt": "Idioma e tema", "en": "Language and theme", "es": "Idioma y tema"},
     "a11y_label": {"pt": "Acessibilidade", "en": "Accessibility", "es": "Accesibilidad"},
     "a11y_titulo": {"pt": "Acessibilidade", "en": "Accessibility", "es": "Accesibilidad"},
     "a11y_cvd": {"pt": "Cores para daltonismo", "en": "Colorblind-safe colors",

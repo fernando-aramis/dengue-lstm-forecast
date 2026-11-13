@@ -388,6 +388,29 @@ footer .refs span { display: block; }
   padding: 8px; display: flex; flex-direction: column; gap: 2px; box-shadow: var(--shadow); min-width: 160px; }
 .nav-mobile-list .nav-a { padding: 10px 12px; min-height: 44px; display: flex; align-items: center; }
 
+/* A11 — idioma/tema: disclosure só-mobile (<details> como gatilho; o popover é irmão,
+   revelado por .prefs[open] ~ .prefs-pop). No desktop voltam inline (display:contents).
+   Grupos sempre no DOM, dentro de barra_controles → callbacks de tema/idioma intactos. */
+.prefs-wrap { position: relative; display: inline-flex; align-items: center; }
+.prefs > summary { list-style: none; cursor: pointer; width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 999px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); }
+.prefs > summary::-webkit-details-marker { display: none; }
+.prefs > summary:hover, .prefs[open] > summary { background: rgba(255,255,255,.14); }
+.prefs-ico { width: 20px; height: 20px; background: var(--topbar-muted);
+  -webkit-mask: url("/assets/icons/prefs.svg") center/contain no-repeat;
+          mask: url("/assets/icons/prefs.svg") center/contain no-repeat; }
+.prefs > summary:hover .prefs-ico, .prefs[open] > summary .prefs-ico { background: var(--topbar-fg); }
+.prefs-pop { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60;
+  display: none; flex-direction: column; gap: 8px; min-width: max-content;
+  background: var(--topbar-bg); border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius-md); padding: 10px; box-shadow: var(--shadow); }
+.prefs[open] ~ .prefs-pop { display: flex; }
+@media (min-width: 768px) {    /* desktop: idioma/tema voltam inline na barra */
+  .prefs { display: none; }
+  .prefs-wrap, .prefs-pop { display: contents; }
+}
+
 /* menu de acessibilidade — botão compacto que abre um popover (opções só ao abrir) */
 .a11y-menu { position: relative; }
 .a11y-menu > summary { list-style: none; cursor: pointer; width: 44px; height: 44px;
