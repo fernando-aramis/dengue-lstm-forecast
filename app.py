@@ -62,16 +62,17 @@ Compress(server)   # gzip/brotli nas respostas (corta o payload do geojson/JS)
 app.index_string = """<!DOCTYPE html>
 <html lang="pt">
 <head>
-  {%metas%}<title>{%title%}</title>{%favicon%}{%css%}
+  {%metas%}<meta name="theme-color" content="#1C2620"><title>{%title%}</title>{%favicon%}{%css%}
   <script>
   (function(){try{
     var c = localStorage.getItem('tema') || 'system';
     var mq = window.matchMedia('(prefers-color-scheme: dark)');
     var dark = c==='dark' || (c==='system' && mq.matches);
-    document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+    var tc = function(d){var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', d?'#0E1113':'#1C2620');};
+    document.documentElement.setAttribute('data-theme', dark?'dark':'light'); tc(dark);
     mq.addEventListener('change', function(e){
-      if((localStorage.getItem('tema')||'system')==='system')
-        document.documentElement.setAttribute('data-theme', e.matches?'dark':'light');
+      if((localStorage.getItem('tema')||'system')==='system'){
+        var d=e.matches; document.documentElement.setAttribute('data-theme', d?'dark':'light'); tc(d);}
     });
   }catch(e){}})();
   </script>
@@ -91,6 +92,30 @@ _JSONLD = json.dumps({
 }, ensure_ascii=False)
 app.index_string = app.index_string.replace(
     "{%css%}", '{%css%}\n  <script type="application/ld+json">' + _JSONLD + "</script>")
+
+# Shell estático de cold-start (A4): o Render free pode levar ~1 min para acordar; sem isto o
+# visitante (e crawlers) veem só "Loading...". Overlay FIXED (não entra no fluxo → não gera CLS);
+# removido por JS quando o layout real (.topbar) monta. <noscript> dá caminho ao estudo.
+_TITULO_BOOT = conteudo.T_ARTIGO["artigo_titulo"]["pt"]
+_BOOT_SHELL = (
+    '<div id="boot-shell"><div class="boot-inner">'
+    '<div class="boot-brand"><span class="boot-dot"></span>Dengue · LSTM Forecast</div>'
+    '<h1 class="boot-title" lang="pt">' + _TITULO_BOOT + '</h1>'
+    '<p class="boot-lede">Previsão semanal de dengue no Brasil · 1–4 semanas à frente · intervalo de 90%.</p>'
+    '<div class="boot-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>'
+    '<p class="boot-msg">Carregando o painel… o servidor gratuito pode levar até 1 minuto para acordar.'
+    '<br><span>Loading… the free server may take up to a minute to wake. · Cargando el panel…</span></p>'
+    '</div><noscript><p class="boot-noscript">Este painel precisa de JavaScript. Leia o estudo: '
+    '<a href="' + conteudo.LINKS["zenodo"] + '">DOI 10.5281/zenodo.13328231</a>.</p></noscript></div>'
+)
+_BOOT_HIDE = (
+    '<script>(function(){var s=document.getElementById("boot-shell");if(!s)return;'
+    'function done(){s.classList.add("boot-hidden");setTimeout(function(){'
+    'if(s&&s.parentNode)s.parentNode.removeChild(s);},450);}'
+    'var t=setInterval(function(){if(document.querySelector(".topbar")){clearInterval(t);done();}},120);'
+    'setTimeout(function(){clearInterval(t);done();},60000);})();</script>'
+)
+app.index_string = app.index_string.replace("{%app_entry%}", _BOOT_SHELL + "{%app_entry%}" + _BOOT_HIDE)
 
 
 @server.after_request
@@ -200,6 +225,7 @@ app.clientside_callback(
     "var c = choice || localStorage.getItem('tema') || 'system';"
     "var dark = c==='dark' || (c==='system' && window.matchMedia('(prefers-color-scheme: dark)').matches);"
     "document.documentElement.setAttribute('data-theme', dark?'dark':'light');"
+    "var _m=document.querySelector('meta[name=\\'theme-color\\']'); if(_m)_m.setAttribute('content', dark?'#0E1113':'#1C2620');"
     "localStorage.setItem('tema', c);"
     "return dark?'dark':'light';}catch(e){return 'light';}}",
     Output("theme-eff", "data"),

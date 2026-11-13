@@ -79,6 +79,33 @@ body {
   body { transition: background-color .25s var(--ease-out), color .25s var(--ease-out); }
 }
 
+/* cold-start shell (A4): overlay FIXED enquanto o Dash hidrata; removido quando .topbar monta.
+   Fundo = hero (marca) p/ emendar sem salto; position:fixed → não gera CLS. */
+#boot-shell { position: fixed; inset: 0; z-index: 9999; background: var(--brand); color: var(--on-brand);
+  display: flex; align-items: center; justify-content: center; padding: 24px var(--gutter);
+  opacity: 1; transition: opacity .4s var(--ease-out); }
+#boot-shell.boot-hidden { opacity: 0; pointer-events: none; }
+.boot-inner { width: 100%; max-width: 640px; }
+.boot-brand { display: flex; align-items: center; gap: 10px; font-weight: 700;
+  font-size: .95rem; margin-bottom: 28px; }
+.boot-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--level-green); flex: none; }
+.boot-title { font-size: clamp(1.6rem, 4.5vw, 2.4rem); line-height: 1.14; letter-spacing: -0.02em;
+  font-weight: 700; margin: 0 0 12px; max-inline-size: 20ch; }
+.boot-lede { margin: 0 0 28px; color: var(--on-brand-muted); font-size: 1rem; }
+.boot-skeleton { display: grid; gap: 12px; margin-bottom: 24px; }
+.boot-skeleton span { height: 14px; border-radius: 7px; background: rgba(255,255,255,.14); display: block; }
+.boot-skeleton span:nth-child(1) { width: 90%; }
+.boot-skeleton span:nth-child(2) { width: 72%; }
+.boot-skeleton span:nth-child(3) { width: 54%; }
+.boot-msg { margin: 0; color: var(--on-brand-muted); font-size: .85rem; line-height: 1.5; }
+.boot-msg span { opacity: .78; }
+.boot-noscript { margin: 20px 0 0; color: var(--on-brand-muted); font-size: .9rem; }
+.boot-noscript a { color: var(--accent-on-brand); }
+@media (prefers-reduced-motion: no-preference) {
+  .boot-skeleton span { animation: boot-pulse 1.4s var(--ease-out) infinite; }
+}
+@keyframes boot-pulse { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+
 /* -------------------------------------------------- utilitários tipográficos (F1) */
 .serif { font-family: var(--font-serif); }
 .mono { font-family: var(--font-mono); }
