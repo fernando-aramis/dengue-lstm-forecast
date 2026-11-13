@@ -7,3 +7,7 @@ pipeline/.cache/
 
 # UI baseline/after full-page screenshots (kept on disk, out of git by decision)
 docs/ui/shots/**/*full*.png
+
+# Impeccable local hook state (shared config.json is tracked)
+.impeccable/config.local.json
+.impeccable/hook.cache.json
