@@ -4,3 +4,6 @@ __pycache__/
 .pytest_cache/
 tests/screenshots/
 pipeline/.cache/
+
+# UI baseline/after full-page screenshots (kept on disk, out of git by decision)
+docs/ui/shots/**/*full*.png
