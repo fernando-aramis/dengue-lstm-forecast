@@ -24,6 +24,15 @@ rodou, conforme a precedência da seção 2.2 do brief (brief/ciência > craft-f
 | **JS bundle / nº de arquivos (FAIL perf)** | Taste `perf.mjs` | Waiver | Bundle Dash/Plotly/MapLibre (1735 KiB gz / 15 arq.) é inerente ao framework no caminho de serving; não "burlar". Ganhos reais ficam em CLS, fontes e cold-start |
 | **`em-dash` ×15 / `eyebrows` ×10 (copy-lint)** | Taste `copy-lint.mjs` | Eyebrows: **acatar** (= A7, remover). Em-dash: avaliar na Fase 3 | Orçamento de em-dash (2) é calibrado p/ marketing; prosa de artigo científico usa travessão legitimamente. Reduzir onde for ruído, manter onde a pontuação pede |
 
+## Decisões de design por achado (fases de correção)
+
+- **A2 (Fase 2) — bolhas do mapa seguem só-cor.** `Scattermap` não suporta símbolo-por-nível de forma
+  confiável. Simulação de deuteranopia/protanopia das `CORES_NIVEL`: verde/vermelho bem separados
+  (~116/78); o par próximo é **amarelo/laranja** (~17–22). Desambiguado pelos canais não-cor já
+  presentes: legenda com **formas distintas** (▲ amarelo, ◆ laranja), **hover nomeia o nível** e
+  **Tabela 1** textual. Não mexer na paleta (um ajuste de matiz arriscaria identidade + contraste AAA
+  das pílulas). Reavaliar só se um teste de usuário com CVD apontar problema real no canvas.
+
 ## Decisões tomadas por conta própria (revisar)
 
 - **ORCID** corrigido na pass de a11y como **SVG logo oficial** (`assets/icons/orcid.svg`) em vez do texto "iD" — isenção de logotipo (WCAG 1.4.3) + fiel à marca. Falta `width/height` intrínseco (P3).
