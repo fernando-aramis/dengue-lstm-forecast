@@ -8,12 +8,12 @@ from datetime import date, timedelta
 
 from dash import dcc, html
 
-from i18n import tr, resolver, nivel as nivel_tr, fmt_int
+from i18n import tr, resolver, nivel as nivel_tr, fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo
 from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf, mapa_cid,
                    RESUMO, SE_H1, SE_ORIGEM, DATA_PREV_H1)
 from figuras import (figura_mapa, figura_detalhe, cartao_info, horizontes,
                      CORES_NIVEL, ORDEM_NIVEL)
-from conteudo import (TAB_RES, REFERENCIAS, BIBTEX, abnt, ORCID, ORCID_URL, LINKS)
+from conteudo import (TAB_RES, REFERENCIAS, BIBTEX, abnt, ORCID, ORCID_URL, LINKS, ESTUDO)
 
 
 # ---------------------------------------------------------------- blocos reutilizáveis
@@ -44,8 +44,8 @@ def situacao(lang):
                   f"{tr(lang, 'palavra_cidade' if por.get(nv, 0) == 1 else 'palavra_cidades')}",
                   className="sit-n tabular")]) for nv in ORDEM_NIVEL]
     return html.Div(className="situacao", children=[
-        html.Span(tr(lang, "sit_eyebrow", se=se, ini=ini.strftime("%d/%m"),
-                     fim=fim.strftime("%d/%m/%Y")), className="eyebrow"),
+        html.Span(tr(lang, "sit_eyebrow", se=se, ini=fmt_data(ini, lang, "curto"),
+                     fim=fmt_data(fim, lang, "ano")), className="eyebrow"),
         html.Div(fmt_int(RESUMO["total_h1"], lang), className="sit-total tabular"),
         html.Div(tr(lang, "sit_total", n=n), className="sit-sub"),
         html.Div(segs, className="sit-barra", role="img",
@@ -403,11 +403,14 @@ def construir_conteudo(lang):
                 _aviso(lang),
             ]),
             html.Div(className="stats", children=[
-                stat([html.Span("913 "), html.Span("→", className="arrow"), html.Span(" 15.389")],
+                stat([html.Span(fmt_int(ESTUDO["casos_2023"], lang) + " "),
+                      html.Span("→", className="arrow"),
+                      html.Span(" " + fmt_int(ESTUDO["casos_2024"], lang))],
                      tr(lang, "stat1")),
-                stat("−14%", tr(lang, "stat2"), tom="brand"),
-                stat("94–98%", tr(lang, "stat3")),
-                stat("1,16", tr(lang, "stat4b"), tom="alarm")]),
+                stat(fmt_pct(-ESTUDO["reducao_mae"], lang), tr(lang, "stat2"), tom="brand"),
+                stat(fmt_intervalo(ESTUDO["cobertura"][0], ESTUDO["cobertura"][1], lang) + "%",
+                     tr(lang, "stat3")),
+                stat(fmt_dec(ESTUDO["pico_norm"], lang, 2), tr(lang, "stat4b"), tom="alarm")]),
         ]),
 
         # ---- conteúdo em coluna de leitura (.wrap) ----

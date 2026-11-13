@@ -226,10 +226,10 @@ T = {
     "estados_trace": {"pt": "Estados", "en": "States", "es": "Estados"},
     "sem_cobertura": {"pt": "Sem cidade monitorada ainda", "en": "No monitored city yet",
                       "es": "Sin ciudad monitoreada aún"},
-    "hover_estado": {"pt": "Estado · próx. semana: {v} casos", "en": "State · next week: {v} cases",
-                     "es": "Estado · próx. semana: {v} casos"},
-    "hover_cidade": {"pt": "Próx. semana: {v} casos · {nivel}", "en": "Next week: {v} cases · {nivel}",
-                     "es": "Próx. semana: {v} casos · {nivel}"},
+    "hover_estado": {"pt": "Estado · próx. semana: {v} casos", "en": "State · next week: {v} cases",
+                     "es": "Estado · próx. semana: {v} casos"},
+    "hover_cidade": {"pt": "Próx. semana: {v} casos · {nivel}", "en": "Next week: {v} cases · {nivel}",
+                     "es": "Próx. semana: {v} casos · {nivel}"},
 
     # ---------------------------------------------------------------- cartão
     "card_prompt": {"pt": "Selecione uma cidade ou estado no mapa.",
@@ -237,9 +237,9 @@ T = {
                     "es": "Selecciona una ciudad o estado en el mapa."},
     "card_prev": {"pt": "Previsão · próxima semana", "en": "Forecast · next week",
                   "es": "Pronóstico · próxima semana"},
-    "card_casos": {"pt": "{v} casos", "en": "{v} cases", "es": "{v} casos"},
-    "card_intervalo": {"pt": "Intervalo de 90%: {inf} – {sup} casos",
-                       "en": "90% interval: {inf} – {sup} cases",
+    "card_casos": {"pt": "{v} casos", "en": "{v} cases", "es": "{v} casos"},
+    "card_intervalo": {"pt": "Intervalo de 90%: {inf}–{sup} casos",
+                       "en": "90% interval: {inf}–{sup} cases",
                        "es": "Intervalo del 90%: {inf} – {sup} casos"},
     "card_nivel": {"pt": "Nível: ", "en": "Level: ", "es": "Nivel: "},
     "escopo_municipio": {"pt": "Município", "en": "Municipality", "es": "Municipio"},
@@ -462,7 +462,5 @@ def nivel(lang, chave_pt):
     return NIVEIS.get(lang, NIVEIS[FALLBACK]).get(chave_pt, chave_pt)
 
 
-def fmt_int(v, lang="pt"):
-    """Inteiro com separador de milhar por idioma: 5291 -> '5.291' (pt/es) / '5,291' (en)."""
-    s = f"{int(round(v)):,}"
-    return s if lang == "en" else s.replace(",", ".")
+# Formatação centralizada em formato.py; re-exportada aqui para `from i18n import fmt_int`.
+from formato import fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo  # noqa: E402,F401

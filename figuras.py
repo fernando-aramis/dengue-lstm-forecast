@@ -7,7 +7,8 @@ import numpy as np
 import plotly.graph_objects as go
 from dash import html
 
-from i18n import tr, nivel as nivel_tr, fmt_int
+from i18n import tr, nivel as nivel_tr, fmt_int, fmt_data
+from formato import plotly_separators
 from dados import (GEOJSON_UF, mapa_uf, mapa_cid, nome_uf, COBERTAS, NAO_COBERTAS,
                    prev, hist, CORES_NIVEL, ORDEM_NIVEL, semana_epi)
 
@@ -75,7 +76,7 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light"):
         marker=dict(opacity=0.62, line=dict(width=p["maplinew"], color=p["mapline"])),
         customdata=np.stack([mapa_uf["nome"], mapa_uf["prev"]], axis=-1),
         hovertemplate="<b>%{customdata[0]}</b><br>" +
-                      tr(lang, "hover_estado", v="%{customdata[1]:.0f}") + "<extra></extra>",
+                      tr(lang, "hover_estado", v="%{customdata[1]:,.0f}") + "<extra></extra>",
         name=tr(lang, "estados_trace"),
     ))
 
@@ -85,7 +86,7 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light"):
         if d.empty:
             continue
         txt = (d["nome"] + " (" + d["uf"] + ")<br>"
-               + [tr(lang, "hover_cidade", v=int(v), nivel=nivel_tr(lang, nv))
+               + [tr(lang, "hover_cidade", v=fmt_int(v, lang), nivel=nivel_tr(lang, nv))
                   for v in d["prev"]])
         fig.add_trace(go.Scattermap(
             lat=d["lat"], lon=d["lon"], mode="markers",
@@ -100,7 +101,7 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light"):
     fig.update_layout(
         map=dict(style=p["mapstyle"], center=centro, zoom=zoom),
         margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="rgba(0,0,0,0)",
-        showlegend=False,
+        showlegend=False, separators=plotly_separators(lang),
         font=dict(family="Inter, sans-serif", color=p["ink"]), uirevision="keep",
         hoverlabel=dict(bgcolor=p["hover_bg"], bordercolor=p["hover_bd"],
                         font=dict(family="Inter, sans-serif", size=12, color=p["ink"])),
@@ -160,7 +161,7 @@ def horizontes(geo_id, lang="pt"):
     for _, r in pv.iterrows():
         cls = "horiz-item h1" if int(r["h"]) == 1 else "horiz-item"
         itens.append(html.Li(className=cls, children=[
-            html.Span(f"t+{int(r['h'])} · {r['data_prev'].strftime('%d/%m')}", className="horiz-t mono"),
+            html.Span(f"t+{int(r['h'])} · {fmt_data(r['data_prev'], lang, 'curto')}", className="horiz-t mono"),
             html.Span(fmt_int(r["prev"], lang), className="horiz-v tabular"),
             html.Span(f"{fmt_int(r['inf'], lang)}–{fmt_int(r['sup'], lang)}", className="horiz-ic mono")]))
     h1, h4 = pv.iloc[0], pv.iloc[-1]
@@ -192,8 +193,9 @@ def cartao_info(geo_id, lang="pt"):
         cartao.append(html.Div(tr(lang, "nota_piso"), className="sub nota"))
     cartao += [
         html.Span(tr(lang, "card_prev"), className="label"),
-        html.Div(tr(lang, "card_casos", v=int(r["prev"])), className="valor"),
-        html.Div(tr(lang, "card_intervalo", inf=int(r["inf"]), sup=int(r["sup"])), className="sub"),
+        html.Div(tr(lang, "card_casos", v=fmt_int(r["prev"], lang)), className="valor"),
+        html.Div(tr(lang, "card_intervalo", inf=fmt_int(r["inf"], lang), sup=fmt_int(r["sup"], lang)),
+                 className="sub"),
         html.Div([tr(lang, "card_nivel"),
                   html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
                              nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}")],
