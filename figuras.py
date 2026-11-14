@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 from dash import html
 
 from i18n import tr, nivel as nivel_tr, fmt_int, fmt_data
-from formato import plotly_separators
+from formato import plotly_separators, plotly_hoverformat_data
 from dados import (GEOJSON_UF, mapa_uf, mapa_cid, nome_uf, COBERTAS, NAO_COBERTAS,
                    prev, hist, CORES_NIVEL, CORES_NIVEL_CVD, ORDEM_NIVEL, semana_epi)
 
@@ -137,6 +137,11 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
         yb = list(pv["sup"]) + list(pv["inf"][::-1])
         fig.add_trace(go.Scatter(x=xb, y=yb, fill="toself", fillcolor=p["band"],
                                  line=dict(color="rgba(0,0,0,0)"), hoverinfo="skip", showlegend=False))
+        # bordas do intervalo: a banda sozinha tem 1,3:1 (claro) / 1,6:1 (escuro) contra o fundo — abaixo
+        # dos 3:1 de WCAG 1.4.11 para gráficos. A linha fina na cor da previsão (≈7,5:1) torna o limite visível.
+        for lim in ("sup", "inf"):
+            fig.add_trace(go.Scatter(x=pv["data_prev"], y=pv[lim], mode="lines", showlegend=False,
+                                     hoverinfo="skip", line=dict(color=p["prev"], width=1)))
     if len(h):
         fig.add_trace(go.Scatter(x=h["data"], y=h["casos"], mode="lines", showlegend=False,
                                  line=dict(color=p["obs"], width=2), name=tr(lang, "g_observado")))
@@ -163,7 +168,7 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
         hoverlabel=dict(bgcolor=p["hover_bg"], bordercolor=p["hover_bd"],
                         font=dict(family="Inter, sans-serif", size=12, color=p["ink"])),
     )
-    fig.update_xaxes(showgrid=False, linecolor=p["axis"])
+    fig.update_xaxes(showgrid=False, linecolor=p["axis"], hoverformat=plotly_hoverformat_data(lang))
     fig.update_yaxes(gridcolor=p["grid"], rangemode="tozero", zeroline=False)
     return fig
 

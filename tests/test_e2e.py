@@ -422,3 +422,39 @@ def test_fallback_do_mapa_so_aparece_sem_webgl(pagina):
     assert vis("#mapa-fallback") and not vis("#mapa")
     pagina.evaluate("document.documentElement.removeAttribute('data-webgl');"
                     "document.querySelector('#mapa-fallback').hidden=true")
+
+
+# ------------------------------------------------------------------ Fase 5: gráficos
+@pytest.mark.parametrize("largura", [360, 390, 768, 979, 980, 1280])
+def test_grafico_detalhe_nao_sobrepoe_os_cartoes(pagina, largura):
+    """Em coluna única (<980px) o `height:100%` do Plotly virava 0 num pai sem altura: o SVG caía em 450px
+    e cobria os cartões t+1…t+4, a linha e os rótulos do eixo (slot de 210px)."""
+    pagina.set_viewport_size({"width": largura, "height": 900})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt&cidade=4106902")
+    pagina.wait_for_selector("#detalhe .main-svg", timeout=40000)
+    pagina.wait_for_timeout(2500)
+    g = pagina.evaluate("""()=>{const r=s=>document.querySelector(s).getBoundingClientRect();
+        return {slot: r('#detalhe'), svg: r('#detalhe .main-svg'), plot: r('#detalhe .js-plotly-plot'), hor: r('#horizontes')}}""")
+    assert g["plot"]["height"] >= 200, f"gráfico com {g['plot']['height']:.0f}px (colapsou)"
+    assert g["svg"]["height"] <= g["slot"]["height"] + 1, f"SVG {g['svg']['height']:.0f}px > slot {g['slot']['height']:.0f}px"
+    assert g["slot"]["bottom"] <= g["hor"]["top"] + 1, "o gráfico invade os cartões t+1…t+4"
+
+
+@pytest.mark.parametrize("lang,presentes,ausentes", [
+    ("pt", {"ago", "set", "out", "dez"}, {"aug", "oct", "dec"}),
+    ("es", {"ago", "dic"}, {"aug", "dec"}),
+    ("en", {"aug", "oct", "dec"}, {"ago", "out", "dez", "dic"})])
+def test_eixo_x_do_detalhe_no_idioma_da_ui(pagina, lang, presentes, ausentes):
+    """Os meses saíam em inglês ('Aug 2026') numa página em português: o Plotly do Dash não traz locales."""
+    pagina.set_viewport_size({"width": 1280, "height": 900})
+    pagina.goto(URL.rstrip("/") + f"/?lang={lang}&cidade=4106902")
+    pagina.wait_for_selector("#detalhe .main-svg", timeout=40000)
+    pagina.wait_for_timeout(2500)
+    # o Plotly adelgaça os rótulos conforme a largura (3 ou 6): força 1 por mês p/ o teste não depender disso
+    pagina.evaluate("Plotly.relayout(document.querySelector('#detalhe .js-plotly-plot'), {'xaxis.dtick': 'M1'})")
+    pagina.wait_for_timeout(800)
+    ticks = pagina.evaluate("[...document.querySelectorAll('#detalhe .xtick text')].map(t=>t.textContent.toLowerCase().split(' ')[0])")
+    assert ticks and presentes & set(ticks), f"[{lang}] esperava {presentes} em {ticks}"
+    assert not (ausentes & set(ticks)), f"[{lang}] meses de outro idioma: {ausentes & set(ticks)} em {ticks}"
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")      # devolve a página ao estado padrão dos próximos testes
+    pagina.wait_for_selector("#cartao", timeout=40000)

@@ -71,6 +71,43 @@ def fmt_intervalo(a, b, lang="pt", fmt=fmt_int):
 
 
 # separadores para o Plotly (layout.separators = "<decimal><milhar>")
+_MESES_LONGOS = {
+    "pt": ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
+           "outubro", "novembro", "dezembro"],
+    "en": ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+           "October", "November", "December"],
+    "es": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre",
+           "octubre", "noviembre", "diciembre"],
+}
+_DIAS = {
+    "pt": ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"],
+    "en": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "es": ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+}
+_DIAS_CURTOS = {
+    "pt": ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"],
+    "en": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "es": ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+}
+
+
+def plotly_locale(lang):
+    """Locale do Plotly (meses/dias/data/separadores) para `dcc.Graph(config={"locale", "locales"})`.
+    O Plotly do Dash não traz locales e a CSP proíbe CDN; o Plotly aceita locales INLINE, então os
+    eixos de data saem em pt/en/es sem dependência nova (reusa _MESES — fonte única dos nomes)."""
+    L = _lang(lang)
+    mil, dec = _SEP[L]
+    return {"dictionary": {}, "format": {
+        "months": _MESES_LONGOS[L], "shortMonths": _MESES[L],
+        "days": _DIAS[L], "shortDays": _DIAS_CURTOS[L],
+        "date": "%m/%d/%Y" if L == "en" else "%d/%m/%Y", "decimal": dec, "thousands": mil}}
+
+
+def plotly_hoverformat_data(lang):
+    """Formato da data no cabeçalho do hover (dia-primeiro em pt/es, mês-primeiro em en)."""
+    return "%m/%d/%Y" if _lang(lang) == "en" else "%d/%m/%Y"
+
+
 def plotly_separators(lang):
     mil, dec = _SEP[_lang(lang)]
     return dec + mil

@@ -64,3 +64,19 @@ def test_reexport_via_i18n():
     import i18n
     assert i18n.fmt_int(15389, "en") == "15,389"
     assert i18n.fmt_dec(1.16, "pt", 2) == "1,16"
+
+
+# ------------------------------------------------------------------ locale do Plotly (Fase 5)
+@pytest.mark.parametrize("lang", ["pt", "en", "es"])
+def test_plotly_locale_completo_e_coerente(lang):
+    loc = f.plotly_locale(lang)["format"]
+    assert len(loc["months"]) == len(loc["shortMonths"]) == 12
+    assert len(loc["days"]) == len(loc["shortDays"]) == 7
+    assert loc["shortMonths"] == f._MESES[f._lang(lang)]          # fonte única dos nomes de mês
+    assert loc["decimal"] + loc["thousands"] == f.plotly_separators(lang)   # mesmos separadores do A1
+    assert all(m.lower().startswith(s.lower()[:3]) for m, s in zip(loc["months"], loc["shortMonths"]))
+
+
+def test_plotly_locale_data_dia_primeiro_so_em_pt_es():
+    assert f.plotly_locale("pt")["format"]["date"] == f.plotly_locale("es")["format"]["date"] == "%d/%m/%Y"
+    assert f.plotly_locale("en")["format"]["date"] == "%m/%d/%Y"

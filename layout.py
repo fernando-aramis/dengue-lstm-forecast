@@ -9,6 +9,7 @@ from datetime import date, timedelta
 from dash import dcc, html
 
 from i18n import tr, resolver, nivel as nivel_tr, fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo
+from formato import plotly_locale
 from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf, mapa_cid,
                    RESUMO, SE_H1, SE_ORIGEM, DATA_PREV_H1)
 from figuras import (figura_mapa, figura_detalhe, cartao_info, horizontes,
@@ -505,7 +506,10 @@ def construir_conteudo(lang, sel=None):
                         legenda_serie(lang),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
                                   figure=figura_detalhe(geo, lang=lang),
-                                  config={"displayModeBar": False, "responsive": True}),
+                                  # locale INLINE: meses/dias no idioma da UI (o Plotly do Dash não traz
+                                  # locales e a CSP proíbe CDN). O Graph é recriado ao trocar de idioma.
+                                  config={"displayModeBar": False, "responsive": True,
+                                          "locale": lang, "locales": {lang: plotly_locale(lang)}}),
                         html.Div(id="horizontes", children=horizontes(geo, lang))]),
                 ]),
                 html.Figcaption([html.Strong("Figura 1. "),

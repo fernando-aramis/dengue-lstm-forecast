@@ -381,3 +381,59 @@ def test_clipboard_citar():
     import app as A
     j = A.app.server.test_client().get("/_dash-layout").get_data(as_text=True)
     assert j.count('"Clipboard"') == 2, "esperava 2 dcc.Clipboard (ABNT e BibTeX)"
+
+
+# ---------------------------------------------------------------- Fase 5: gráficos
+def _tokens_css():
+    """Resolve os tokens de assets/style.css: (claro, escuro). Segue var(--x) em cadeia."""
+    import re
+    css = open(os.path.join(WEBAPP, "assets", "style.css"), encoding="utf-8").read()
+    claro_bloco = re.search(r":root\s*\{(.*?)\n\}", css, re.S).group(1)
+    escuro_bloco = re.search(r':root\[data-theme="dark"\]\s*\{(.*?)\n\}', css, re.S).group(1)
+    par = lambda b: dict(re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", b))
+    claro = par(claro_bloco)
+    escuro = {**claro, **par(escuro_bloco)}
+
+    def resolve(d):
+        def r(v, n=0):
+            m = re.fullmatch(r"var\((--[\w-]+)\)", v.strip())
+            return r(d[m.group(1)], n + 1) if m and n < 5 else v.strip()
+        return {k: r(v).upper() for k, v in d.items()}
+    return resolve(claro), resolve(escuro)
+
+
+def test_plot_sincronizado_com_tokens_css():
+    """CLAUDE.md: as cores existem em DOIS lugares (tokens CSS e PLOT de figuras.py) e devem ficar em
+    sincronia. Este teste trava o que hoje é idêntico. EXCEÇÕES CONHECIDAS no escuro (valores próprios do
+    gráfico, escolhidos p/ contraste sobre o papel escuro): grid, axis, prev — não entram aqui."""
+    import figuras
+    claro, escuro = _tokens_css()
+    L, D = figuras.PLOT["light"], figuras.PLOT["dark"]
+    esperado_claro = {"ink": "--ink", "obs": "--ink", "grid": "--cream-2", "axis": "--line",
+                      "paper": "--paper", "prev": "--green-d", "hover_bg": "--paper", "hover_bd": "--line"}
+    for chave, token in esperado_claro.items():
+        assert L[chave].upper() == claro[token], f"PLOT[light][{chave}]={L[chave]} ≠ {token}={claro[token]}"
+    esperado_escuro = {"ink": "--ink", "obs": "--ink", "paper": "--paper", "hover_bg": "--cream-2"}
+    for chave, token in esperado_escuro.items():
+        assert D[chave].upper() == escuro[token], f"PLOT[dark][{chave}]={D[chave]} ≠ {token}={escuro[token]}"
+
+
+def test_banda_90_tem_bordas_visiveis_3a1():
+    """A banda sozinha tem ~1,3:1 (claro) / 1,6:1 (escuro) — abaixo dos 3:1 de WCAG 1.4.11. As bordas finas
+    (sup/inf) na cor da previsão devem existir e ter ≥3:1 contra o papel nos dois temas."""
+    import figuras
+    from dados import GEO0
+    for tema in ("light", "dark"):
+        fig = figuras.figura_detalhe(GEO0, "pt", tema)
+        p = figuras.PLOT[tema]
+        bordas = [t for t in fig.data if t.mode == "lines" and t.line.width == 1 and t.line.color == p["prev"]]
+        assert len(bordas) == 2, f"[{tema}] esperava 2 bordas (sup/inf), achei {len(bordas)}"
+        assert contraste(p["prev"], p["paper"]) >= 3.0, f"[{tema}] borda {p['prev']} sobre {p['paper']}"
+
+
+def test_figura_detalhe_localiza_data_no_hover():
+    import figuras
+    from dados import GEO0
+    assert figuras.figura_detalhe(GEO0, "pt").layout.xaxis.hoverformat == "%d/%m/%Y"
+    assert figuras.figura_detalhe(GEO0, "es").layout.xaxis.hoverformat == "%d/%m/%Y"
+    assert figuras.figura_detalhe(GEO0, "en").layout.xaxis.hoverformat == "%m/%d/%Y"
