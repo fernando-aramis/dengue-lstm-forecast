@@ -62,7 +62,10 @@ Compress(server)   # gzip/brotli nas respostas (corta o payload do geojson/JS)
 app.index_string = """<!DOCTYPE html>
 <html lang="pt">
 <head>
-  {%metas%}<meta name="theme-color" content="#1C2620"><title>{%title%}</title>{%favicon%}{%css%}
+  {%metas%}<meta name="theme-color" content="#1C2620"><title>{%title%}</title>{%favicon%}
+  <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
+  {%css%}
   <script>
   (function(){try{
     var c = localStorage.getItem('tema') || 'system';
