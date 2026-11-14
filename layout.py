@@ -8,7 +8,8 @@ from datetime import date, timedelta
 
 from dash import dcc, html
 
-from i18n import tr, resolver, nivel as nivel_tr, fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo
+from urllib.parse import urlsplit, parse_qs
+from i18n import IDIOMAS, tr, resolver, nivel as nivel_tr, fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo
 from formato import plotly_locale
 from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf, mapa_cid,
                    RESUMO, SE_H1, SE_ORIGEM, DATA_PREV_H1)
@@ -542,10 +543,29 @@ def construir_conteudo(lang, sel=None):
     ]
 
 
+def _contexto_inicial():
+    """(lang, sel) do 1º render. O layout vem de /_dash-layout (sem a query da página), mas o Referer
+    traz a URL — assim `?lang=pt&cidade=…` já nasce no idioma/seleção certos, sem piscar em outro idioma
+    (e sem deslocar o layout quando o boot aplica a URL). Valores inválidos caem no Accept-Language/GEO0."""
+    if not flask.has_request_context():
+        return resolver(""), None
+    lang = resolver(flask.request.headers.get("Accept-Language", ""))
+    sel = None
+    try:
+        q = parse_qs(urlsplit(flask.request.headers.get("Referer", "")).query)
+        pedido = (q.get("lang") or [""])[0].lower()
+        if pedido in IDIOMAS:
+            lang = pedido
+        sel = (q.get("cidade") or [None])[0]
+    except ValueError:
+        pass
+    return lang, sel
+
+
 def serve_layout():
-    # idioma do Accept-Language; a seleção/idioma da URL são aplicados no boot (callback clientside,
-    # pois a query não chega aqui — o layout é servido via /_dash-layout).
-    lang = resolver(flask.request.headers.get("Accept-Language", "") if flask.has_request_context() else "")
+    # 1º render: idioma/cidade da URL (via Referer) ou Accept-Language; o boot (callback clientside)
+    # reaplica a URL e o idioma salvo em localStorage.
+    lang, sel = _contexto_inicial()
     return html.Div([
         html.A(tr(lang, "skip"), href="#conteudo", className="skip-link"),
         html.Div(id="running-header", className="running-header",
@@ -560,7 +580,7 @@ def serve_layout():
                      **{"aria-label": tr(lang, "nav_label")}),
             barra_controles(lang)])]),
         html.Main(id="conteudo", children=html.Div(id="app-content",
-                                                   children=construir_conteudo(lang))),
+                                                   children=construir_conteudo(lang, sel))),
         dcc.Store(id="lang", data=lang),   # memória: no boot reseta ao idioma do servidor (Accept-Language);
                                            # o idioma escolhido persiste em localStorage (ver callback de pílula)
         dcc.Store(id="theme"),

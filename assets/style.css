@@ -336,6 +336,9 @@ table.res .best { font-weight: 700; color: var(--green-ink); }
 table.res caption { text-align: left; padding: 12px 14px 4px; color: var(--text-muted); font-size: .8rem; }
 
 /* ---------------------------------------------------------------- footer */
+/* O <footer> filho direto do body é do Dash (só <script>): sem isto herdava margem/padding/borda
+   do rodapé editorial, ocupava ~61px no 1º frame e sumia ao montar o React (CLS 0,025). */
+body > footer { display: none; }
 footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
   color: var(--text-muted); font-size: .84rem; line-height: 1.5; }
 footer .refs { margin-top: 10px; display: grid; gap: 4px; }

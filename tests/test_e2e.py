@@ -419,6 +419,34 @@ def test_controles_da_barra_tem_tamanho_equilibrado(pagina, largura):
     assert max(m["grupos"]) <= m["bar"] - 12, f"grupo {max(m['grupos'])}px apertado na barra de {m['bar']}px"
 
 
+@pytest.mark.parametrize("query,presente,ausente", [
+    ("?lang=pt", "pt", "en"),
+    ("?lang=es", "es", "pt"),
+    ("?lang=zz&cidade=abc", "en", "pt"),     # inválido → Accept-Language (en)
+])
+def test_primeiro_render_ja_nasce_no_idioma_da_url(servidor, query, presente, ausente):
+    from i18n import tr
+    presente, ausente = tr(presente, "h1"), tr(ausente, "h1")      # h1 do hero muda por idioma
+    """Link compartilhado (?lang=) aberto em navegador de OUTRO idioma: o /_dash-layout recebe a URL via
+    Referer. Antes nascia em inglês e virava português só no boot (flash + CLS 0,051 no mobile)."""
+    import json
+    import urllib.request
+    req = urllib.request.Request(URL.rstrip("/") + "/_dash-layout",
+                                 headers={"Referer": URL.rstrip("/") + "/" + query, "Accept-Language": "en-US"})
+    txt = json.dumps(json.loads(urllib.request.urlopen(req, timeout=30).read()), ensure_ascii=False)
+    assert presente in txt and ausente not in txt
+
+
+def test_footer_de_scripts_do_dash_nao_ocupa_espaco(pagina):
+    """O <footer> filho do body é do Dash (só scripts); herdava o estilo do rodapé editorial (~61px) e
+    sumia ao montar o React (CLS 0,025). O rodapé editorial (dentro de #conteudo) segue visível."""
+    pagina.set_viewport_size({"width": 1280, "height": 800})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    assert pagina.evaluate("getComputedStyle(document.querySelector('body > footer')).display") == "none"
+    assert pagina.evaluate("document.querySelector('#conteudo footer').getBoundingClientRect().height") > 20
+
+
 def test_rotulo_do_tema_ja_vem_preenchido(pagina):
     pagina.set_viewport_size({"width": 1280, "height": 800})
     pagina.goto(URL.rstrip("/") + "/?lang=pt", wait_until="commit")
