@@ -11,3 +11,6 @@ docs/ui/shots/**/*full*.png
 # Impeccable local hook state (shared config.json is tracked)
 .impeccable/config.local.json
 .impeccable/hook.cache.json
+
+# graphify (grafo local, regenerável)
+graphify-out/
