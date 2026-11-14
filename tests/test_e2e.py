@@ -405,3 +405,20 @@ def test_rotulo_do_tema_ja_vem_preenchido(pagina):
     pagina.goto(URL.rstrip("/") + "/?lang=pt", wait_until="commit")
     pagina.wait_for_selector("#theme-label", timeout=40000)
     assert pagina.evaluate("document.querySelector('#theme-label').textContent.trim()") != ""
+
+
+# ------------------------------------------------------------------ A5: fallback do mapa (WebGL)
+def test_fallback_do_mapa_so_aparece_sem_webgl(pagina):
+    """Regressão: .mapa-fallback { display:flex } anulava o atributo hidden → a mensagem 'WebGL bloqueado'
+    aparecia SEMPRE, com o mapa funcionando."""
+    _abre(pagina, "/?lang=pt")
+    vis = lambda s: pagina.evaluate(f"(()=>{{const e=document.querySelector('{s}');return !!e&&e.offsetParent!==null&&e.getBoundingClientRect().height>0}})()")
+    assert pagina.evaluate("document.documentElement.getAttribute('data-webgl')") != "off"
+    assert not vis("#mapa-fallback"), "fallback visível com WebGL funcionando"
+    assert vis("#mapa")
+    # simula falha de WebGL: some o mapa (CSS por atributo, imune ao re-render) e a mensagem aparece
+    pagina.evaluate("document.documentElement.setAttribute('data-webgl','off');"
+                    "document.querySelector('#mapa-fallback').hidden=false")
+    assert vis("#mapa-fallback") and not vis("#mapa")
+    pagina.evaluate("document.documentElement.removeAttribute('data-webgl');"
+                    "document.querySelector('#mapa-fallback').hidden=true")

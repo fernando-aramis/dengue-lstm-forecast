@@ -246,6 +246,8 @@ section { margin-top: 34px; }
 /* gráficos preenchem o painel -> mapa e detalhe acompanham a mesma altura */
 .graph-mapa { flex: 1 1 auto; min-height: 340px; }
 /* A5 — fallback quando o WebGL falha (ocupa a área do mapa; cor do aviso) */
+.mapa-fallback[hidden] { display: none; }   /* sem isto o display:flex abaixo anulava o atributo hidden:
+   a mensagem "WebGL bloqueado" aparecia SEMPRE, mesmo com o mapa funcionando */
 .mapa-fallback { flex: 1 1 auto; min-height: 340px; display: flex; align-items: center; justify-content: center;
   padding: 24px; margin: 8px 16px; border: 1px solid var(--aviso-bd); border-radius: var(--radius-md);
   background: var(--aviso-bg); }
