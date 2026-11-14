@@ -242,7 +242,7 @@ def _data_abnt():
 def selo_orcid():
     if not ORCID:
         return None
-    return html.A(html.Img(src="/assets/icons/orcid.svg", className="orcid-id", alt=""),
+    return html.A(html.Img(src="/assets/icons/orcid.svg", className="orcid-id", alt="", width=16, height=16),
                   href=ORCID_URL, className="orcid",
                   target="_blank", rel="noopener noreferrer", title=f"ORCID {ORCID}",
                   **{"aria-label": f"ORCID: {ORCID}"})

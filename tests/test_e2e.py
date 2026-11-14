@@ -400,6 +400,25 @@ def test_barra_topo_nao_muda_de_altura_na_hidratacao(pagina):
     assert len(alturas) == 1, f"a barra mudou de altura durante o carregamento: {sorted(alturas)}"
 
 
+@pytest.mark.parametrize("largura", [1180, 1280, 1440])
+def test_controles_da_barra_tem_tamanho_equilibrado(pagina, largura):
+    """Botões de idioma/tema: alvo AAA (44px) sem passar disso, e grupos que cabem na barra com folga."""
+    pagina.set_viewport_size({"width": largura, "height": 800})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt", wait_until="commit")
+    pagina.wait_for_selector("#lang-pt", state="attached", timeout=40000)
+    pagina.wait_for_timeout(800)
+    m = pagina.evaluate("""() => ({
+      bar: document.querySelector('.topbar').getBoundingClientRect().height,
+      segs: [...document.querySelectorAll('.topbar .seg')].filter(e => e.offsetParent)
+              .map(e => { const r = e.getBoundingClientRect(); return [r.width, r.height]; }),
+      grupos: [...document.querySelectorAll('.topbar .seg')].filter(e => e.offsetParent)
+              .map(e => e.parentElement.getBoundingClientRect().height)})""")
+    assert m["segs"], "nenhum botão visível"
+    for w, h in m["segs"]:
+        assert 44 <= h <= 48, f"botão {w}x{h}: fora de 44–48px"
+    assert max(m["grupos"]) <= m["bar"] - 12, f"grupo {max(m['grupos'])}px apertado na barra de {m['bar']}px"
+
+
 def test_rotulo_do_tema_ja_vem_preenchido(pagina):
     pagina.set_viewport_size({"width": 1280, "height": 800})
     pagina.goto(URL.rstrip("/") + "/?lang=pt", wait_until="commit")
