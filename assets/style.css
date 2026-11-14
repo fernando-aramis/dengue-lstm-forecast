@@ -346,20 +346,21 @@ footer .refs span { display: block; }
 
 /* -------------------------------------------- dcc dropdown skin (Dash 4.x usa .dash-dropdown-*) */
 /* segue o tema via tokens -> some o "box branco" default do Dash no modo escuro */
-.dash-dropdown-trigger { background: var(--surface-raised) !important; color: var(--text) !important;
-  border: 1px solid var(--border) !important; border-radius: 10px !important; }
-.dash-dropdown-trigger:hover { border-color: var(--green-l) !important; }
-.dash-dropdown-value, .dash-dropdown-value-item { color: var(--text) !important; }
-.dash-dropdown-placeholder { color: var(--text-muted) !important; }
-.dash-dropdown-trigger-icon { color: var(--text-muted) !important; }
-.dash-dropdown-content { background: var(--surface-raised) !important; color: var(--text) !important;
-  border: 1px solid var(--border) !important; border-radius: 10px !important; box-shadow: var(--shadow); }
-.dash-dropdown-options, .dash-options-list { background: var(--surface-raised) !important; }
-.dash-dropdown-option, .dash-options-list-option { color: var(--text) !important; }
-.dash-options-list-option:hover,
-.dash-options-list-option.selected { background: var(--green-l) !important; color: var(--text) !important; }
-.dash-dropdown-search, .dash-dropdown-search input { background: var(--surface-raised) !important;
-  color: var(--text) !important; border-color: var(--border) !important; }
+/* Especificidade (:root + classe) em vez de !important: o CSS do Dash entra depois do nosso, mas perde para :root .x. */
+:root .dash-dropdown-trigger { background: var(--surface-raised); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px; }
+:root .dash-dropdown-trigger:hover { border-color: var(--green-l); }
+:root .dash-dropdown-value, :root .dash-dropdown-value-item { color: var(--text); }
+:root .dash-dropdown-placeholder { color: var(--text-muted); }
+:root .dash-dropdown-trigger-icon { color: var(--text-muted); }
+:root .dash-dropdown-content { background: var(--surface-raised); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); }
+:root .dash-dropdown-options, :root .dash-options-list { background: var(--surface-raised); }
+:root .dash-dropdown-option, :root .dash-options-list-option { color: var(--text); }
+:root .dash-dropdown-content .dash-options-list-option:hover,
+:root .dash-dropdown-content .dash-options-list-option.selected { background: var(--green-l); color: var(--text); }
+:root .dash-dropdown-search, :root .dash-dropdown-search input { background: var(--surface-raised);
+  color: var(--text); border-color: var(--border); }
 
 /* -------------------------------------------- legenda de níveis (faixa HTML sob o mapa) */
 .map-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; padding: 10px 16px 2px; }
