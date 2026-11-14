@@ -281,6 +281,14 @@ T = {
                              "pipeline, its forecast shows up here.",
                        "es": "Aún no hay ciudad monitoreada en este estado. Cuando una capital o "
                              "ciudad entre al pipeline, el pronóstico aparecerá aquí."},
+    # anúncio aria-live e texto do gráfico quando o estado não tem cidade monitorada
+    "cartao_resumo_aria_semcob": {
+        "pt": "{nome}: ainda sem cidade monitorada, sem previsão disponível.",
+        "en": "{nome}: no monitored city yet, no forecast available.",
+        "es": "{nome}: aún sin ciudad monitoreada, sin pronóstico disponible."},
+    "detalhe_sem_serie": {"pt": "Sem série temporal: nenhuma cidade monitorada neste estado.",
+                          "en": "No time series: no monitored city in this state.",
+                          "es": "Sin serie temporal: ninguna ciudad monitoreada en este estado."},
 
     # ---------------------------------------------------------------- gráfico de detalhe
     "g_intervalo": {"pt": "Intervalo 90%", "en": "90% interval", "es": "Intervalo 90%"},

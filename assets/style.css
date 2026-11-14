@@ -573,6 +573,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .figura figcaption { font-size: .8125rem; color: var(--text-muted); line-height: 1.4; margin-top: 12px; }
 .figura figcaption strong { color: var(--text); font-weight: 700; }
 
+.serie-legend[hidden] { display: none; }   /* estado sem cobertura: sem série, sem legenda */
 .serie-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 2px 0 8px; }
 .serie-item { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--text-muted); }
 .serie-sw { width: 18px; flex: none; }

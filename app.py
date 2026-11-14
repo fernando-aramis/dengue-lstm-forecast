@@ -26,7 +26,7 @@ from dados import (prev, hist, mapa_cid, mapa_uf, nome_uf, UFS, COBERTAS, NAO_CO
                    cidades_por_uf, nome_por_geo, GEO0, DATA_ORIGEM, META, TETO_FATOR,
                    GEOJSON_UF, IDX_CHOROPLETH)
 from figuras import (figura_mapa, figura_detalhe, cartao_info, resumo_cartao, horizontes,
-                     tema as _tema, PLOT, CORES_NIVEL, ORDEM_NIVEL, centro_zoom)
+                     tema as _tema, PLOT, CORES_NIVEL, ORDEM_NIVEL, centro_zoom, sem_serie)
 from layout import construir_conteudo, serve_layout, opcoes_uf, cabecalho_corrido, nav_links
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
@@ -405,13 +405,15 @@ def selecionar(cidade):
 
 @app.callback(Output("cartao", "children"), Output("detalhe", "figure"),
               Output("horizontes", "children"), Output("cartao-status", "children"),
+              Output("legenda-serie", "hidden"),
               Input("sel", "data"), Input("lang", "data"), Input("theme-eff", "data"))
 def atualizar(geo_id, lang, tema):
     lang, tema = resolver(lang), (tema or "light")
     if not _geo_valido(geo_id):                 # WS6: geo ausente/forjado → seleção inicial segura
         geo_id = GEO0
     return (cartao_info(geo_id, lang), figura_detalhe(geo_id, lang, tema),
-            horizontes(geo_id, lang), resumo_cartao(geo_id, lang))
+            horizontes(geo_id, lang), resumo_cartao(geo_id, lang),
+            bool(sem_serie(geo_id)))            # legenda da série só faz sentido com série (estado sem cobertura: oculta)
 
 
 # anúncio "Copiado" para leitor de tela ao usar os botões de copiar (NEW/A14)

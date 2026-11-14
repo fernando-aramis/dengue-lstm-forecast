@@ -111,12 +111,27 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light", cvd=False):
 
 
 # ---------------------------------------------------------------- detalhe
+def sem_serie(geo_id):
+    """True quando não há NADA para desenhar/anunciar (estado sem cidade monitorada).
+    Hoje inalcançável com os dados reais (27/27 UFs cobertas), mas o smoke do pipeline com 1
+    cidade (CIDADES_GEO=…) e os dados de exemplo o ativam — ver tests/test_sem_cobertura.py."""
+    return (prev["geo_id"] == geo_id).sum() == 0 and (hist["geo_id"] == geo_id).sum() == 0
+
+
 def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
     p = tema(tema_nome)
     h = hist[hist["geo_id"] == geo_id].sort_values("data")
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
     sep = ",." if lang in ("pt", "es") else ".,"
     fig = go.Figure()
+    if sem_serie(geo_id):          # estado vazio: mensagem no lugar do gráfico (mantém a altura reservada)
+        fig.add_annotation(xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                           text=tr(lang, "detalhe_sem_serie"), align="center",
+                           font=dict(family="Inter, sans-serif", size=14, color=p["ink"]))
+        fig.update_layout(margin=dict(l=8, r=12, t=14, b=8), autosize=True, showlegend=False,
+                          paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                          xaxis=dict(visible=False), yaxis=dict(visible=False))
+        return fig
     if len(pv):
         xb = list(pv["data_prev"]) + list(pv["data_prev"][::-1])
         yb = list(pv["sup"]) + list(pv["inf"][::-1])
@@ -210,6 +225,9 @@ def resumo_cartao(geo_id, lang="pt"):
     """Resumo curto do cartão para anúncio em aria-live (ao trocar de cidade)."""
     p1 = prev[(prev["geo_id"] == geo_id) & (prev["h"] == 1)]
     if p1.empty:
+        if isinstance(geo_id, str) and geo_id.startswith("UF-"):   # estado sem cidade monitorada:
+            uf = geo_id[3:]                                        # antes era "" → leitor de tela mudo
+            return tr(lang, "cartao_resumo_aria_semcob", nome=nome_uf.get(uf, uf))
         return ""
     r = p1.iloc[0]
     return tr(lang, "cartao_resumo_aria", nome=r["nome"],
