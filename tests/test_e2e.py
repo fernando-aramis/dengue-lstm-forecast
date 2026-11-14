@@ -364,3 +364,44 @@ def test_altura_estimada_proxima_da_real(pagina):
     assert abs(est - real) / real < 0.03, f"estimada {est}px vs real {real}px"
     pagina.goto(URL.rstrip("/") + "/?lang=pt")      # devolve a página ao estado padrão dos próximos testes
     pagina.wait_for_selector("#cartao", timeout=40000)
+
+
+# ------------------------------------------------------------------ barra do topo: altura estável (CLS)
+@pytest.mark.parametrize("largura", [360, 390, 768, 1024, 1179, 1180, 1280, 1920])
+def test_barra_topo_uma_linha_e_altura_igual_ao_token(pagina, largura):
+    """A barra já chegou a 113px (2 linhas) no desktop, 142px a 768px e 116px a 360px: os controles
+    quebravam de linha após a hidratação (CLS 1,15). Agora: 1 linha, e --topbar-h = altura real,
+    que alimenta scroll-margin-top e o .toc sticky."""
+    pagina.set_viewport_size({"width": largura, "height": 800})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    pagina.wait_for_timeout(2500)
+    r = pagina.evaluate("""()=>({bar: document.querySelector('.topbar').getBoundingClientRect().height,
+        token: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')),
+        ctrl: document.querySelector('.controls').getBoundingClientRect().bottom,
+        barBottom: document.querySelector('.topbar').getBoundingClientRect().bottom})""")
+    assert abs(r["bar"] - r["token"]) <= 2, f"barra {r['bar']}px vs --topbar-h {r['token']}px"
+    assert r["bar"] <= 70, f"barra com {r['bar']}px: controles quebraram de linha"
+    assert r["ctrl"] <= r["barBottom"] + 1                       # controles dentro da barra
+
+
+def test_barra_topo_nao_muda_de_altura_na_hidratacao(pagina):
+    pagina.set_viewport_size({"width": 1280, "height": 800})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt", wait_until="commit")
+    alturas = set()
+    for _ in range(40):
+        try:
+            h = pagina.evaluate("()=>{const e=document.querySelector('.topbar');return e?Math.round(e.getBoundingClientRect().height):null}")
+        except Exception:
+            h = None
+        if h:
+            alturas.add(h)
+        pagina.wait_for_timeout(60)
+    assert len(alturas) == 1, f"a barra mudou de altura durante o carregamento: {sorted(alturas)}"
+
+
+def test_rotulo_do_tema_ja_vem_preenchido(pagina):
+    pagina.set_viewport_size({"width": 1280, "height": 800})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt", wait_until="commit")
+    pagina.wait_for_selector("#theme-label", timeout=40000)
+    assert pagina.evaluate("document.querySelector('#theme-label').textContent.trim()") != ""

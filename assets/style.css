@@ -40,7 +40,7 @@
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px;
   --space-lg: 24px; --space-xl: 32px; --space-2xl: 48px; --space-3xl: 72px;
-  --radius-sm: 6px; --radius-md: 10px; --container: 1344px; --measure: 760px; --topbar-h: 56px;
+  --radius-sm: 6px; --radius-md: 10px; --container: 1344px; --measure: 760px; --topbar-h: 62px;
 
   --radius: 14px;
   --shadow: 0 1px 2px rgba(28,38,32,.05), 0 8px 24px rgba(28,38,32,.06);
@@ -180,8 +180,10 @@ a, button, summary, label[for], .seg, .btn { touch-action: manipulation; }
   position: sticky; top: 0; z-index: 50; min-height: var(--topbar-h); }
 .topbar .inner { max-width: 1180px; margin: 0 auto; padding: 9px var(--gutter);
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  flex-wrap: wrap; font-size: .8rem; }
-.brand { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; min-width: 0; }
+  flex-wrap: nowrap; font-size: .8rem; }   /* nowrap: a barra tem altura estável (CLS); só a marca encolhe */
+.topnav, .controls { flex: none; }
+.brand { display: flex; align-items: center; gap: 8px 12px; flex-wrap: nowrap; min-width: 0; }
+@media (min-width: 1180px) { .brand { flex-wrap: wrap; } }   /* com controles inline, o subtítulo desce para a 2ª linha da marca */
 .brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--level-green);
   box-shadow: 0 0 0 4px rgba(94,167,118,.22); flex: none; }
 .topbar .sep { opacity: .5; }
@@ -197,7 +199,8 @@ a, button, summary, label[for], .seg, .btn { touch-action: manipulation; }
 @media (prefers-reduced-motion: no-preference) { .seg { transition: background-color .15s var(--ease-out); } }
 .seg:hover { background: rgba(255,255,255,.12); color: var(--topbar-fg); }
 .seg.on { background: var(--seg-on-bg); color: var(--seg-on-fg); }   /* ativo: claro c/ texto escuro (AAA) */
-.seg-label { font-size: .76rem; color: var(--topbar-muted); padding: 0 8px 0 5px; white-space: nowrap; }
+.seg-label { font-size: .76rem; color: var(--topbar-muted); padding: 0 8px 0 5px; white-space: nowrap;
+  min-width: 15ch; }   /* reserva a largura do maior rótulo ("Modo do sistema"): sem salto na hidratação */
 
 /* ---------------------------------------------------------------- hero */
 header.hero { padding: 28px 0 20px; }
@@ -439,9 +442,15 @@ footer .refs span { display: block; }
   background: var(--topbar-bg); border: 1px solid rgba(255,255,255,.14);
   border-radius: var(--radius-md); padding: 10px; box-shadow: var(--shadow); }
 .prefs[open] ~ .prefs-pop { display: flex; }
-@media (min-width: 768px) {    /* desktop: idioma/tema voltam inline na barra */
+@media (min-width: 1180px) {   /* idioma/tema inline só onde cabem (a 768–1179px não cabiam: barra de 2–3 linhas) */
   .prefs { display: none; }
   .prefs-wrap, .prefs-pop { display: contents; }
+}
+
+@media (min-width: 1180px) {
+  :root { --topbar-h: 70px; }
+  .nav-desktop { display: flex; }
+  .nav-mobile { display: none; }
 }
 
 /* menu de acessibilidade — botão compacto que abre um popover (opções só ao abrir) */
@@ -481,8 +490,6 @@ footer .refs span { display: block; }
   .running-header { display: flex; }
   .running-header .rh-esq { display: inline; }
   .running-header .rh-esq-curto { display: none; }
-  .nav-desktop { display: flex; }
-  .nav-mobile { display: none; }
   .rodape-cols { grid-template-columns: repeat(3, 1fr); gap: 48px; }
   .rodape { padding: 48px 24px 0; }
 }

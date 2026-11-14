@@ -164,7 +164,10 @@ def barra_controles(lang):
                                   **{"aria-hidden": "true"}), tr(lang, "tema_system")),
                              _seg("theme-dark", html.Span(className="seg-ico ico-moon",
                                   **{"aria-hidden": "true"}), tr(lang, "tema_dark")),
-                             html.Span(id="theme-label", className="seg-label")]),
+                             # nasce com o rótulo do modo padrão (system): o callback só o troca se a
+                             # escolha salva for outra → sem vazio→texto na hidratação (CLS da barra)
+                             html.Span(id="theme-label", className="seg-label",
+                                       children=tr(lang, "tema_system"))]),
             ]),
         ]),
         html.Details(className="a11y-menu", children=[
