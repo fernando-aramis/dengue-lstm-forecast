@@ -197,10 +197,15 @@ def set_lang(a, b, c):
 
 @app.callback(Output("app-content", "children"),
               Output("running-header", "children"), Output("topnav", "children"),
-              Input("lang", "data"))
-def render_content(lang):
+              Input("lang", "data"), State("sel", "data"), State("url-cidade", "data"),
+              prevent_initial_call=True)   # conteúdo já vem do serve_layout; re-render só ao TROCAR idioma
+def render_content(lang, sel, url_cidade):
     lang = resolver(lang)
-    return construir_conteudo(lang), cabecalho_corrido(lang), nav_links(lang)
+    # preserva a seleção atual ao trocar de idioma (store sel). No boot, `lang` e `url-cidade` saem
+    # na MESMA resposta do callback clientside, mas `sel` só é gravado depois (aplica_url_cidade):
+    # sem este fallback o rebuild correria na frente e perderia a cidade da URL.
+    alvo = sel if _geo_valido(sel) else (url_cidade if _geo_valido(url_cidade) else None)
+    return construir_conteudo(lang, alvo), cabecalho_corrido(lang), nav_links(lang)
 
 
 app.clientside_callback(
@@ -211,6 +216,13 @@ app.clientside_callback(
     "return [l=='pt'?on:off, l=='en'?on:off, l=='es'?on:off];}",
     Output("lang-pt", "className"), Output("lang-en", "className"), Output("lang-es", "className"),
     Input("lang", "data"))
+
+# persiste o idioma ESCOLHIDO em localStorage — só em mudança real (prevent_initial_call), para não
+# sobrescrever a preferência do usuário com o idioma do servidor no 1º render (A15).
+app.clientside_callback(
+    "function(l){try{if(l){localStorage.setItem('lang', l);}}catch(e){} return window.dash_clientside.no_update;}",
+    Output("url-sync", "data", allow_duplicate=True),
+    Input("lang", "data"), prevent_initial_call=True)
 
 
 # ---------------------------------------------------------------- tema
@@ -408,6 +420,58 @@ def atualizar(geo_id, lang, tema):
               State("lang", "data"), prevent_initial_call=True)
 def anuncia_copia(_a, _b, lang):
     return tr(resolver(lang), "copiado")
+
+
+# A15 — espelha idioma + seleção na URL (replaceState: não empilha histórico; link compartilhável).
+# Usa o store `sel` (fonte canônica da seleção, imune ao rebuild de render_content), não o dd-cidade.
+# Tema/cvd/motion ficam no localStorage, não na URL.
+app.clientside_callback(
+    "function(lang, sel){try{"
+    "var p=new URLSearchParams(window.location.search);"
+    "if(lang){p.set('lang', lang);}"
+    "if(sel!=null && sel!==''){p.set('cidade', String(sel));}"
+    "var qs=p.toString();"
+    "var u=window.location.pathname + (qs?('?'+qs):'') + window.location.hash;"
+    "window.history.replaceState(null, '', u);"
+    "}catch(e){} return window.dash_clientside.no_update;}",
+    Output("url-sync", "data"),
+    Input("lang", "data"), Input("sel", "data"),
+    prevent_initial_call=True)
+
+# A15 — LEITURA da URL no boot (clientside; a query não chega ao serve_layout, que é servido via
+# /_dash-layout). Define sel (→ atualizar renderiza a cidade) + dd-uf/dd-cidade (dropdowns) + idioma.
+# Como render_content respeita o State("sel"), o rebuild ao aplicar o idioma NÃO reseta a seleção.
+app.clientside_callback(
+    "function(n, search, srv){var nu=window.dash_clientside.no_update; var o=[nu,nu];"
+    "try{var ok=['pt','en','es'];"
+    "var p=new URLSearchParams(search||window.location.search||'');"
+    "var urlLang=p.get('lang');"
+    "var lsLang=null; try{lsLang=localStorage.getItem('lang');}catch(e){}"
+    "var target=(urlLang&&ok.indexOf(urlLang)>=0)?urlLang:((lsLang&&ok.indexOf(lsLang)>=0)?lsLang:null);"
+    "if(target && target!==srv){o[0]=target;}"
+    "var cid=p.get('cidade');"
+    "if(cid){o[1]=cid;}"          # texto CRU: quem valida é o servidor (aplica_url_cidade)
+    "}catch(e){} return o;}",
+    Output("lang", "data", allow_duplicate=True),
+    Output("url-cidade", "data"),
+    Input("boot", "n_intervals"), State("url", "search"), State("lang", "data"),
+    prevent_initial_call=True)
+
+
+@app.callback(Output("sel", "data", allow_duplicate=True),
+              Output("dd-uf", "value", allow_duplicate=True),
+              Output("dd-cidade", "value", allow_duplicate=True),
+              Input("url-cidade", "data"), prevent_initial_call=True)
+def aplica_url_cidade(raw):
+    """A15 — aplica ?cidade= vindo da URL. Valor forjado/inexistente → seleção inicial segura (GEO0),
+    nunca um dropdown vazio nem a string da URL ecoada de volta."""
+    if not raw:
+        return no_update, no_update, no_update
+    if not _geo_valido(raw):
+        return GEO0, no_update, no_update          # dropdowns já estão em GEO0; só normaliza sel/URL
+    if raw.startswith("UF-"):
+        return raw, raw[3:], raw
+    return raw, no_update, raw
 
 
 if __name__ == "__main__":

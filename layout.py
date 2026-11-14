@@ -81,6 +81,25 @@ def opcoes_cidade_br():
     return [{"label": n, "value": g} for n, g in todas]
 
 
+_GEOS_CIDADE = set(mapa_cid["geo_id"].astype(str))
+_UFS = set(UFS)
+
+
+def _sel_inicial(sel, lang):
+    """A15 — resolve a seleção vinda da URL (validada) → (geo p/ renderizar, uf, opções, valor).
+    Cidade "UF-XX" abre no escopo estadual; cidade normal abre direto; inválida cai no GEO0."""
+    if isinstance(sel, str) and sel.startswith("UF-") and sel[3:] in _UFS:
+        uf = sel[3:]
+        rot = f"◼ {nome_uf.get(uf, uf)} ({tr(lang, 'escopo_estado').lower()})"
+        opts = [{"label": rot, "value": sel}] + [{"label": n, "value": g}
+                                                 for n, g in cidades_por_uf.get(uf, [])]
+        return sel, uf, opts, sel
+    s = str(sel) if sel is not None else ""
+    if s in _GEOS_CIDADE:
+        return s, "BR", opcoes_cidade_br(), s
+    return GEO0, "BR", opcoes_cidade_br(), GEO0
+
+
 def _aviso(lang):
     origem_se = f"SE {SE_ORIGEM[1]}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
     full = tr(lang, "aviso", origem=origem_se)
@@ -392,7 +411,8 @@ def artigo(lang):
         sumario(lang), coluna, materiais(lang)])
 
 
-def construir_conteudo(lang):
+def construir_conteudo(lang, sel=None):
+    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang)   # A15 — seleção inicial da URL
     return [
         # hero (capa dos slides: fundo verde full-bleed + resumo da situação)
         html.Header(className="hero", children=[
@@ -462,28 +482,28 @@ def construir_conteudo(lang):
                             # inerte — teclado preservado (bug upstream do Dash).
                             html.Div(className="controles", children=[
                                 html.Div([html.Label(tr(lang, "lbl_estado")),
-                                          dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value="BR",
+                                          dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value=uf_ini,
                                                        clearable=False)]),
                                 html.Div([html.Label(tr(lang, "lbl_cidade")),
                                           dcc.Dropdown(id="dd-cidade", placeholder=tr(lang, "ph_cidade"),
-                                                       options=opcoes_cidade_br(), value=GEO0,
+                                                       options=cid_opts, value=cid_val,
                                                        clearable=False)])])]),
                         html.Div(id="mapa-fallback", className="mapa-fallback", hidden=True,
                                  role="status", children=html.P(tr(lang, "mapa_sem_webgl"))),
-                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(lang=lang),
+                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang),
                                   config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
                         legenda_niveis(lang),
                         html.Div(tr(lang, "map_hint"), className="map-hint")]),
                     html.Div(className="panel panel-detalhe", children=[
-                        html.Div(id="cartao", className="cartao", children=cartao_info(GEO0, lang)),
+                        html.Div(id="cartao", className="cartao", children=cartao_info(geo, lang)),
                         # anúncio para leitor de tela quando a cidade muda (NEW-1)
                         html.Div(id="cartao-status", className="sr-only",
                                  **{"role": "status", "aria-live": "polite", "aria-atomic": "true"}),
                         legenda_serie(lang),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
-                                  figure=figura_detalhe(GEO0, lang=lang),
+                                  figure=figura_detalhe(geo, lang=lang),
                                   config={"displayModeBar": False, "responsive": True}),
-                        html.Div(id="horizontes", children=horizontes(GEO0, lang))]),
+                        html.Div(id="horizontes", children=horizontes(geo, lang))]),
                 ]),
                 html.Figcaption([html.Strong("Figura 1. "),
                                  tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
@@ -516,6 +536,8 @@ def construir_conteudo(lang):
 
 
 def serve_layout():
+    # idioma do Accept-Language; a seleção/idioma da URL são aplicados no boot (callback clientside,
+    # pois a query não chega aqui — o layout é servido via /_dash-layout).
     lang = resolver(flask.request.headers.get("Accept-Language", "") if flask.has_request_context() else "")
     return html.Div([
         html.A(tr(lang, "skip"), href="#conteudo", className="skip-link"),
@@ -532,10 +554,15 @@ def serve_layout():
             barra_controles(lang)])]),
         html.Main(id="conteudo", children=html.Div(id="app-content",
                                                    children=construir_conteudo(lang))),
-        dcc.Store(id="lang", storage_type="local", data=lang),
+        dcc.Store(id="lang", data=lang),   # memória: no boot reseta ao idioma do servidor (Accept-Language);
+                                           # o idioma escolhido persiste em localStorage (ver callback de pílula)
         dcc.Store(id="theme"),
         dcc.Store(id="theme-eff"),
         dcc.Store(id="cvd"),
         dcc.Store(id="sel"),
+        # A15 — estado compartilhável na URL (?lang=&cidade=); tema/cvd/motion ficam no localStorage
+        dcc.Location(id="url", refresh=False),
+        dcc.Store(id="url-sync"),
+        dcc.Store(id="url-cidade"),   # ?cidade= CRU lido no boot; validado no servidor (aplica_url_cidade)
         dcc.Interval(id="boot", interval=80, n_intervals=0, max_intervals=1),
     ])

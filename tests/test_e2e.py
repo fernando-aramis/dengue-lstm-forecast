@@ -252,3 +252,55 @@ def test_citar_e_cff(pagina):
     pagina.wait_for_selector("#como-citar", timeout=40000)
     assert pagina.locator("#cite-abnt").count() == 1 and pagina.locator("#cite-bibtex").count() == 1
     assert pagina.locator("#como-citar a[href='/CITATION.cff']").count() == 1, "falta link de download do CFF"
+
+
+# ------------------------------------------------------------------ A15: estado na URL
+def _estado_url(pg):
+    return pg.evaluate("""()=>({
+        search: location.search,
+        hist: history.length,
+        lang: document.documentElement.lang,
+        cidade: (document.querySelector('#dd-cidade')||{}).innerText||'',
+        cartao: ((document.querySelector('#cartao')||{}).innerText||'').split('\\n')[0]})""")
+
+
+def _abre(pg, caminho):
+    pg.set_viewport_size({"width": 1200, "height": 900})
+    pg.goto(URL.rstrip("/") + caminho)
+    pg.wait_for_selector("#cartao", timeout=40000)
+    pg.wait_for_timeout(2500)      # boot (80 ms) + callbacks de aplicação da URL
+
+
+def test_url_aplica_idioma_e_cidade(pagina):
+    _abre(pagina, "/?lang=es&cidade=1200401")           # Rio Branco
+    s = _estado_url(pagina)
+    assert s["lang"] == "es" and s["cartao"] == "Rio Branco" and s["cidade"] == "Rio Branco"
+    _abre(pagina, "/?lang=pt&cidade=UF-PR")             # escopo estadual
+    assert _estado_url(pagina)["cartao"] == "Paraná"
+
+
+@pytest.mark.parametrize("lixo", ["abc", "%3Cscript%3E", "UF-ZZ", "9999999"])
+def test_url_invalida_cai_na_selecao_segura(pagina, lixo):
+    _abre(pagina, f"/?lang=pt&cidade={lixo}")
+    s = _estado_url(pagina)
+    assert s["cartao"] == "São Paulo" and s["cidade"] == "São Paulo"   # GEO0, dropdown nunca vazio
+    assert lixo not in s["search"]                                     # valor forjado não é ecoado
+
+
+def test_url_espelha_selecao_sem_empilhar_historico(pagina):
+    _abre(pagina, "/?lang=pt&cidade=1200401")
+    h0 = _estado_url(pagina)["hist"]
+    pagina.click("#dd-cidade")
+    pagina.get_by_role("option", name="Maceió").first.click()
+    pagina.wait_for_function("()=>location.search.includes('cidade=2704302')", timeout=15000)
+    assert _estado_url(pagina)["hist"] == h0                            # replaceState
+    pagina.reload()
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    pagina.wait_for_timeout(2500)
+    assert _estado_url(pagina)["cartao"] == "Maceió"                    # restaura após reload
+    pagina.click("#lang-en")                                            # trocar idioma preserva a cidade
+    pagina.wait_for_function("()=>document.documentElement.lang==='en'", timeout=15000)
+    pagina.wait_for_timeout(1500)
+    assert _estado_url(pagina)["cartao"] == "Maceió"
+    pagina.click("#lang-pt")                                            # devolve o estado compartilhado
+    pagina.wait_for_function("()=>document.documentElement.lang==='pt'", timeout=15000)
