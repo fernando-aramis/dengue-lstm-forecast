@@ -381,10 +381,12 @@ footer .refs span { display: block; }
 
 /* ---------------------------------------------------------------- motion (discreta, 1x) */
 @media (prefers-reduced-motion: no-preference) {
-  /* um único momento autoral (o painel), partindo de estado quase-visível.
-     A entrada repetida dos KPIs saiu (A16 parcial): com a faixa de 1px, o
-     opacity:0 revelava o fundo das divisórias — flash evitado. */
-  .enter { opacity: 0; transform: translateY(10px); animation: rise .5s var(--ease-out) forwards; }
+  /* A16 — um único momento autoral: o título do hero (h1 + lede), a 1ª coisa que se vê.
+     Parte de estado JÁ VISÍVEL (opacity .6, não 0): sem flash em branco, o conteúdo conta
+     para o LCP e, se a animação falhar, nada fica escondido. Só transform + opacity (GPU).
+     Antes era o #painel (y≈1030px, abaixo da dobra): rodava sem ninguém ver. A entrada
+     repetida dos KPIs saiu antes (faixa de 1px: opacity:0 revelava o fundo das divisórias). */
+  .enter { opacity: .6; transform: translateY(8px); animation: rise .5s var(--ease-out) forwards; }
   @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 }
 
@@ -598,6 +600,64 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
   padding: 48px var(--gutter); display: grid; gap: 32px; }
 .artigo > * { max-width: var(--measure); margin: 0 auto; width: 100%; }
 .artigo-coluna { display: grid; gap: 28px; }
+/* A16 — seções do artigo ficam ~5–8 mil px abaixo da dobra: o navegador só calcula layout/pintura
+   delas quando se aproximam do viewport. `auto` mantém o conteúdo na árvore de acessibilidade, na
+   busca da página (Ctrl+F) e como alvo de âncora (#sec-N, #referencias…). `contain-intrinsic-size:
+   auto <altura>` reserva a altura típica (medida) e passa a lembrar a real após a 1ª renderização,
+   evitando salto da barra de rolagem. NÃO aplicar em #painel/#indicadores (acima da dobra, Plotly)
+   nem em .materiais (coluna lateral sticky no desktop). */
+.artigo-coluna > section { content-visibility: auto; contain-intrinsic-size: auto var(--ci, 780px);
+  overflow-anchor: none; }   /* sem isto o scroll anchoring reajustava o salto e #sec-2 pousava 58px fora */
+/* alturas MEDIDAS (border-box menos padding+borda: contain-intrinsic-size é a caixa de CONTEÚDO;
+   #resumo −46px, #como-citar −48px) a 390px / ≥768px. Padrão = PT (idioma principal); EN e ES têm
+   texto de outro tamanho (até ±9%) e os erros SE SOMAM acima do alvo: com os valores errados #sec-2
+   pousava 55–85px fora. Refaça a medição (idiomas × larguras) se o texto do artigo mudar muito. */
+#resumo{--ci:805px} #sec-1{--ci:701px} #sec-2{--ci:1325px} #sec-3{--ci:1259px} #sec-4{--ci:707px}
+#sec-5{--ci:344px} #declaracoes{--ci:439px} #referencias{--ci:872px} #como-citar{--ci:686px}
+@media (min-width: 768px) {
+  #resumo{--ci:443px} #sec-1{--ci:451px} #sec-2{--ci:802px} #sec-3{--ci:864px} #sec-4{--ci:370px}
+  #sec-5{--ci:236px} #declaracoes{--ci:401px} #referencias{--ci:540px} #como-citar{--ci:538px}
+}
+:root[lang="en"] #resumo{--ci:779px}
+:root[lang="en"] #sec-1{--ci:644px}
+:root[lang="en"] #sec-2{--ci:1258px}
+:root[lang="en"] #sec-3{--ci:1238px}
+:root[lang="en"] #sec-4{--ci:687px}
+:root[lang="en"] #sec-5{--ci:344px}
+:root[lang="en"] #declaracoes{--ci:417px}
+:root[lang="en"] #referencias{--ci:872px}
+:root[lang="en"] #como-citar{--ci:686px}
+@media (min-width: 768px) {
+  :root[lang="en"] #resumo{--ci:417px}
+  :root[lang="en"] #sec-1{--ci:422px}
+  :root[lang="en"] #sec-2{--ci:773px}
+  :root[lang="en"] #sec-3{--ci:822px}
+  :root[lang="en"] #sec-4{--ci:390px}
+  :root[lang="en"] #sec-5{--ci:236px}
+  :root[lang="en"] #declaracoes{--ci:401px}
+  :root[lang="en"] #referencias{--ci:540px}
+  :root[lang="en"] #como-citar{--ci:538px}
+}
+:root[lang="es"] #resumo{--ci:805px}
+:root[lang="es"] #sec-1{--ci:672px}
+:root[lang="es"] #sec-2{--ci:1307px}
+:root[lang="es"] #sec-3{--ci:1288px}
+:root[lang="es"] #sec-4{--ci:707px}
+:root[lang="es"] #sec-5{--ci:373px}
+:root[lang="es"] #declaracoes{--ci:439px}
+:root[lang="es"] #referencias{--ci:872px}
+:root[lang="es"] #como-citar{--ci:686px}
+@media (min-width: 768px) {
+  :root[lang="es"] #resumo{--ci:417px}
+  :root[lang="es"] #sec-1{--ci:451px}
+  :root[lang="es"] #sec-2{--ci:802px}
+  :root[lang="es"] #sec-3{--ci:887px}
+  :root[lang="es"] #sec-4{--ci:370px}
+  :root[lang="es"] #sec-5{--ci:265px}
+  :root[lang="es"] #declaracoes{--ci:401px}
+  :root[lang="es"] #referencias{--ci:540px}
+  :root[lang="es"] #como-citar{--ci:538px}
+}
 .artigo-coluna section,
 #painel, #artigo, #dados, #como-citar, #indicadores { scroll-margin-top: calc(var(--topbar-h) + 16px); }
 .toc-label { font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .68rem;
@@ -691,5 +751,6 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
   header.hero h1, .hero .lede, .artigo-titulo, .prosa-p, .ref, .sec-titulo, .stat .big {
     color: #000 !important; }
   .artigo { border: none; display: block; }
+  .artigo-coluna > section { content-visibility: visible; }   /* impressão: tudo renderizado */
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .7em; color: #555; word-break: break-all; }
 }

@@ -304,3 +304,63 @@ def test_url_espelha_selecao_sem_empilhar_historico(pagina):
     assert _estado_url(pagina)["cartao"] == "Maceió"
     pagina.click("#lang-pt")                                            # devolve o estado compartilhado
     pagina.wait_for_function("()=>document.documentElement.lang==='pt'", timeout=15000)
+
+
+# ------------------------------------------------------------------ A16: movimento + content-visibility
+SECOES_ARTIGO = ["resumo", "sec-1", "sec-2", "sec-3", "sec-4", "sec-5",
+                 "declaracoes", "referencias", "como-citar"]
+
+
+def test_entrada_unica_no_hero_e_fora_do_painel(pagina):
+    _abre(pagina, "/?lang=pt")
+    assert pagina.evaluate("document.querySelectorAll('.enter').length") == 1
+    assert pagina.evaluate("document.querySelector('.enter').classList.contains('hero-lead')")
+    assert not pagina.evaluate("document.querySelector('#painel').classList.contains('enter')")
+    # parte de estado já visível (nunca opacity:0) e anima só opacity+transform
+    assert pagina.evaluate("getComputedStyle(document.querySelector('.hero-lead')).animationName") == "rise"
+
+
+def test_content_visibility_so_nas_secoes_do_artigo(pagina):
+    _abre(pagina, "/?lang=pt")
+    cv = pagina.evaluate("ids=>ids.map(i=>getComputedStyle(document.getElementById(i)).contentVisibility)",
+                         SECOES_ARTIGO)
+    assert cv == ["auto"] * len(SECOES_ARTIGO)
+    # acima da dobra / gráficos / coluna lateral ficam SEMPRE renderizados
+    for sel in ("#painel", "#indicadores", ".hero", "#dados"):
+        assert pagina.evaluate("s=>getComputedStyle(document.querySelector(s)).contentVisibility", sel) == "visible"
+    # texto das seções puladas continua acessível (Ctrl+F, leitores de tela)
+    assert "Referências" in pagina.evaluate("document.body.innerText")
+
+
+@pytest.mark.parametrize("lang", ["pt", "en", "es"])
+@pytest.mark.parametrize("largura", [1280, 390])
+def test_ancoras_pousam_no_scroll_margin(pagina, largura, lang):
+    """content-visibility + scroll anchoring + estimativa errada já fez #sec-2 pousar 55–85px fora
+    (os erros por idioma se somam acima do alvo); a âncora deve ficar ±8px do scroll-margin."""
+    pagina.set_viewport_size({"width": largura, "height": 900})
+    pagina.goto(URL.rstrip("/") + f"/?lang={lang}")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    pagina.wait_for_timeout(2500)
+    for alvo in ("sec-2", "sec-4", "referencias", "como-citar"):
+        pagina.evaluate("()=>{location.hash='';window.scrollTo(0,0)}")
+        pagina.wait_for_timeout(250)
+        pagina.evaluate(f"location.hash='#{alvo}'")
+        pagina.wait_for_timeout(1000)
+        topo = pagina.evaluate(f"document.getElementById('{alvo}').getBoundingClientRect().top")
+        margem = pagina.evaluate(f"parseFloat(getComputedStyle(document.getElementById('{alvo}')).scrollMarginTop)")
+        assert abs(topo - margem) <= 8, f"[{lang}/{largura}] #{alvo}: topo {topo:.0f}px, esperado ~{margem:.0f}px"
+
+
+def test_altura_estimada_proxima_da_real(pagina):
+    """Intrinsic sizes medidos: a página não deve 'encolher' >3% ao renderizar tudo (barra de rolagem estável)."""
+    pagina.set_viewport_size({"width": 1280, "height": 900})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    pagina.wait_for_timeout(2500)
+    est = pagina.evaluate("document.documentElement.scrollHeight")
+    pagina.add_style_tag(content=".artigo-coluna > section{content-visibility:visible !important}")
+    pagina.wait_for_timeout(400)
+    real = pagina.evaluate("document.documentElement.scrollHeight")
+    assert abs(est - real) / real < 0.03, f"estimada {est}px vs real {real}px"
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")      # devolve a página ao estado padrão dos próximos testes
+    pagina.wait_for_selector("#cartao", timeout=40000)

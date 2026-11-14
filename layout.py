@@ -419,7 +419,7 @@ def construir_conteudo(lang, sel=None):
             # A11 — ordem mobile: h1 → lede (hero-lead) → Situação → autor/CTAs (hero-foot).
             # No desktop, grid-template-areas recompõe (lead+foot à esquerda, Situação à direita).
             html.Div(className="wrap hero-grid", children=[
-                html.Div(className="hero-lead", children=[
+                html.Div(className="hero-lead enter", children=[   # A16 — única entrada autoral
                     html.H1([tr(lang, "h1"), html.Br(),
                              html.Span(tr(lang, "h1_acento"), className="acento")]),
                     html.P(tr(lang, "lede"), className="lede"),
@@ -462,7 +462,7 @@ def construir_conteudo(lang, sel=None):
         html.Div(className="wrap", children=[
 
         # painel interativo (Figura 1)
-        html.Section(id="painel", className="enter", **{"aria-labelledby": "painel-titulo"}, children=[
+        html.Section(id="painel", **{"aria-labelledby": "painel-titulo"}, children=[
             html.Div(className="painel-head", children=[
                 html.Div(className="sec-head", children=[
                     html.H2(tr(lang, "map_h2"), id="painel-titulo")]),
