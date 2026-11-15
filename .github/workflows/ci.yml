@@ -37,7 +37,8 @@ jobs:
             requirements.txt
             tests/requirements.txt
       - run: pip install -r requirements.txt -r tests/requirements.txt
-      - run: pytest tests/test_unit.py -q
+      # unit = tudo que não abre navegador (contratos, formato, i18n/validações, estado sem cobertura)
+      - run: pytest tests/test_unit.py tests/test_formato.py tests/test_i18n_validacoes.py tests/test_sem_cobertura.py -q
 
   e2e:
     runs-on: ubuntu-latest
@@ -64,7 +65,8 @@ jobs:
       - name: Playwright browser (baixa só no cache-miss)
         if: steps.pw.outputs.cache-hit != 'true'
         run: python -m playwright install chromium
-      - run: pytest tests/test_e2e.py -q
+      # E2E + axe-core AAA (tests/vendor/axe.min.js, vendorizado: sem CDN)
+      - run: pytest tests/test_e2e.py tests/test_a11y_axe.py -q
       # Sobe os screenshots SÓ quando o E2E falha — debug de flaky sem reexecutar localmente.
       - name: Upload screenshots on failure
         if: failure()
@@ -74,3 +76,34 @@ jobs:
           path: tests/screenshots/
           if-no-files-found: ignore
           retention-days: 7
+
+  # Qualidade de design (impeccable detect): NÃO bloqueia o merge — só informa. Hoje só há 'advisory'
+  # (tipografia/cor fora do DESIGN.md); um antipadrão de severidade maior aparece como anotação no PR.
+  # Versão FIXADA (supply-chain); o launcher do skill não está neste repo, então usamos o pacote npm.
+  design-detect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: impeccable detect (anotações no PR)
+        run: npx --yes impeccable@4.9.1 detect --github assets layout.py figuras.py || true
+      - name: impeccable detect (JSON + resumo)
+        run: |
+          npx --yes impeccable@4.9.1 detect --json assets layout.py figuras.py > detect.json || true
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, collections
+          d = json.load(open("detect.json"))
+          c = collections.Counter((x.get("antipattern"), x.get("severity")) for x in d)
+          print(f"### impeccable detect — {len(d)} achado(s)\n")
+          print("| regra | severidade | n |\n|---|---|---|")
+          for (r, sv), n in c.most_common():
+              print(f"| {r} | {sv} | {n} |")
+          PY
+      - name: Upload detect.json
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: impeccable-detect-${{ github.run_id }}
+          path: detect.json
+          if-no-files-found: ignore
+          retention-days: 14

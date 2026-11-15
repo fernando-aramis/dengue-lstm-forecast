@@ -31,6 +31,8 @@ os.makedirs(SHOTS, exist_ok=True)
 PORT = 8077
 URL = f"http://127.0.0.1:{PORT}/"
 BREAKPOINTS = [
+    (320, "telefone-minimo"),          # menor viewport suportado (WCAG 1.4.10 reflow)
+    (360, "telefone-comum"),
     (480, "telefone-retrato"),
     (767, "telefone-paisagem"),
     (768, "tablet-retrato"),
@@ -546,6 +548,77 @@ def test_alvos_de_toque_do_dropdown_e_links_de_materiais(pagina):
     assert alt and min(alt) >= 44, f"triggers de dropdown abaixo de 44px: {alt}"
     links = pagina.evaluate("[...document.querySelectorAll('.materiais a')].map(e=>e.getBoundingClientRect().height)")
     assert links and min(links) >= 24, f"links de materiais abaixo de 24px: {links}"
+
+
+# ------------------------------------------------------------------ Fase 7: lacunas do plano de testes
+@pytest.mark.parametrize("lang", ["pt", "en", "es"])
+def test_numeros_do_cartao_seguem_o_formato_do_idioma(pagina, lang):
+    """O número previsto no cartão sai de formato.py: milhar/decimal por idioma (pt/es 1.197, en 1,197)."""
+    from dados import GEO0, mapa_cid
+    from formato import fmt_int
+    v = float(mapa_cid.loc[mapa_cid["geo_id"] == GEO0, "prev"].iloc[0])
+    esperado = fmt_int(v, lang)
+    pagina.set_viewport_size({"width": 1280, "height": 900})
+    pagina.goto(URL.rstrip("/") + f"/?lang={lang}")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    pagina.wait_for_timeout(800)
+    txt = pagina.evaluate("document.querySelector('#cartao').innerText")
+    assert esperado in txt, f"{lang}: '{esperado}' não aparece no cartão: {txt[:120]!r}"
+    if v >= 1000:                                             # separador de milhar do idioma, nunca o do outro
+        sep, outro = ("," if lang == "en" else "."), ("." if lang == "en" else ",")
+        assert sep in esperado and not any(f"{d}{outro}{t}" in esperado for d in "0123456789" for t in "0123456789")
+
+
+def test_meta_theme_color_acompanha_o_tema(pagina):
+    pagina.set_viewport_size({"width": 1280, "height": 900})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    cor = "document.querySelector('meta[name=theme-color]').getAttribute('content')"
+    pagina.click("#theme-light")
+    pagina.wait_for_function("()=>document.documentElement.dataset.theme==='light'", timeout=15000)
+    claro = pagina.evaluate(cor)
+    pagina.click("#theme-dark")
+    pagina.wait_for_function("()=>document.documentElement.dataset.theme==='dark'", timeout=15000)
+    escuro = pagina.evaluate(cor)
+    assert claro.upper() == "#1C2620" and escuro.upper() == "#0E1113", (claro, escuro)   # = fundo da barra do tema
+
+
+@pytest.mark.parametrize("lang", ["pt", "en", "es"])
+def test_html_lang_ja_e_o_do_idioma_antes_do_boot(pagina, lang):
+    """O script do <head> define <html lang> a partir de ?lang= antes do React (WCAG 3.1.1 desde o 1º frame)."""
+    pagina.goto(URL.rstrip("/") + f"/?lang={lang}", wait_until="commit")
+    pagina.wait_for_selector("#boot-shell, .topbar", state="attached", timeout=40000)
+    assert pagina.evaluate("document.documentElement.lang") == lang
+
+
+def test_shell_estatico_e_noscript_sem_javascript(pagina):
+    """Sem JS (crawlers, bloqueadores): o shell com título/lede e o link do estudo (DOI) existem no HTML."""
+    ctx = pagina.context.browser.new_context(java_script_enabled=False)
+    try:
+        pg = ctx.new_page()
+        pg.goto(URL.rstrip("/") + "/?lang=pt")
+        assert pg.locator("#boot-shell .boot-title").count() == 1
+        assert "Previsão semanal" in pg.locator("#boot-shell .boot-title").inner_text()
+        link = pg.locator(".boot-noscript a")                     # <noscript> é conteúdo real sem JS
+        assert link.count() == 1 and "zenodo.13328231" in link.get_attribute("href")
+        assert pg.locator(".boot-noscript .boot-l[lang=pt]").count() == 1
+    finally:
+        ctx.close()
+
+
+@pytest.mark.parametrize("largura", [390, 1280])
+def test_alvos_de_toque_da_cabecalho_e_cta(pagina, largura):
+    """Controles do topo e CTAs do hero ≥44px; links de navegação ≥24px (WCAG 2.5.8)."""
+    pagina.set_viewport_size({"width": largura, "height": 900})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    pagina.wait_for_timeout(900)
+    r = pagina.evaluate("""() => { const vis = e => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
+      const alt = sel => [...document.querySelectorAll(sel)].filter(vis).map(e => [e.id || e.className || e.tagName, Math.round(e.getBoundingClientRect().height)]);
+      return {ctrl: alt('.topbar button, .topbar summary, .hero .btn'), nav: alt('.nav-a')}; }""")
+    assert r["ctrl"], "nenhum controle visível"
+    assert all(h >= 44 for _, h in r["ctrl"]), [x for x in r["ctrl"] if x[1] < 44]
+    assert all(h >= 24 for _, h in r["nav"]), [x for x in r["nav"] if x[1] < 24]
 
 
 def test_rotulo_do_tema_ja_vem_preenchido(pagina):
