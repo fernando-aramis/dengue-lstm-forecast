@@ -26,7 +26,8 @@ from dados import (prev, hist, mapa_cid, mapa_uf, nome_uf, UFS, COBERTAS, NAO_CO
                    cidades_por_uf, nome_por_geo, GEO0, DATA_ORIGEM, META, TETO_FATOR,
                    GEOJSON_UF, IDX_CHOROPLETH)
 from figuras import (figura_mapa, figura_detalhe, cartao_info, resumo_cartao, horizontes,
-                     tema as _tema, PLOT, CORES_NIVEL, ORDEM_NIVEL, centro_zoom, sem_serie)
+                     tema as _tema, PLOT, CORES_NIVEL, ORDEM_NIVEL, centro_zoom, sem_serie,
+                     indices_anel)
 from layout import construir_conteudo, serve_layout, opcoes_uf, cabecalho_corrido, nav_links
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
@@ -70,7 +71,7 @@ app.index_string = """<!DOCTYPE html>
   (function(){try{
     var L=['pt','en','es'], q=(new URLSearchParams(location.search).get('lang')||'').toLowerCase();
     var l=L.indexOf(q)>=0?q:(localStorage.getItem('lang')||(navigator.language||'').slice(0,2).toLowerCase());
-    if(L.indexOf(l)>=0) document.documentElement.lang=l;   // WCAG 3.1.1 antes do boot (callback reafirma)
+    if(L.indexOf(l)>=0){document.documentElement.lang=l; var TT=__TITULOS__; if(TT[l]) document.title=TT[l];}   // WCAG 3.1.1/2.4.2 antes do boot (callback reafirma)
     var c = localStorage.getItem('tema') || 'system';
     var mq = window.matchMedia('(prefers-color-scheme: dark)');
     var dark = c==='dark' || (c==='system' && mq.matches);
@@ -98,6 +99,8 @@ _JSONLD = json.dumps({
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "publisher": {"@type": "Organization", "name": "Universidade Tecnológica Federal do Paraná"},
 }, ensure_ascii=False)
+app.index_string = app.index_string.replace(
+    "__TITULOS__", json.dumps({_l: tr(_l, "doc_title") for _l in ("pt", "en", "es")}, ensure_ascii=False))
 app.index_string = app.index_string.replace(
     "{%css%}", '{%css%}\n  <script type="application/ld+json">' + _JSONLD + "</script>")
 
@@ -233,7 +236,8 @@ def render_content(lang, sel, url_cidade, tema, cvd):
 app.clientside_callback(
     # além de pintar a pílula ativa, sincroniza o atributo <html lang> com o idioma da UI
     # (a11y: leitor de tela pronuncia no idioma certo — WCAG 3.1.1 "idioma da página").
-    "function(l){l=(l||'en');try{document.documentElement.lang=l;}catch(e){}"
+    "function(l){l=(l||'en');try{document.documentElement.lang=l;document.title=("
+    + json.dumps({_l: tr(_l, "doc_title") for _l in ("pt", "en", "es")}, ensure_ascii=False) + ")[l]||document.title;}catch(e){}"
     "var on='seg on',off='seg';"
     "return [l=='pt'?on:off, l=='en'?on:off, l=='es'?on:off];}",
     Output("lang-pt", "className"), Output("lang-en", "className"), Output("lang-es", "className"),
@@ -353,6 +357,8 @@ def tema_mapa(tnome):
     patch["data"][IDX_CHOROPLETH]["colorscale"] = p["escala"]
     patch["data"][IDX_CHOROPLETH]["marker"]["line"]["color"] = p["mapline"]
     patch["data"][IDX_CHOROPLETH]["marker"]["line"]["width"] = p["maplinew"]
+    for i in indices_anel():                  # anéis das bolhas (cor do tema)
+        patch["data"][i]["marker"]["color"] = p["ring"]
     if NAO_COBERTAS:
         patch["data"][0]["marker"]["line"]["color"] = p["mapline"]
         patch["data"][0]["marker"]["line"]["width"] = p["maplinew"]                      # camada "sem cobertura" (índice 0) acompanha o tema

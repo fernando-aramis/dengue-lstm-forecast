@@ -517,3 +517,65 @@ def test_contraste_derivado_dos_tokens_reais_dos_dois_temas():
             assert contraste(t["--focus-on-dark"], t[fundo]) >= 3.0, f"{nome}: foco/{fundo}"
         assert contraste(t["--border-strong"], t["--paper"]) >= 3.0, f"{nome}: borda do dropdown/paper"
         assert contraste(t["--series-prev"], t["--paper"]) >= 3.0, f"{nome}: legenda da série/paper"
+
+
+def _lab_sim(hexc, mat):
+    import numpy as np
+    c = np.array([int(hexc[i:i + 2], 16) for i in (1, 3, 5)]) / 255
+    lin = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+    s = np.clip(np.array(mat) @ lin, 0, 1)
+    lin = s
+    m = np.array([[.4124, .3576, .1805], [.2126, .7152, .0722], [.0193, .1192, .9505]])
+    x = m @ lin / np.array([.95047, 1, 1.08883])
+    f = np.where(x > 216 / 24389, np.cbrt(x), (24389 / 27 * x + 16) / 116)
+    return np.array([116 * f[1] - 16, 500 * (f[0] - f[1]), 200 * (f[1] - f[2])])
+
+
+def test_paleta_cvd_nao_piora_e_valores_documentados():
+    """dados.py documenta o pior par (ΔE76, Machado 2009, sev. 1,0). Trava os números e a direção:
+    a paleta CVD nunca pode ser pior que a padrão (antes o comentário afirmava 59,3 — não reproduzível)."""
+    import itertools
+    import numpy as np
+    import dados
+    mach = {"deuter": [[.367322, .860646, -.227968], [.280085, .672501, .047413], [-.011820, .042940, .968881]],
+            "prot": [[.152286, 1.052583, -.204868], [.114503, .786281, .099216], [-.003882, -.048116, 1.051998]]}
+
+    def pior(pal, k):
+        labs = {n: _lab_sim(pal[n], mach[k]) for n in dados.ORDEM_NIVEL}
+        return min(np.linalg.norm(labs[a] - labs[b]) for a, b in itertools.combinations(dados.ORDEM_NIVEL, 2))
+    esperado = {("padrao", "prot"): 17.4, ("cvd", "prot"): 26.9, ("padrao", "deuter"): 10.1, ("cvd", "deuter"): 11.6}
+    for (nome, k), v in esperado.items():
+        pal = dados.CORES_NIVEL if nome == "padrao" else dados.CORES_NIVEL_CVD
+        assert abs(pior(pal, k) - v) < 0.2, (nome, k, pior(pal, k), v)
+    for k in mach:
+        assert pior(dados.CORES_NIVEL_CVD, k) >= pior(dados.CORES_NIVEL, k)
+
+
+def test_bolhas_tem_anel_com_espessura_por_nivel_e_contraste():
+    """Cor não é canal único (1.4.1) e a bolha precisa de contorno ≥3:1 (1.4.11): camada de anel sob cada nível,
+    espessura crescente e hoverinfo=skip (o clique/hover continua só na bolha)."""
+    import figuras
+    import dados
+    fig = figuras.figura_mapa()
+    aneis = [i for i, t in enumerate(fig.data) if str(t.name or "").startswith("anel-")]
+    assert aneis == figuras.indices_anel() and aneis
+    for i in aneis:
+        anel, bolha = fig.data[i], fig.data[i + 1]
+        assert anel.hoverinfo == "skip" and anel.customdata is None and bolha.customdata is not None
+        assert all(a > b for a, b in zip(anel.marker.size, bolha.marker.size))
+    esp = [figuras.ESPESSURA_ANEL[n] for n in dados.ORDEM_NIVEL]
+    assert esp == sorted(esp) and len(set(esp)) == 4
+    for tema_, fundo_mapa in (("light", "#F5F3EE"), ("dark", "#1A1A1A")):
+        ring = figuras.PLOT[tema_]["ring"]
+        assert contraste(ring, fundo_mapa) >= 3.0, f"{tema_}: anel/mapa"
+        for pal in (dados.CORES_NIVEL, dados.CORES_NIVEL_CVD):
+            for nv, cor in pal.items():           # borda perceptível: preenchimento×mapa OU anel×preenchimento
+                assert max(contraste(cor, fundo_mapa), contraste(ring, cor)) >= 3.0, f"{tema_}: {nv} {cor}"
+
+
+def test_tema_do_mapa_recolore_os_aneis():
+    import app as A
+    import figuras
+    ops = {tuple(o["location"]): o["params"]["value"] for o in A.tema_mapa("dark")._operations}
+    for i in figuras.indices_anel():
+        assert ops[("data", i, "marker", "color")] == figuras.PLOT["dark"]["ring"]

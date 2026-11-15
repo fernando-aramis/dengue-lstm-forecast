@@ -3,6 +3,7 @@
 Layout da página: blocos editoriais, barra de controles (idioma/tema) e montagem
 (`construir_conteudo` + `serve_layout`). Textos vêm de i18n; figuras vêm de figuras.py.
 """
+import re
 import flask
 from datetime import date, timedelta
 
@@ -101,6 +102,22 @@ def _sel_inicial(sel, lang):
     return GEO0, "BR", opcoes_cidade_br(), GEO0
 
 
+_NOMES_PROPRIOS = re.compile(r"\b(InfoDengue|Mosqlimate|SINAN|IBGE|UTFPR|LSTM|JBCS|Zenodo|GitHub|Colab|Anthropic|Claude)\b")
+
+
+def rico(texto):
+    """Texto corrido com nomes próprios marcados `notranslate` (tradutor automático não os 'traduz').
+    Devolve lista PLANA de str/Span — use direto como `children` (Dash: sem listas aninhadas)."""
+    partes, ult = [], 0
+    for m in _NOMES_PROPRIOS.finditer(texto):
+        if m.start() > ult:
+            partes.append(texto[ult:m.start()])
+        partes.append(html.Span(m.group(0), className="notranslate"))   # Dash não expõe translate=; a classe vale p/ tradutores
+        ult = m.end()
+    partes.append(texto[ult:])
+    return [p for p in partes if p != ""]
+
+
 def _aviso(lang):
     origem_se = f"{tr(lang, 'se_abrev', se=SE_ORIGEM[1])}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
     full = tr(lang, "aviso", origem=origem_se)
@@ -108,7 +125,13 @@ def _aviso(lang):
     resto = full[len(strong):] if full.startswith(strong) else full
     return html.Div(className="aviso info", children=[
         html.Span(className="aviso-ico ico-info", **{"aria-hidden": "true"}),
-        html.Span([html.Strong(strong), resto])])
+        html.Span([html.Strong(strong), *rico(resto)])])
+
+
+def _labels_dd(lang):
+    """Textos internos do dcc.Dropdown (busca, limpar, sem resultados) no idioma da UI — antes em inglês."""
+    return {"search": tr(lang, "dd_busca"), "clear_search": tr(lang, "dd_limpar_busca"),
+            "no_options_found": tr(lang, "dd_sem_opcoes"), "clear_selection": tr(lang, "dd_limpar")}
 
 
 def _seg(tid, conteudo, aria, lang=None):
@@ -194,6 +217,7 @@ def legenda_niveis(lang):
                         nivel_tr(lang, nv)], className="leg-item") for nv in ORDEM_NIVEL]
     itens.append(html.Span([html.Span(className="glifo sem-dado", **{"aria-hidden": "true"}),
                             tr(lang, "leg_sem_dado")], className="leg-item"))
+    itens.append(html.Span(tr(lang, "leg_anel"), className="leg-item leg-nota"))   # canal além da cor
     return html.Div(className="map-legend",
                     children=[html.Span(tr(lang, "legend_title"), className="leg-label"), *itens])
 
@@ -427,7 +451,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False):
                 html.Div(className="hero-lead enter", children=[   # A16 — única entrada autoral
                     html.H1([tr(lang, "h1"), html.Br(),
                              html.Span(tr(lang, "h1_acento"), className="acento")]),
-                    html.P(tr(lang, "lede"), className="lede"),
+                    html.P(rico(tr(lang, "lede")), className="lede"),
                 ]),
                 situacao(lang),
                 html.Div(className="hero-foot", children=[
@@ -449,7 +473,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False):
                 html.Div(className="aviso warn", children=[
                     html.Span(className="aviso-ico ico-warn", **{"aria-hidden": "true"}),
                     html.Span([html.Strong(tr(lang, "aviso_warn_t")), " ",
-                               tr(lang, "aviso_warn_p")])]),
+                               *rico(tr(lang, "aviso_warn_p"))])]),
                 _aviso(lang),
             ]),
             html.Div(className="stats", children=[
@@ -488,11 +512,11 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False):
                             html.Div(className="controles", children=[
                                 html.Div([html.Label(tr(lang, "lbl_estado")),
                                           dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value=uf_ini,
-                                                       clearable=False)]),
+                                                       clearable=False, labels=_labels_dd(lang))]),
                                 html.Div([html.Label(tr(lang, "lbl_cidade")),
                                           dcc.Dropdown(id="dd-cidade", placeholder=tr(lang, "ph_cidade"),
                                                        options=cid_opts, value=cid_val,
-                                                       clearable=False)])])]),
+                                                       clearable=False, labels=_labels_dd(lang))])])]),
                         html.Div(id="mapa-fallback", className="mapa-fallback", hidden=True,
                                  role="status", children=html.P(tr(lang, "mapa_sem_webgl"))),
                         dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang, tema_nome=tema, cvd=cvd),
@@ -533,11 +557,11 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False):
         # rodapé (JBCS/slides): 3 colunas + aviso + faixa verde
         html.Footer(className="rodape", children=[
             html.Div(className="rodape-cols", children=[
-                html.Div([html.H3(tr(lang, "rodape_sobre_t")), html.P(tr(lang, "rodape_sobre_p"))]),
-                html.Div([html.H3(tr(lang, "rodape_dados_t")), html.P(tr(lang, "rodape_dados_p"))]),
-                html.Div([html.H3(tr(lang, "rodape_lic_t")), html.P(tr(lang, "rodape_lic_p"))]),
+                html.Div([html.H3(tr(lang, "rodape_sobre_t")), html.P(rico(tr(lang, "rodape_sobre_p")))]),
+                html.Div([html.H3(tr(lang, "rodape_dados_t")), html.P(rico(tr(lang, "rodape_dados_p")))]),
+                html.Div([html.H3(tr(lang, "rodape_lic_t")), html.P(rico(tr(lang, "rodape_lic_p")))]),
             ]),
-            html.P(tr(lang, "rodape_aviso"), className="rodape-aviso"),
+            html.P(rico(tr(lang, "rodape_aviso")), className="rodape-aviso"),
             html.Div(className="faixa-fim", **{"aria-hidden": "true"}),
         ]),
     ]

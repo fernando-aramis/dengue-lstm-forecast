@@ -115,3 +115,36 @@ def test_sem_formatacao_numerica_fora_de_formato_py():
         assert "strftime" not in src, f
         assert "{:,}" not in src and ':,}' not in src.replace(":,.0f", ""), f
         assert '.replace(",", ".")' not in src, f
+
+
+def test_titulo_da_aba_por_idioma_e_labels_do_dropdown():
+    idx = A.app.index_string
+    for l in LANGS:
+        assert i18n.tr(l, "doc_title") in idx                     # <title> pré-paint por idioma
+    for l, esperado in (("en", "Search"), ("pt", "Buscar"), ("es", "Buscar")):
+        assert esperado in _layout_txt(l)                          # labels do dcc.Dropdown traduzidos
+    assert '"search": "Search"' not in _layout_txt("pt")
+
+
+def test_nomes_proprios_marcados_translate_no():
+    from layout import rico
+    partes = rico("Dados do InfoDengue e SINAN; LSTM")
+    spans = [p.children for p in partes if not isinstance(p, str)]
+    assert spans == ["InfoDengue", "SINAN", "LSTM"] and all(
+        p.className == "notranslate" for p in partes if not isinstance(p, str))
+    assert rico("sem nomes") == ["sem nomes"]
+    assert '"className": "notranslate"' in _layout_txt("en")
+
+
+def test_piso_tipografico_no_css():
+    """DESIGN.md: label/aux ≥ 0,8125rem. Única exceção documentada: o cabeçalho corrido JBCS (mono,
+    .72rem) — com o texto longo em .8125rem ele estouraria 1180px numa linha."""
+    import os
+    css = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "style.css"),
+               encoding="utf-8").read()
+    abaixo = []
+    for linha in css.split("\n"):
+        for m in re.finditer(r"font-size:\s*(\.\d+)rem", linha):
+            if float(m.group(1)) < 0.8125 and "text-transform: uppercase; letter-spacing: .04em" not in linha:
+                abaixo.append(linha.strip()[:70])
+    assert not abaixo, abaixo
