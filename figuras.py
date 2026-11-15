@@ -122,7 +122,7 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
     p = tema(tema_nome)
     h = hist[hist["geo_id"] == geo_id].sort_values("data")
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
-    sep = ",." if lang in ("pt", "es") else ".,"
+    sep = plotly_separators(lang)
     fig = go.Figure()
     if sem_serie(geo_id):          # estado vazio: mensagem no lugar do gráfico (mantém a altura reservada)
         fig.add_annotation(xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
@@ -157,7 +157,7 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
         fig.add_shape(type="line", x0=ultima, x1=ultima, y0=0, y1=1, yref="paper",
                       line=dict(color=p["axis"], width=1, dash="dot"))
         _, se = semana_epi(ultima.date())
-        fig.add_annotation(x=ultima, y=1, yref="paper", text=f"SE {se}", showarrow=False,
+        fig.add_annotation(x=ultima, y=1, yref="paper", text=tr(lang, "se_abrev", se=se), showarrow=False,
                            xanchor="left", yanchor="bottom",
                            font=dict(size=10, family="IBM Plex Mono, monospace", color=p["ink"]))
     fig.update_layout(

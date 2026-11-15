@@ -68,6 +68,9 @@ app.index_string = """<!DOCTYPE html>
   {%css%}
   <script>
   (function(){try{
+    var L=['pt','en','es'], q=(new URLSearchParams(location.search).get('lang')||'').toLowerCase();
+    var l=L.indexOf(q)>=0?q:(localStorage.getItem('lang')||(navigator.language||'').slice(0,2).toLowerCase());
+    if(L.indexOf(l)>=0) document.documentElement.lang=l;   // WCAG 3.1.1 antes do boot (callback reafirma)
     var c = localStorage.getItem('tema') || 'system';
     var mq = window.matchMedia('(prefers-color-scheme: dark)');
     var dark = c==='dark' || (c==='system' && mq.matches);
@@ -102,16 +105,20 @@ app.index_string = app.index_string.replace(
 # visitante (e crawlers) veem só "Loading...". Overlay FIXED (não entra no fluxo → não gera CLS);
 # removido por JS quando o layout real (.topbar) monta. <noscript> dá caminho ao estudo.
 _TITULO_BOOT = conteudo.T_ARTIGO["artigo_titulo"]["pt"]
+def _boot_bloco(l):
+    return ('<div class="boot-l" lang="' + l + '"><p class="boot-lede">' + tr(l, "boot_lede") + '</p>'
+            '<p class="boot-msg">' + tr(l, "boot_msg") + '</p></div>')
+
+
 _BOOT_SHELL = (
     '<div id="boot-shell"><div class="boot-inner">'
-    '<div class="boot-brand"><span class="boot-dot"></span>Dengue · LSTM Forecast</div>'
+    '<div class="boot-brand"><span class="boot-dot"></span><span translate="no">' + tr("en", "brand") + '</span></div>'
     '<h1 class="boot-title" lang="pt">' + _TITULO_BOOT + '</h1>'
-    '<p class="boot-lede">Previsão semanal de dengue no Brasil · 1–4 semanas à frente · intervalo de 90%.</p>'
     '<div class="boot-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>'
-    '<p class="boot-msg">Carregando o painel… o servidor gratuito pode levar até 1 minuto para acordar.'
-    '<br><span>Loading… the free server may take up to a minute to wake. · Cargando el panel…</span></p>'
-    '</div><noscript><p class="boot-noscript">Este painel precisa de JavaScript. Leia o estudo: '
-    '<a href="' + conteudo.LINKS["zenodo"] + '">DOI 10.5281/zenodo.13328231</a>.</p></noscript></div>'
+    + "".join(_boot_bloco(l) for l in ("pt", "en", "es")) +
+    '</div><noscript><p class="boot-noscript">'
+    + "".join('<span class="boot-l" lang="' + l + '">' + tr(l, "boot_noscript") + '</span>' for l in ("pt", "en", "es"))
+    + '<a href="' + conteudo.LINKS["zenodo"] + '" translate="no">DOI 10.5281/zenodo.13328231</a>.</p></noscript></div>'
 )
 _BOOT_HIDE = (
     '<script>(function(){var s=document.getElementById("boot-shell");if(!s)return;'
@@ -165,10 +172,20 @@ def _cabecalhos_seguranca(resp):
     # no-cache (senão o navegador "congela" tema/idioma de um render antigo).
     _p = request.path
     if _p.startswith("/_dash-component-suites/") or _p.startswith("/assets/"):
-        # força: o Dash seta um Cache-Control próprio; estes caminhos são versionados (?m=/hash)
-        resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
-    elif _p == "/" or _p.startswith("/_dash-update-component"):
+        # imutável SÓ para 200 (um 404/500 transitório não pode ficar 1 ano no cache) e só para o que é
+        # versionado (?m=/hash). Fontes/ícones chegam sem ?m= (url() do CSS) → 1 dia, revalidável.
+        if resp.status_code not in (200, 206):
+            resp.headers["Cache-Control"] = "no-store"
+        elif _p.startswith("/_dash-component-suites/") or request.args.get("m"):
+            resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        else:
+            resp.headers["Cache-Control"] = "public, max-age=86400"
+    elif _p == "/" or _p.startswith("/_dash-update-component") or _p == "/_dash-dependencies":
         resp.headers["Cache-Control"] = "no-cache"
+    elif _p == "/_dash-layout":
+        # o layout varia por Referer (?lang=&cidade=) e Accept-Language: nunca compartilhável por cache
+        resp.headers["Cache-Control"] = "no-cache"
+        resp.headers["Vary"] = "Accept-Encoding, Accept-Language, Referer"
     return resp
 
 
@@ -201,14 +218,16 @@ def set_lang(a, b, c):
 @app.callback(Output("app-content", "children"),
               Output("running-header", "children"), Output("topnav", "children"),
               Input("lang", "data"), State("sel", "data"), State("url-cidade", "data"),
+              State("theme-eff", "data"), State("cvd", "data"),
               prevent_initial_call=True)   # conteúdo já vem do serve_layout; re-render só ao TROCAR idioma
-def render_content(lang, sel, url_cidade):
+def render_content(lang, sel, url_cidade, tema, cvd):
     lang = resolver(lang)
     # preserva a seleção atual ao trocar de idioma (store sel). No boot, `lang` e `url-cidade` saem
     # na MESMA resposta do callback clientside, mas `sel` só é gravado depois (aplica_url_cidade):
     # sem este fallback o rebuild correria na frente e perderia a cidade da URL.
     alvo = sel if _geo_valido(sel) else (url_cidade if _geo_valido(url_cidade) else None)
-    return construir_conteudo(lang, alvo), cabecalho_corrido(lang), nav_links(lang)
+    return (construir_conteudo(lang, alvo, tema or "light", bool(cvd)),
+            cabecalho_corrido(lang), nav_links(lang))
 
 
 app.clientside_callback(
@@ -332,35 +351,41 @@ def tema_mapa(tnome):
     patch["layout"]["hoverlabel"]["bordercolor"] = p["hover_bd"]
     patch["layout"]["hoverlabel"]["font"]["color"] = p["ink"]
     patch["data"][IDX_CHOROPLETH]["colorscale"] = p["escala"]
-    if NAO_COBERTAS:                      # camada "sem cobertura" (índice 0) acompanha o tema
+    patch["data"][IDX_CHOROPLETH]["marker"]["line"]["color"] = p["mapline"]
+    patch["data"][IDX_CHOROPLETH]["marker"]["line"]["width"] = p["maplinew"]
+    if NAO_COBERTAS:
+        patch["data"][0]["marker"]["line"]["color"] = p["mapline"]
+        patch["data"][0]["marker"]["line"]["width"] = p["maplinew"]                      # camada "sem cobertura" (índice 0) acompanha o tema
         patch["data"][0]["colorscale"] = [[0, p["naocob"]], [1, p["naocob"]]]
     return patch
 
 
 # ---------------------------------------------------------------- UF -> cidades (fallback estadual)
+_UFS_SET = set(UFS)
+
+
 @app.callback(Output("dd-cidade", "options"), Output("dd-cidade", "value"),
               Input("dd-uf", "value"), Input("lang", "data"))
 def popular_cidades(uf, lang):
     lang = resolver(lang)
+    uf = uf if isinstance(uf, str) and (uf == "BR" or uf in _UFS_SET) else "BR"
     if uf == "BR" or not uf:
         todas = sorted(((n, g) for lst in cidades_por_uf.values() for n, g in lst))
         return [{"label": n, "value": g} for n, g in todas], no_update
     cidades = cidades_por_uf.get(uf, [])
     rotulo = f"◼ {nome_uf.get(uf, uf)} ({tr(lang, 'escopo_estado').lower()})"
     opts = [{"label": rotulo, "value": f"UF-{uf}"}] + [{"label": n, "value": g} for n, g in cidades]
-    return opts, f"UF-{uf}"
-
-
-_UFS_SET = set(UFS)
+    # Input("lang") só traduz os rótulos: gravar o value aqui reverteria a cidade escolhida ao estado
+    return opts, (no_update if ctx.triggered_id == "lang" else f"UF-{uf}")
 
 
 def _geo_valido(g):
     """WS6: valida geo vindo do cliente (POST forjável) → permite fallback seguro, nunca exceção."""
-    if not g:
+    if not g or not isinstance(g, str):        # int/lista forjados → inválido (antes: AttributeError/500)
         return False
-    if isinstance(g, str) and g.startswith("UF-"):
+    if g.startswith("UF-"):
         return g[3:] in _UFS_SET
-    return str(g) in nome_por_geo
+    return g in nome_por_geo
 
 
 # WS5: um ÚNICO handler de clique no mapa — bolha de cidade → dd-cidade; estado → dd-uf (ambos validados).
@@ -369,13 +394,16 @@ def _geo_valido(g):
 def clique_mapa(click):
     if not click:
         return no_update, no_update
-    pt = click["points"][0]
-    cd = pt.get("customdata")
-    if cd is not None and str(cd) in nome_por_geo:     # bolha de cidade
-        return no_update, str(cd)
-    loc = pt.get("location")
-    if loc in _UFS_SET:                                 # estado (choropleth)
-        return loc, no_update
+    try:
+        pt = click["points"][0]
+        cd = pt.get("customdata")
+        if isinstance(cd, str) and cd in nome_por_geo:       # bolha de cidade
+            return no_update, cd
+        loc = pt.get("location")
+        if isinstance(loc, str) and loc in _UFS_SET:         # estado (choropleth)
+            return loc, no_update
+    except (KeyError, IndexError, TypeError, AttributeError):   # payload forjado → ignora
+        pass
     return no_update, no_update
 
 
@@ -386,6 +414,7 @@ def clique_mapa(click):
               State("dd-uf", "value"), State("theme-eff", "data"),
               prevent_initial_call=True)
 def remapa_idioma(lang, cvd, uf, tema):
+    uf = uf if isinstance(uf, str) and (uf == "BR" or uf in _UFS_SET) else "BR"
     return figura_mapa(uf, resolver(lang), tema or "light", cvd=bool(cvd))
 
 
@@ -393,6 +422,7 @@ def remapa_idioma(lang, cvd, uf, tema):
 @app.callback(Output("mapa", "figure", allow_duplicate=True),
               Input("dd-uf", "value"), prevent_initial_call=True)
 def zoom_uf(uf):
+    uf = uf if isinstance(uf, str) and (uf == "BR" or uf in _UFS_SET) else "BR"
     centro, zoom = centro_zoom(uf)
     patch = Patch()
     patch["layout"]["map"]["center"] = centro
@@ -450,12 +480,12 @@ app.clientside_callback(
     "function(n, search, srv){var nu=window.dash_clientside.no_update; var o=[nu,nu];"
     "try{var ok=['pt','en','es'];"
     "var p=new URLSearchParams(search||window.location.search||'');"
-    "var urlLang=p.get('lang');"
+    "var urlLang=(p.get('lang')||'').toLowerCase();"
     "var lsLang=null; try{lsLang=localStorage.getItem('lang');}catch(e){}"
     "var target=(urlLang&&ok.indexOf(urlLang)>=0)?urlLang:((lsLang&&ok.indexOf(lsLang)>=0)?lsLang:null);"
     "if(target && target!==srv){o[0]=target;}"
     "var cid=p.get('cidade');"
-    "if(cid){o[1]=cid;}"          # texto CRU: quem valida é o servidor (aplica_url_cidade)
+    "if(cid){o[1]=(cid.length<=16 && /^(UF-[A-Za-z]{2}|[0-9]{1,10})$/.test(cid))?cid:'invalida';}"   # forma/tamanho inválidos nem sobem ao servidor; 'invalida' faz o servidor normalizar a URL para GEO0          # texto CRU: quem valida é o servidor (aplica_url_cidade)
     "}catch(e){} return o;}",
     Output("lang", "data", allow_duplicate=True),
     Output("url-cidade", "data"),

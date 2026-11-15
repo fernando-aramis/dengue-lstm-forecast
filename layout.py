@@ -37,8 +37,7 @@ def situacao(lang):
     for nv in ORDEM_NIVEL:
         c = por.get(nv, 0)
         if c:
-            segs.append(html.Span(className="barra-seg",
-                                  style={"flexGrow": c, "background": CORES_NIVEL[nv]}))
+            segs.append(html.Span(className=f"barra-seg {nv.lower()}", style={"flexGrow": c}))
             aria.append(f"{c} {nivel_tr(lang, nv)}")
     linhas = [html.Div(className="sit-linha", children=[
         html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
@@ -103,7 +102,7 @@ def _sel_inicial(sel, lang):
 
 
 def _aviso(lang):
-    origem_se = f"SE {SE_ORIGEM[1]}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
+    origem_se = f"{tr(lang, 'se_abrev', se=SE_ORIGEM[1])}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
     full = tr(lang, "aviso", origem=origem_se)
     strong = tr(lang, "aviso_strong")
     resto = full[len(strong):] if full.startswith(strong) else full
@@ -112,9 +111,10 @@ def _aviso(lang):
         html.Span([html.Strong(strong), resto])])
 
 
-def _seg(tid, conteudo, aria):
+def _seg(tid, conteudo, aria, lang=None):
+    extra = {"lang": lang} if lang else {}      # nome do idioma na própria língua (WCAG 3.1.2)
     return html.Button(conteudo, id=tid, className="seg", n_clicks=0,
-                       title=aria, **{"aria-label": aria})
+                       title=aria, **{"aria-label": aria}, **extra)
 
 
 def cabecalho_corrido(lang):
@@ -154,12 +154,12 @@ def barra_controles(lang):
                 children=html.Span(className="prefs-ico", **{"aria-hidden": "true"}))),
             html.Div(className="prefs-pop", children=[
                 html.Div(className="seg-group lang-group", role="group",
-                         **{"aria-label": "Idioma / Language / Idioma"}, children=[
-                             _seg("lang-pt", "PT", "Português"),
-                             _seg("lang-en", "EN", "English"),
-                             _seg("lang-es", "ES", "Español")]),
+                         **{"aria-label": tr(lang, "idioma_label")}, children=[
+                             _seg("lang-pt", "PT", "Português", "pt"),
+                             _seg("lang-en", "EN", "English", "en"),
+                             _seg("lang-es", "ES", "Español", "es")]),
                 html.Div(className="seg-group theme-group", role="group",
-                         **{"aria-label": "Tema / Theme / Tema"}, children=[
+                         **{"aria-label": tr(lang, "tema_label")}, children=[
                              _seg("theme-light", html.Span(className="seg-ico ico-sun",
                                   **{"aria-hidden": "true"}), tr(lang, "tema_light")),
                              _seg("theme-system", html.Span(className="seg-ico ico-monitor",
@@ -225,7 +225,7 @@ def tabela_ranking(lang, n=8):
     return html.Div(className="tbl-wrap", tabIndex=0,
                     **{"role": "region", "aria-label": tr(lang, "tab1_caption", se=se)},
                     children=[html.Table(className="res tab-rank", children=[
-        html.Caption([html.Strong("Tabela 1. "), tr(lang, "tab1_caption", se=se)]),
+        html.Caption([html.Strong(tr(lang, "tabela_pref", n=1)), tr(lang, "tab1_caption", se=se)]),
         html.Thead(html.Tr([html.Th(tr(lang, "tab1_cidade")), html.Th(tr(lang, "tab1_prev")),
                             html.Th(tr(lang, "tab1_inf")), html.Th(tr(lang, "tab1_sup")),
                             html.Th(tr(lang, "tab1_nivel"))])),
@@ -255,7 +255,7 @@ def linha_autor():
     if selo:
         filhos.append(selo)
     filhos.append(html.Span("[ Especialização em IA Generativa Aplicada · UTFPR ]",
-                            className="autor-afil"))
+                            className="autor-afil", lang="pt"))
     return html.Div(filhos, className="autor")
 
 
@@ -303,14 +303,14 @@ def fig2_pipeline(lang):
     return html.Figure(className="figura fig2", children=[
         html.Ol(className="pipeline", children=[
             html.Li(txt, className=f"pipe-node {cls}") for txt, cls in nos]),
-        html.Figcaption([html.Strong("Figura 2. "), tr(lang, "fig2_caption")])])
+        html.Figcaption([html.Strong(tr(lang, "figura_pref", n=2)), tr(lang, "fig2_caption")])])
 
 
 def tabela2(lang):
     return html.Div(className="tbl-wrap", tabIndex=0,
                     **{"role": "region", "aria-label": tr(lang, "tab2_caption")},
                     children=[html.Table(className="res", children=[
-        html.Caption([html.Strong("Tabela 2. "), tr(lang, "tab2_caption")]),
+        html.Caption([html.Strong(tr(lang, "tabela_pref", n=2)), tr(lang, "tab2_caption")]),
         html.Thead(html.Tr([html.Th(tr(lang, "th_modelo")), html.Th(tr(lang, "th_e1h1")),
                             html.Th(tr(lang, "th_e1h4")), html.Th(tr(lang, "th_e2h1")),
                             html.Th(tr(lang, "th_e2h4"))])),
@@ -348,7 +348,7 @@ def artigo(lang):
         html.H2(tr(lang, "artigo_titulo"), className="artigo-titulo", lang="pt"),
     ]
     if nota:
-        cab.append(html.P(nota, className="artigo-nota-idioma aux", lang="pt"))
+        cab.append(html.P(nota, className="artigo-nota-idioma aux", lang=lang))
     cab += [linha_autor(), html.Div(tr(lang, "artigo_meta"), className="artigo-meta")]
 
     resumo = html.Section(id="resumo", className="resumo", children=[
@@ -397,7 +397,7 @@ def artigo(lang):
     como_citar = html.Section(id="como-citar", className="como-citar", children=[
         html.H2(tr(lang, "citar_t"), className="sec-titulo"),
         html.Div(className="cite-bloco", children=[
-            html.P(abnt(_data_abnt()), id="cite-abnt", className="serif"),
+            html.P(abnt(_data_abnt()), id="cite-abnt", className="serif", lang="pt"),
             html.Div([dcc.Clipboard(id="clip-abnt", target_id="cite-abnt", title=tr(lang, "copiar_abnt")),
                       html.Span(tr(lang, "copiar_abnt"), className="aux")], className="cite-copy")]),
         html.Div(className="cite-bloco", children=[
@@ -416,7 +416,7 @@ def artigo(lang):
         sumario(lang), coluna, materiais(lang)])
 
 
-def construir_conteudo(lang, sel=None):
+def construir_conteudo(lang, sel=None, tema="light", cvd=False):
     geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang)   # A15 — seleção inicial da URL
     return [
         # hero (capa dos slides: fundo verde full-bleed + resumo da situação)
@@ -495,7 +495,7 @@ def construir_conteudo(lang, sel=None):
                                                        clearable=False)])])]),
                         html.Div(id="mapa-fallback", className="mapa-fallback", hidden=True,
                                  role="status", children=html.P(tr(lang, "mapa_sem_webgl"))),
-                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang),
+                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang, tema_nome=tema, cvd=cvd),
                                   config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
                         legenda_niveis(lang),
                         html.Div(tr(lang, "map_hint"), className="map-hint")]),
@@ -506,14 +506,14 @@ def construir_conteudo(lang, sel=None):
                                  **{"role": "status", "aria-live": "polite", "aria-atomic": "true"}),
                         legenda_serie(lang),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
-                                  figure=figura_detalhe(geo, lang=lang),
+                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema),
                                   # locale INLINE: meses/dias no idioma da UI (o Plotly do Dash não traz
                                   # locales e a CSP proíbe CDN). O Graph é recriado ao trocar de idioma.
                                   config={"displayModeBar": False, "responsive": True,
                                           "locale": lang, "locales": {lang: plotly_locale(lang)}}),
                         html.Div(id="horizontes", children=horizontes(geo, lang))]),
                 ]),
-                html.Figcaption([html.Strong("Figura 1. "),
+                html.Figcaption([html.Strong(tr(lang, "figura_pref", n=1)),
                                  tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
             ]),
             html.Div(className="painel-extra", children=[
