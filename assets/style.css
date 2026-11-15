@@ -31,7 +31,8 @@
   /* ---- SEMÂNTICOS: papéis → primitivos (seguem o tema automaticamente) ---- */
   --surface: var(--cream); --surface-raised: var(--paper); --surface-sunken: var(--cream-2);
   --text: var(--ink); --text-muted: var(--muted); --border: var(--line);
-  --focus: var(--green-ink);
+  --focus: var(--green-ink); --focus-on-dark: #F3EFE6;   /* anel sobre barra/hero/rodapé (fundos escuros nos 2 temas) */
+  --border-strong: #6E7A74; --series-prev: #2F5A42;   /* linha da previsão (legenda = gráfico) */                              /* componentes de UI (1.4.11): ≥3:1 nos 2 temas */
   --level-green: var(--n-verde); --level-yellow: var(--n-amarelo);
   --level-orange: var(--n-laranja); --level-red: var(--n-vermelho);
 
@@ -54,12 +55,13 @@
   --cream: #14181A; --cream-2: #222A2D; --paper: #1E2428;
   --ink: #ECEFEA; --muted: #B6BEB7; --line: #313A39;
   --green: #5FA776; --green-d: #2F5A42; --green-ink: #8FD3A4; --green-l: #274234;
+  --series-prev: #7FC894;   /* = PLOT["dark"]["prev"]: legenda acompanha a linha do gráfico (antes 2:1) */
   --terra: #E59A5E;
   --brand: #1D3227; --on-brand: #ECEFEA; --on-brand-muted: #B6BEB7; --accent-on-brand: #8FD3A4;
   --strip: #5FA776;
   --btn-bg: #8FD3A4; --btn-fg: #0E1113; --btn-on-brand-bg: #8FD3A4; --btn-on-brand-fg: #0E1113;
 
-  --topbar-bg: #0E1113; --topbar-fg: #ECEFEA; --topbar-muted: #9AA39B;
+  --topbar-bg: #0E1113; --topbar-fg: #ECEFEA; --topbar-muted: #B6BEB7;   /* 8,4:1 sobre o overlay do .seg-group (antes 6,2:1 < AAA) */
   --aviso-bg: #262012; --aviso-bd: #4A3A17; --aviso-fg: #E7C981;
   --info-bg: #13251A; --info-bd: #274632; --info-fg: #A9DEBB;
 
@@ -102,6 +104,11 @@ body {
 .boot-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--level-green); flex: none; }
 .boot-title { font-size: clamp(1.6rem, 4.5vw, 2.4rem); line-height: 1.14; letter-spacing: -0.02em;
   font-weight: 700; margin: 0 0 12px; max-inline-size: 20ch; }
+.boot-l { display: none; }
+:root[lang="pt"] .boot-l[lang="pt"], :root[lang="en"] .boot-l[lang="en"], :root[lang="es"] .boot-l[lang="es"] { display: block; }
+:root:not([lang="en"]):not([lang="es"]) .boot-l[lang="pt"] { display: block; }
+.boot-noscript .boot-l { display: none; }
+:root[lang="pt"] .boot-noscript .boot-l[lang="pt"], :root[lang="en"] .boot-noscript .boot-l[lang="en"], :root[lang="es"] .boot-noscript .boot-l[lang="es"] { display: inline; }
 .boot-lede { margin: 0 0 28px; color: var(--on-brand-muted); font-size: 1rem; }
 .boot-skeleton { display: grid; gap: 12px; margin-bottom: 24px; }
 .boot-skeleton span { height: 14px; border-radius: 7px; background: rgba(255,255,255,.14); display: block; }
@@ -131,6 +138,8 @@ h1, h2, h3, .artigo-titulo, .sec-titulo, .sit-total, .como-ler-t { text-wrap: ba
 img, svg, canvas { max-width: 100%; }
 a { color: var(--green-ink); }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+.topbar :focus-visible, header.hero :focus-visible, .running-header :focus-visible, .rodape :focus-visible,
+#boot-shell :focus-visible { outline-color: var(--focus-on-dark); }
 /* a11y — reuse the site's brand focus ring where embedded components ship their
    own: the Dash 4.5 dropdown trigger button (now the keyboard tab stop, see
    assets/a11y_dropdown.js) and the Plotly attribution <summary> (browser-default
@@ -201,6 +210,12 @@ a, button, summary, label[for], .seg, .btn { touch-action: manipulation; }
 .seg.on { background: var(--seg-on-bg); color: var(--seg-on-fg); }   /* ativo: claro c/ texto escuro (AAA) */
 .seg-label { font-size: .76rem; color: var(--topbar-muted); padding: 0 8px 0 5px; white-space: nowrap;
   min-width: 15ch; }   /* reserva a largura do maior rótulo ("Modo do sistema"): sem salto na hidratação */
+
+@media (max-width: 339px) {   /* 320px: a marca quebrava em 2 linhas (barra 76px ≠ --topbar-h 62px) */
+  .topbar .inner { gap: 6px; padding-inline: 12px; }
+  .brand { gap: 6px; font-size: .8rem; }
+  .brand-dot { display: none; }
+}
 
 /* ---------------------------------------------------------------- hero */
 header.hero { padding: 28px 0 20px; }
@@ -347,8 +362,10 @@ footer .refs span { display: block; }
 /* -------------------------------------------- dcc dropdown skin (Dash 4.x usa .dash-dropdown-*) */
 /* segue o tema via tokens -> some o "box branco" default do Dash no modo escuro */
 /* Especificidade (:root + classe) em vez de !important: o CSS do Dash entra depois do nosso, mas perde para :root .x. */
-:root .dash-dropdown-trigger { background: var(--surface-raised); color: var(--text);
-  border: 1px solid var(--border); border-radius: 10px; }
+/* opção destacada (teclado) usava o roxo do Dash (#7F4BC4: 5,4:1 no claro, 2,8:1 no escuro) → tinta do tema */
+html:root { --Dash-Fill-Interactive-Strong: var(--green-ink); }
+:root .dash-dropdown-trigger { background: var(--surface-raised); color: var(--text); min-height: 44px;
+  border: 1px solid var(--border-strong); border-radius: 10px; }
 :root .dash-dropdown-trigger:hover { border-color: var(--green-l); }
 :root .dash-dropdown-value, :root .dash-dropdown-value-item { color: var(--text); }
 :root .dash-dropdown-placeholder { color: var(--text-muted); }
@@ -411,7 +428,8 @@ footer .refs span { display: block; }
 /* ==================================================== F2 — casca JBCS */
 .skip-link { position: absolute; left: 12px; top: 8px; z-index: 100;
   background: var(--brand); color: var(--on-brand); padding: 8px 14px; border-radius: var(--radius-md);
-  text-decoration: none; transform: translateY(-160%); transition: transform .15s var(--ease-out); }
+  text-decoration: none; transform: translateY(-160%); min-height: 44px; display: inline-flex; align-items: center; }
+@media (prefers-reduced-motion: no-preference) { .skip-link { transition: transform .15s var(--ease-out); } }
 .skip-link:focus { transform: translateY(0); }
 
 /* A11 — cabeçalho corrido (cromo JBCS) oculto no mobile; aparece a partir de 768px.
@@ -419,7 +437,7 @@ footer .refs span { display: block; }
 .running-header { background: var(--brand); color: var(--on-brand-muted);
   font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .04em;
   display: none; justify-content: space-between; align-items: center; gap: 12px;
-  padding: 7px var(--gutter); }
+  padding: 7px var(--gutter); white-space: nowrap; }   /* nowrap: altura constante (1 linha) */
 .running-header .rh-esq { display: none; }
 .running-header .rh-esq-curto { display: inline; }
 
@@ -457,6 +475,11 @@ footer .refs span { display: block; }
   background: var(--topbar-bg); border: 1px solid rgba(255,255,255,.14);
   border-radius: var(--radius-md); padding: 10px; box-shadow: var(--shadow); }
 .prefs[open] ~ .prefs-pop { display: flex; }
+@media (max-width: 479px) {
+  .prefs-pop { position: fixed; right: var(--gutter); left: auto; top: calc(var(--topbar-h) + 8px);
+    max-width: calc(100vw - 2 * var(--gutter)); min-width: 0; }
+  .prefs-pop .seg-label { min-width: 0; white-space: normal; }
+}
 @media (min-width: 1180px) {   /* idioma/tema inline só onde cabem (a 768–1179px não cabiam: barra de 2–3 linhas) */
   .prefs { display: none; }
   .prefs-wrap, .prefs-pop { display: contents; }
@@ -485,7 +508,7 @@ footer .refs span { display: block; }
 .a11y-pop-t { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: .08em; color: var(--text-muted); margin-bottom: 10px; }
 .a11y-list { display: flex; flex-direction: column; gap: 4px; }
-.a11y-list .dash-options-list-option { display: flex; align-items: center; gap: 8px; min-height: 36px;
+.a11y-list .dash-options-list-option { display: flex; align-items: center; gap: 8px; min-height: 44px;
   padding: 4px 6px; font-size: .9rem; color: var(--text); cursor: pointer; border-radius: var(--radius-sm); }
 .a11y-list .dash-options-list-option:hover { background: var(--surface-sunken); }
 .a11y-list .dash-options-list-option-wrapper { display: inline-flex; align-items: center; }
@@ -503,10 +526,12 @@ footer .refs span { display: block; }
 
 @media (min-width: 768px) {
   .running-header { display: flex; }
-  .running-header .rh-esq { display: inline; }
-  .running-header .rh-esq-curto { display: none; }
   .rodape-cols { grid-template-columns: repeat(3, 1fr); gap: 48px; }
   .rodape { padding: 48px 24px 0; }
+}
+@media (min-width: 1180px) {   /* texto longo só quando cabe numa linha (≥1180, como a barra do topo) */
+  .running-header .rh-esq { display: inline; }
+  .running-header .rh-esq-curto { display: none; }
 }
 @media (min-width: 1200px) {
   .running-header, .rodape { padding-left: 48px; padding-right: 48px; }
@@ -542,6 +567,10 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .sit-sub { color: var(--text-muted); font-size: .9rem; margin: 4px 0 14px; }
 .sit-barra { display: flex; height: 14px; border-radius: 4px; overflow: hidden; gap: 2px; margin-bottom: 14px; }
 .barra-seg { min-width: 4px; }
+.barra-seg.verde { background: var(--level-green); }
+.barra-seg.amarelo { background: var(--level-yellow); }
+.barra-seg.laranja { background: var(--level-orange); }
+.barra-seg.vermelho { background: var(--level-red); }   /* classe (não style inline): segue html[data-cvd=on] */
 .sit-lista { display: flex; flex-direction: column; gap: 7px; }
 .sit-linha { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .sit-n { color: var(--text-muted); font-size: .85rem; }
@@ -593,7 +622,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .serie-item { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--text-muted); }
 .serie-sw { width: 18px; flex: none; }
 .serie-sw.obs { border-top: 2px solid var(--text); }
-.serie-sw.prev { border-top: 2px dashed var(--green-d); }
+.serie-sw.prev { border-top: 2px dashed var(--series-prev); }
 .serie-sw.int { height: 10px; background: var(--info-bg); border: 1px solid var(--green-ink); border-radius: 2px; }   /* borda ≈ a do gráfico (banda sozinha: 1,3:1) */
 .serie-sw.orig { width: 0; height: 12px; border-left: 2px dotted var(--text-muted); }
 
@@ -739,7 +768,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 
 .materiais h3 { margin: 0 0 10px; font-size: 1rem; }
 .materiais ul { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; }
-.materiais a { color: var(--green-ink); }
+.materiais a { color: var(--green-ink); display: inline-block; min-height: 24px; line-height: 24px; }
 .tres-rs { background: var(--brand); color: var(--on-brand); border-radius: var(--radius); padding: 18px; }
 .tres-rs strong { display: block; margin-bottom: 6px; }
 .tres-rs p { margin: 0; color: var(--on-brand-muted); font-size: .88rem; }

@@ -311,9 +311,18 @@ def test_cabecalhos_seguranca():
     assert r.headers.get("Permissions-Policy"), "falta Permissions-Policy"
     assert r.headers.get("Content-Security-Policy-Report-Only"), "CSP deve existir (Report-Only por decisão)"
     assert "no-cache" in (r.headers.get("Cache-Control") or ""), "HTML não deve ter cache longo"
-    css = c.get("/assets/style.css")
+    css = c.get("/assets/style.css?m=123")
     assert css.status_code == 200, "assets/style.css deveria responder 200"
-    assert "immutable" in (css.headers.get("Cache-Control") or ""), "estático versionado deve ser imutável"
+    assert "immutable" in (css.headers.get("Cache-Control") or ""), "estático versionado (?m=) deve ser imutável"
+    # sem ?m= (fontes/ícones via url() do CSS) NÃO pode ser imutável por 1 ano
+    fonte = c.get("/assets/fonts/inter-var.woff2")
+    assert "immutable" not in (fonte.headers.get("Cache-Control") or "") and "max-age=86400" in fonte.headers["Cache-Control"]
+    # erro nunca é cacheado como imutável (404/500 transitório ficaria 1 ano no navegador/CDN)
+    nf = c.get("/assets/nao-existe.png?m=1")
+    assert nf.status_code == 404 and nf.headers.get("Cache-Control") == "no-store"
+    # o layout varia por Referer/Accept-Language: nada de cache compartilhável
+    lay = c.get("/_dash-layout")
+    assert lay.headers.get("Cache-Control") == "no-cache" and "Referer" in lay.headers.get("Vary", "")
 
 
 # ---------------------------------------------------------------- UI nova (F3–F5)
@@ -405,15 +414,17 @@ def _tokens_css():
 def test_plot_sincronizado_com_tokens_css():
     """CLAUDE.md: as cores existem em DOIS lugares (tokens CSS e PLOT de figuras.py) e devem ficar em
     sincronia. Este teste trava o que hoje é idêntico. EXCEÇÕES CONHECIDAS no escuro (valores próprios do
-    gráfico, escolhidos p/ contraste sobre o papel escuro): grid, axis, prev — não entram aqui."""
+    gráfico, escolhidos p/ contraste sobre o papel escuro): grid, axis — não entram aqui. `prev` agora tem
+    token próprio (--series-prev) e a legenda HTML acompanha a linha em ambos os temas."""
     import figuras
     claro, escuro = _tokens_css()
     L, D = figuras.PLOT["light"], figuras.PLOT["dark"]
     esperado_claro = {"ink": "--ink", "obs": "--ink", "grid": "--cream-2", "axis": "--line",
-                      "paper": "--paper", "prev": "--green-d", "hover_bg": "--paper", "hover_bd": "--line"}
+                      "paper": "--paper", "prev": "--series-prev", "hover_bg": "--paper", "hover_bd": "--line"}
     for chave, token in esperado_claro.items():
         assert L[chave].upper() == claro[token], f"PLOT[light][{chave}]={L[chave]} ≠ {token}={claro[token]}"
-    esperado_escuro = {"ink": "--ink", "obs": "--ink", "paper": "--paper", "hover_bg": "--cream-2"}
+    esperado_escuro = {"ink": "--ink", "obs": "--ink", "paper": "--paper", "hover_bg": "--cream-2",
+                       "prev": "--series-prev"}
     for chave, token in esperado_escuro.items():
         assert D[chave].upper() == escuro[token], f"PLOT[dark][{chave}]={D[chave]} ≠ {token}={escuro[token]}"
 
@@ -437,3 +448,72 @@ def test_figura_detalhe_localiza_data_no_hover():
     assert figuras.figura_detalhe(GEO0, "pt").layout.xaxis.hoverformat == "%d/%m/%Y"
     assert figuras.figura_detalhe(GEO0, "es").layout.xaxis.hoverformat == "%d/%m/%Y"
     assert figuras.figura_detalhe(GEO0, "en").layout.xaxis.hoverformat == "%m/%d/%Y"
+
+
+def test_callbacks_toleram_payloads_forjados():
+    """Antes: int em _geo_valido → AttributeError/500; clickData malformado → IndexError/TypeError."""
+    import app as A
+    import dados as D
+    assert A._geo_valido(4106902) is False and A._geo_valido(["x"]) is False
+    assert A._geo_valido(D.GEO0) is True and A._geo_valido("UF-PR") is True and A._geo_valido("UF-ZZ") is False
+    ns = A.no_update
+    for click in ({"points": []}, {"points": ["x"]}, {"points": [{"location": ["SP"]}]},
+                  {"points": [{"customdata": 4106902}]}, {}, None, {"points": [{"location": "ZZ"}]}):
+        assert A.clique_mapa(click) == (ns, ns)
+    assert A.clique_mapa({"points": [{"location": "SP"}]}) == ("SP", ns)
+    for uf in (["SP"], 1, {"a": 1}, "ZZ"):                      # uf forjada → escopo nacional, sem exceção
+        A.zoom_uf(uf)
+        A.remapa_idioma("pt", False, uf, "light")
+
+
+def test_tema_mapa_espelha_contorno_dos_estados():
+    """O Patch de tema deve recolorir também marker.line (antes ficava com o valor do tema claro)."""
+    import app as A
+    import dados as D
+    from figuras import PLOT
+    ops = {tuple(o["location"]): o["params"]["value"] for o in A.tema_mapa("dark")._operations}
+    assert ops[("data", D.IDX_CHOROPLETH, "marker", "line", "color")] == PLOT["dark"]["mapline"]
+    assert ops[("data", D.IDX_CHOROPLETH, "marker", "line", "width")] == PLOT["dark"]["maplinew"]
+
+
+def test_popular_cidades_ao_trocar_idioma_nao_reverte_a_cidade():
+    """Trocar idioma só traduz os rótulos; o value (cidade escolhida) não pode voltar para 'UF-xx'."""
+    import app as A
+    import dados as D
+    from dash._callback_context import context_value
+    from dash._utils import AttributeDict
+    uf = next(u for u, l in D.cidades_por_uf.items() if l)
+
+    def chama(trigger):
+        ctx_val = AttributeDict(triggered_inputs=[{"prop_id": trigger}], inputs_list=[], states_list=[],
+                                outputs_list=[], args_grouping=[], response=None)
+        tok = context_value.set(ctx_val)
+        try:
+            return A.popular_cidades.__wrapped__(uf, "es") if hasattr(A.popular_cidades, "__wrapped__") \
+                else A.popular_cidades(uf, "es")
+        finally:
+            context_value.reset(tok)
+    _, v_lang = chama("lang.data")
+    _, v_uf = chama("dd-uf.value")
+    assert v_lang is A.no_update and v_uf == f"UF-{uf}"
+
+
+def _mistura(frente_rgb, alfa, fundo_hex):
+    f = fundo_hex.lstrip("#")
+    fr = [int(f[i:i + 2], 16) for i in (0, 2, 4)]
+    return "#%02X%02X%02X" % tuple(round(alfa * a + (1 - alfa) * b) for a, b in zip(frente_rgb, fr))
+
+
+def test_contraste_derivado_dos_tokens_reais_dos_dois_temas():
+    """Pares derivados de style.css (não hex digitados): o overlay do .seg-group, o anel de foco sobre
+    barra/hero (fundos escuros nos 2 temas), a borda do dropdown e a legenda da série. Regressões medidas
+    na auditoria: topbar-muted no escuro 6,2:1 sobre o overlay; foco claro 1,4–1,8:1 sobre barra/hero."""
+    claro, escuro = _tokens_css()
+    for nome, t in (("claro", claro), ("escuro", escuro)):
+        seg_bg = _mistura((255, 255, 255), 0.07, t["--topbar-bg"])          # fundo real dos botões .seg
+        assert contraste(t["--topbar-muted"], seg_bg) >= 7.0, f"{nome}: topbar-muted/seg-group"
+        assert contraste(t["--topbar-muted"], t["--topbar-bg"]) >= 7.0, f"{nome}: topbar-muted/topbar"
+        for fundo in ("--topbar-bg", "--brand"):                             # barra, hero, faixa, rodapé
+            assert contraste(t["--focus-on-dark"], t[fundo]) >= 3.0, f"{nome}: foco/{fundo}"
+        assert contraste(t["--border-strong"], t["--paper"]) >= 3.0, f"{nome}: borda do dropdown/paper"
+        assert contraste(t["--series-prev"], t["--paper"]) >= 3.0, f"{nome}: legenda da série/paper"

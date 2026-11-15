@@ -367,7 +367,7 @@ def test_altura_estimada_proxima_da_real(pagina):
 
 
 # ------------------------------------------------------------------ barra do topo: altura estável (CLS)
-@pytest.mark.parametrize("largura", [360, 390, 768, 1024, 1179, 1180, 1280, 1920])
+@pytest.mark.parametrize("largura", [320, 360, 390, 768, 1024, 1179, 1180, 1280, 1920])
 def test_barra_topo_uma_linha_e_altura_igual_ao_token(pagina, largura):
     """A barra já chegou a 113px (2 linhas) no desktop, 142px a 768px e 116px a 360px: os controles
     quebravam de linha após a hidratação (CLS 1,15). Agora: 1 linha, e --topbar-h = altura real,
@@ -445,6 +445,107 @@ def test_footer_de_scripts_do_dash_nao_ocupa_espaco(pagina):
     pagina.wait_for_selector("#cartao", timeout=40000)
     assert pagina.evaluate("getComputedStyle(document.querySelector('body > footer')).display") == "none"
     assert pagina.evaluate("document.querySelector('#conteudo footer').getBoundingClientRect().height") > 20
+
+
+@pytest.mark.parametrize("lang", ["pt", "en", "es"])
+def test_cabecalho_corrido_uma_linha_e_sem_estouro(pagina, lang):
+    """Faixa mono acima da barra: quebrava em 2–3 linhas por lado entre 768 e 1179px (altura 49–66px).
+    Agora: rótulo curto abaixo de 1180px, texto longo acima; sempre 1 linha, sem overflow horizontal."""
+    alturas = set()
+    for largura in (768, 820, 900, 1024, 1100, 1179, 1180, 1280, 1440):
+        pagina.set_viewport_size({"width": largura, "height": 800})
+        pagina.goto(URL.rstrip("/") + f"/?lang={lang}")
+        pagina.wait_for_selector(".topbar", state="attached", timeout=40000)
+        pagina.wait_for_timeout(500)
+        m = pagina.evaluate("""() => { const e = document.querySelector('.running-header');
+          const k = [...e.children].filter(c => getComputedStyle(c).display !== 'none');
+          return {h: e.getBoundingClientRect().height, sw: e.scrollWidth, cw: e.clientWidth,
+                  linhas: k.map(c => Math.round(c.getBoundingClientRect().height))}; }""")
+        assert m["sw"] <= m["cw"] + 1, f"{lang}@{largura}: faixa estoura ({m['sw']}>{m['cw']})"
+        assert max(m["linhas"]) <= 20, f"{lang}@{largura}: texto quebrou em várias linhas {m['linhas']}"
+        alturas.add(round(m["h"]))
+    assert len(alturas) == 1, f"{lang}: altura da faixa varia com a largura: {sorted(alturas)}"
+
+
+def test_trocar_idioma_apos_uf_e_cidade_nao_reverte_a_selecao(pagina):
+    """Race: Input('lang') de popular_cidades devolvia value='UF-SP' e revertia a cidade escolhida
+    (cartão do estado + URL ?cidade=UF-SP, com o dropdown ainda mostrando a cidade). Repetido porque
+    depende da ordem de chegada das respostas."""
+    _abre(pagina, "/?lang=pt&cidade=UF-SP")
+    pagina.click("#dd-cidade")
+    pagina.get_by_role("option", name="Campinas").first.click()
+    pagina.wait_for_function("()=>!location.search.includes('UF-SP')", timeout=15000)
+    for lang in ("es", "pt", "en", "pt"):
+        pagina.click(f"#lang-{lang}")
+        pagina.wait_for_function(f"()=>document.documentElement.lang==='{lang}'", timeout=15000)
+        pagina.wait_for_timeout(1800)
+        e = _estado_url(pagina)
+        assert e["cartao"] == "Campinas" and "UF-SP" not in e["search"], f"{lang}: {e}"
+
+
+def test_mapa_segue_tema_escuro_apos_trocar_idioma(pagina):
+    """Race: render_content (sem State de tema) reconstruía o mapa claro e o remapa_idioma competia."""
+    pagina.set_viewport_size({"width": 1280, "height": 900})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector("#cartao", timeout=40000)
+    pagina.click("#theme-dark")
+    pagina.wait_for_function("()=>document.documentElement.dataset.theme==='dark'", timeout=15000)
+    for lang in ("en", "es", "pt"):
+        pagina.click(f"#lang-{lang}")
+        pagina.wait_for_function(f"()=>document.documentElement.lang==='{lang}'", timeout=15000)
+        pagina.wait_for_timeout(2200)
+        estilo = pagina.evaluate("()=>{const g=document.querySelector('#mapa .js-plotly-plot');"
+                                 "return g && g._fullLayout ? g._fullLayout.map.style : null}")
+        assert estilo and "dark" in str(estilo), f"{lang}: mapa com estilo {estilo!r} no tema escuro"
+
+
+def test_menus_details_fecham_com_esc_e_clique_fora(pagina):
+    """Menu, preferências e acessibilidade ficavam abertos (e sobrepostos) com Esc/clique fora."""
+    pagina.set_viewport_size({"width": 390, "height": 800})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector(".prefs-trigger", timeout=40000)
+    pagina.wait_for_timeout(800)
+    pagina.click(".prefs-trigger")
+    assert pagina.evaluate("document.querySelector('details.prefs').open")
+    pagina.keyboard.press("Escape")
+    assert not pagina.evaluate("document.querySelector('details.prefs').open")
+    assert pagina.evaluate("document.activeElement.classList.contains('prefs-trigger')")   # foco devolvido
+    pagina.click(".prefs-trigger")
+    pagina.mouse.click(200, 600)                                                         # fora
+    assert not pagina.evaluate("document.querySelector('details.prefs').open")
+
+
+def test_popover_de_preferencias_cabe_a_320px(pagina):
+    pagina.set_viewport_size({"width": 320, "height": 700})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector(".prefs-trigger", timeout=40000)
+    pagina.wait_for_timeout(800)
+    pagina.click(".prefs-trigger")
+    r = pagina.evaluate("(()=>{const b=document.querySelector('.prefs-pop').getBoundingClientRect();"
+                        "return [b.left,b.right,innerWidth]})()")
+    assert r[0] >= 0 and r[1] <= r[2], f"popover fora da viewport: {r}"
+
+
+def test_barra_da_situacao_segue_a_paleta_cvd(pagina):
+    """A barra usava style inline (cor fixa) e ignorava data-cvd=on enquanto glifos/mapa mudavam."""
+    pagina.set_viewport_size({"width": 1280, "height": 900})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector(".barra-seg", timeout=40000)
+    cor = "(()=>getComputedStyle(document.querySelector('.barra-seg')).backgroundColor)()"
+    antes = pagina.evaluate(cor)
+    pagina.evaluate("document.documentElement.setAttribute('data-cvd','on')")
+    pagina.wait_for_timeout(200)
+    assert pagina.evaluate(cor) != antes
+
+
+def test_alvos_de_toque_do_dropdown_e_links_de_materiais(pagina):
+    pagina.set_viewport_size({"width": 1280, "height": 900})
+    pagina.goto(URL.rstrip("/") + "/?lang=pt")
+    pagina.wait_for_selector(".dash-dropdown-trigger", timeout=40000)
+    alt = pagina.evaluate("[...document.querySelectorAll('.dash-dropdown-trigger')].map(e=>e.getBoundingClientRect().height)")
+    assert alt and min(alt) >= 44, f"triggers de dropdown abaixo de 44px: {alt}"
+    links = pagina.evaluate("[...document.querySelectorAll('.materiais a')].map(e=>e.getBoundingClientRect().height)")
+    assert links and min(links) >= 24, f"links de materiais abaixo de 24px: {links}"
 
 
 def test_rotulo_do_tema_ja_vem_preenchido(pagina):

@@ -70,3 +70,30 @@
     start();
   }
 })();
+
+/*
+ * Menus <details> (Menu, preferências, acessibilidade): fecham com Esc (devolvendo o foco ao summary)
+ * e com clique/toque fora — antes ficavam abertos e podiam se sobrepor. Sem dependências.
+ */
+(function () {
+  "use strict";
+  function abertos() { return document.querySelectorAll("details[open].prefs, details[open].a11y-menu, details[open].nav-mobile"); }
+  function fecha(d, foco) {
+    d.removeAttribute("open");
+    if (foco) { var s = d.querySelector("summary"); if (s) s.focus(); }
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    var lista = abertos();
+    for (var i = 0; i < lista.length; i++) fecha(lista[i], true);
+  });
+  document.addEventListener("click", function (e) {
+    var lista = abertos();
+    for (var i = 0; i < lista.length; i++) {
+      var d = lista[i];
+      var pop = d.nextElementSibling;                       // .prefs-pop é irmão do <details class="prefs">
+      var dentro = d.contains(e.target) || (pop && pop.contains && pop.contains(e.target));
+      if (!dentro) fecha(d, false);
+    }
+  });
+})();
