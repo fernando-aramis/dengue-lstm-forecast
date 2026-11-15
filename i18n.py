@@ -133,9 +133,9 @@ T = {
                        "es": "Distribución de las {n} ciudades por nivel: {lista}"},
     "palavra_cidade": {"pt": "cidade", "en": "city", "es": "ciudad"},
     "palavra_cidades": {"pt": "cidades", "en": "cities", "es": "ciudades"},
-    "aviso_warn_t": {"pt": "Projeto acadêmico — não é alerta oficial",
-                     "en": "Academic project — not an official alert",
-                     "es": "Proyecto académico — no es una alerta oficial"},
+    "aviso_warn_t": {"pt": "Projeto acadêmico — não é alerta oficial.",
+                     "en": "Academic project — not an official alert.",
+                     "es": "Proyecto académico — no es una alerta oficial."},
     "aviso_warn_p": {"pt": "O nível exibido é uma simplificação (incidência semanal por 100 mil hab.) "
                            "e não corresponde ao alerta do InfoDengue. Não use para decisões clínicas "
                            "ou de saúde pública.",

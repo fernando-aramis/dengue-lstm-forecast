@@ -621,6 +621,25 @@ def test_alvos_de_toque_da_cabecalho_e_cta(pagina, largura):
     assert all(h >= 24 for _, h in r["nav"]), [x for x in r["nav"] if x[1] < 24]
 
 
+@pytest.mark.parametrize("largura", [390, 1440])
+def test_orcamento_de_fontes_no_carregamento(pagina, largura):
+    """Só 3 woff2 (Inter, Source Serif, Mono 400; ≤120 KiB) na carga inicial. Uma regra com peso 600 em mono
+    ou itálico fora do uso já puxou o Mono 500 e desfez o ganho do A13."""
+    vistos = {}
+    ctx = pagina.context.browser.new_context(viewport={"width": largura, "height": 900})   # cache limpo
+    try:
+        pg = ctx.new_page()
+        pg.on("response", lambda r: vistos.__setitem__(r.url.split("/")[-1], len(r.body()))
+              if r.url.endswith(".woff2") else None)
+        pg.goto(URL.rstrip("/") + "/?lang=pt")
+        pg.wait_for_selector("#cartao", timeout=40000)
+        pg.wait_for_timeout(2500)
+    finally:
+        ctx.close()
+    assert sorted(vistos) == ["ibm-plex-mono-400.woff2", "inter-var.woff2", "source-serif-4-var.woff2"], vistos
+    assert sum(vistos.values()) <= 120 * 1024
+
+
 def test_rotulo_do_tema_ja_vem_preenchido(pagina):
     pagina.set_viewport_size({"width": 1280, "height": 800})
     pagina.goto(URL.rstrip("/") + "/?lang=pt", wait_until="commit")

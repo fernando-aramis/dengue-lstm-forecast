@@ -384,6 +384,7 @@ html:root { --Dash-Fill-Interactive-Strong: var(--green-ink); }
 .map-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; padding: 10px 16px 2px; }
 .map-legend .leg-label { font-size: .8125rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: .05em; color: var(--text-muted); margin-right: 2px; }
+.map-legend .leg-nota { color: var(--text-muted); }
 .map-legend .leg-item { display: inline-flex; align-items: center; gap: 6px; font-size: .8125rem; color: var(--text); }
 .map-legend .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex: none;
   border: 1px solid rgba(128,128,128,.35); }
@@ -632,6 +633,8 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .horiz-item { background: var(--surface-sunken); border-radius: var(--radius-md); padding: 10px; }
 .horiz-item.h1 { background: var(--info-bg); }
 .horiz-t { display: block; font-size: .8125rem; color: var(--text-muted); }
+.horiz-h { display: block; color: var(--text); }   /* sem peso 600: em mono carregaria o Mono 500 só p/ isto */
+.horiz-d { display: block; }
 .horiz-v { display: block; font-size: 1.05rem; font-weight: 600; color: var(--text); margin: 2px 0; }
 .horiz-ic { display: block; font-size: .8125rem; color: var(--text-muted); }
 .horiz-nota { margin: 10px 0 0; }

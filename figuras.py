@@ -204,7 +204,9 @@ def horizontes(geo_id, lang="pt"):
     for _, r in pv.iterrows():
         cls = "horiz-item h1" if int(r["h"]) == 1 else "horiz-item"
         itens.append(html.Li(className=cls, children=[
-            html.Span(f"t+{int(r['h'])} · {fmt_data(r['data_prev'], lang, 'curto')}", className="horiz-t mono"),
+            html.Span([html.Span(f"t+{int(r['h'])}", className="horiz-h"),       # horizonte e data em 2 linhas fixas
+                       html.Span(fmt_data(r['data_prev'], lang, 'curto'), className="horiz-d")],
+                      className="horiz-t mono"),
             html.Span(fmt_int(r["prev"], lang), className="horiz-v tabular"),
             html.Span(f"{fmt_int(r['inf'], lang)}–{fmt_int(r['sup'], lang)}", className="horiz-ic mono")]))
     h1, h4 = pv.iloc[0], pv.iloc[-1]
