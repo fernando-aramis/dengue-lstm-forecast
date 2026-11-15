@@ -25,16 +25,30 @@ PLOT = {
     "light": {"ink": "#1C2620", "grid": "#E9E4D6", "axis": "#D9D4C7", "obs": "#1C2620",
               "prev": "#2F5A42", "band": "rgba(47,90,66,0.16)", "naocob": "#DCD7C6", "paper": "#FBFAF5",
               "mapstyle": "carto-positron", "legbg": "rgba(251,250,245,0.92)", "legbd": "#D9D4C7",
-              "mapline": "rgba(64,92,98,0.60)", "maplinew": 0.8,
+              "mapline": "rgba(64,92,98,0.60)", "maplinew": 0.8, "ring": "#1C2620",
               "hover_bg": "#FBFAF5", "hover_bd": "#D9D4C7",
               "escala": [[0.0, "#D5E3E2"], [0.5, "#9FC2C6"], [1.0, "#3F6E78"]]},
     "dark":  {"ink": "#ECEFEA", "grid": "#2A3330", "axis": "#3A4541", "obs": "#ECEFEA",
               "prev": "#7FC894", "band": "rgba(127,200,148,0.22)", "naocob": "#262D30", "paper": "#1E2428",
               "mapstyle": "carto-darkmatter", "legbg": "rgba(30,36,40,0.92)", "legbd": "#313A39",
-              "mapline": "rgba(255,255,255,0.50)", "maplinew": 0.6,
+              "mapline": "rgba(255,255,255,0.50)", "maplinew": 0.6, "ring": "#F3EFE6",
               "hover_bg": "#222A2D", "hover_bd": "#3A4541",
               "escala": [[0.0, "#20282A"], [0.5, "#315B63"], [1.0, "#79B4BE"]]},
 }
+
+
+ESPESSURA_ANEL = {"Verde": 1, "Amarelo": 2, "Laranja": 3, "Vermelho": 4}   # px por lado (canal além da cor)
+
+
+def indices_anel():
+    """Índices (em fig.data) das camadas de anel — o Patch de tema precisa recolori-las."""
+    base = (1 if NAO_COBERTAS else 0) + 1            # [sem cobertura?] + choropleth
+    idx = []
+    for nv in ORDEM_NIVEL:
+        if (mapa_cid["nivel_alerta"] == nv).any():
+            idx.append(base)
+            base += 2                                 # anel + preenchimento
+    return idx
 
 
 def tema(t):
@@ -89,9 +103,17 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light", cvd=False):
         txt = (d["nome"] + " (" + d["uf"] + ")<br>"
                + [tr(lang, "hover_cidade", v=fmt_int(v, lang), nivel=nivel_tr(lang, nv))
                   for v in d["prev"]])
+        tam = (9 + (d["prev"] ** 0.5)).clip(9, 40)
+        # ANEL: o scattermap não tem marker.line → camada de baixo, maior, na cor do anel (contraste ≥3:1
+        # com o mapa e com o preenchimento) e ESPESSURA crescente com o nível (1→4 px): segundo canal
+        # além da cor (WCAG 1.4.1) e contorno que garante 1.4.11 mesmo p/ amarelo/laranja sobre o mapa.
+        fig.add_trace(go.Scattermap(
+            lat=d["lat"], lon=d["lon"], mode="markers", name=f"anel-{nv}", showlegend=False,
+            marker=dict(size=tam + 2 * ESPESSURA_ANEL[nv], color=p["ring"], opacity=1),
+            hoverinfo="skip"))
         fig.add_trace(go.Scattermap(
             lat=d["lat"], lon=d["lon"], mode="markers",
-            marker=dict(size=(9 + (d["prev"] ** 0.5)).clip(9, 40), color=cores[nv], opacity=0.92),
+            marker=dict(size=tam, color=cores[nv], opacity=1),
             name=nivel_tr(lang, nv), customdata=d["geo_id"],
             text=txt, hovertemplate="%{text}<extra></extra>",
         ))

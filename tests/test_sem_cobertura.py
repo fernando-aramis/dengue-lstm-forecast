@@ -74,7 +74,7 @@ def test_cobertura_derivada_dos_dados(um_cidade):
 
 
 def test_mapa_tem_camada_cinza_com_hover_nominal(um_cidade):
-    assert um_cidade["traces"] == ["choroplethmap", "choroplethmap", "scattermap"]
+    assert um_cidade["traces"] == ["choroplethmap", "choroplethmap", "scattermap", "scattermap"]   # + anel + bolha
     assert "Sem cidade monitorada" in um_cidade["t0_hover"]   # cor não é o único canal
 
 

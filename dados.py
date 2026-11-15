@@ -84,8 +84,12 @@ nome_por_geo = dict(zip(prev["geo_id"], prev["nome"]))
 
 # ---- níveis de alerta (aqui, não em figuras.py, para derivar RESUMO sem import circular) --------
 CORES_NIVEL = {"Verde": "#2e9e5b", "Amarelo": "#d9a404", "Laranja": "#ef7d2d", "Vermelho": "#d6364c"}
-# Paleta alternativa para daltonismo (opt-in via menu de acessibilidade). Verificada por simulação
-# de deuteranopia/protanopia: pior par 59.3 (vs 17.4 da padrão — amarelo/laranja colapsavam).
+# Paleta alternativa para daltonismo (opt-in via menu de acessibilidade). Medida por simulação de Machado
+# et al. (2009, severidade 1,0) e distância ΔE76 em CIELAB, pior par entre os 4 níveis (tests/test_unit.py):
+#   protanopia   — padrão 17,4 (Amarelo/Laranja) → CVD 26,9 (Verde/Laranja)
+#   deuteranopia — padrão 10,1 (Verde/Vermelho)  → CVD 11,6 (Verde/Vermelho)
+# Ou seja: melhora clara em protanopia e ganho pequeno em deuteranopia, onde Verde/Vermelho continuam
+# próximos — por isso a COR NUNCA é o único canal (glifo + rótulo + anel de espessura + Tabela 1).
 CORES_NIVEL_CVD = {"Verde": "#2E8B57", "Amarelo": "#F5D800", "Laranja": "#D9641E", "Vermelho": "#B3203F"}
 ORDEM_NIVEL = ["Verde", "Amarelo", "Laranja", "Vermelho"]
 _exigir(prev["nivel_alerta"].isin(ORDEM_NIVEL).all(),
