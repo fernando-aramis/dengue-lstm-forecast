@@ -4,7 +4,7 @@
 # python:3.11-slim (Debian 13/trixie) — digest resolvido em 2026-11-09.
 # Para re-pinar no futuro: docker pull python:3.11-slim && \
 #   docker inspect --format '{{index .RepoDigests 0}}' python:3.11-slim
-FROM python:3.11-slim@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3b597c84f7a7b535
+FROM python:3.15-slim@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928
 
 # Security updates do Debian no build (fecha CVEs HIGH/CRITICAL corrigíveis da base).
 RUN apt-get update && apt-get -y upgrade \
