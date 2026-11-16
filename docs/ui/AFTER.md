@@ -27,7 +27,7 @@ LCP/FCP servem só de comparação relativa, não de promessa.
 | **LCP** | 440 ms @1440 | ~115 ms @1440 · ~465 ms @390 | Comparação só indicativa (host diferente) |
 | **Testes automatizados** | — | **183** (unit + formato + i18n + sem cobertura + E2E + axe AAA) | Cada correção de bug tem teste, provado por mutação quando possível |
 | **Copy-lint** | em-dash ×15, eyebrows ×10, stat-strip ×3 | em-dash **×6** (limite 2), eyebrows **0**, stat-strip ×3 | Em-dashes de interface trocados por `:` `,` `;` (PT/EN/ES). Os 6 restantes são prosa do artigo (decisão editorial do autor). `stat-strip` é falso positivo: o detector lê linhas de tabelas de dados como "faixa de números" |
-| **Nielsen** | 24/36 | _ver §5_ | Qualitativo (julgamento de modelo), não métrica |
+| **Nielsen** | 24/36 | **26/36** (72%, banda Good) | Mesma rubrica do baseline (9 de 10 heurísticas; Error Recovery n/a). Ver §5 | Qualitativo (julgamento de modelo), não métrica |
 | **impeccable detect** | side-tab ×2 + advisories | **63 advisories** (font-size 36, color 23, radius 4); **0 antipadrões bloqueantes** | Job não bloqueante no CI |
 
 ---
@@ -87,3 +87,35 @@ Todos corrigidos e com teste:
 - **Pares de contraste antigos** em hex digitado em `test_unit.py` (os novos derivam dos tokens).
 - **Copy-lint**: 6 em-dashes na prosa do artigo e `stat-strip` ×3 (falso positivo) ficam como exceção documentada.
 - **CI no GitHub não foi executado** (repositório ainda local): YAML e comandos do job foram validados localmente.
+
+---
+
+## 5. Nielsen: baseline × depois (julgamento de modelo, não métrica)
+
+Mesma rubrica do baseline (`raw/impeccable-audit.md`): 0–4 por heurística, 9 pontuadas, máximo 36.
+Base da nota: capturas em 1440 e 390 px (`shots/after/`) e as medições deste documento.
+
+| # | Heurística | Antes | Depois | Por quê |
+|---|---|---|---|---|
+| 1 | Visibilidade do estado | 2 | **3** | `#cartao-status` (`role=status`), shell trilíngue no cold-start, selo "Dados até SE 43". Falta um estado visível de "atualizando" na troca de cidade |
+| 2 | Correspondência com o mundo real | 3 | 3 | Formatos e meses por idioma resolvidos; "SE", "t+1" e "Rt" seguem sem glossário no ponto de uso |
+| 3 | Controle e liberdade | 3 | 3 | `?lang=&cidade=` dá link compartilhável; continua sem desfazer nem comparação |
+| 4 | Consistência e padrões | 3 | 3 | Tokens e mono com regra única; exceções do Dash nos menus abertos |
+| 5 | Prevenção de erro | 3 | 3 | Validação forjada e `?cidade=` limitado; pouco a errar num app só de leitura |
+| 6 | Reconhecimento | 3 | 3 | Legenda, anel por nível, Tabela 1 (mas só 8 de 33 cidades) |
+| 7 | Flexibilidade e eficiência | 2 | 2 | Deep links ajudam; segue sem comparar duas cidades e sem atalhos |
+| 8 | Estética e minimalismo | 2 | **3** | Sem eyebrows/chips, KPIs em faixa plana, menus recolhidos. Ainda denso na 1ª dobra |
+| 9 | Recuperação de erro | n/a | n/a | Sem formulários nem caminhos destrutivos |
+| 10 | Ajuda e documentação | 3 | 3 | Sem mudança |
+| | **Total** | **24/36** | **26/36** | 72% = Good (era 67%, Acceptable) |
+
+**Como ler esse número.** Quem avaliou foi o mesmo modelo que fez as mudanças, então tende a ser benevolente:
+tratem +2 como "melhorou nos dois pontos que o baseline citou" e não como medida. O valor está na lista abaixo.
+
+**Lacunas que a avaliação encontrou** (nada bloqueante; nenhuma foi tratada nesta rodada):
+1. **P1, 1ª dobra no desktop**: o hero ocupa ~530 px e, com os dois avisos e a faixa de KPIs, o mapa (o objeto central do painel) só aparece depois da dobra em 1440×900.
+2. **P2, jargão sem glossário no ponto de uso**: "SE", "t+1…t+4", "Rt" (na nota do nível) e "conformal".
+3. **P2, sem comparação entre cidades** (heurística 7) e sem estado visível de carregamento na troca de cidade (heurística 1).
+4. **P3**: Tabela 1 com 8 de 33 cidades; cabeçalho corrido em .72rem (exceção já documentada).
+
+**Personas.** Usuário avançado: sem atalhos nem comparação de duas cidades. Primeira visita: entende o nível pelo glifo e pelo anel, mas tropeça em "SE 44" e "Rt" sem explicação.
