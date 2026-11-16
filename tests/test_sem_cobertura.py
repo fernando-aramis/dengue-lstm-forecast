@@ -39,8 +39,8 @@ d = F.figura_detalhe("UF-AC", "pt")
 out["detalhe_traces"] = len(d.data)
 out["detalhe_msg"] = [a.text for a in d.layout.annotations]
 out["detalhe_cidade_traces"] = len(F.figura_detalhe("4106902", "pt").data)
-at_uf = A.atualizar("UF-AC", "pt", "light")
-at_cid = A.atualizar("4106902", "pt", "light")
+at_uf = A.atualizar("UF-AC", "pt", "light", None)
+at_cid = A.atualizar("4106902", "pt", "light", None)
 out["hidden_uf"] = at_uf[4]
 out["hidden_cidade"] = at_cid[4]
 out["live_uf"] = at_uf[3]
@@ -112,4 +112,4 @@ def test_dados_reais_nao_ativam_o_estado():
     import app as A
     import dados as D
     assert D.NAO_COBERTAS == [] and D.IDX_CHOROPLETH == 0
-    assert A.atualizar(D.GEO0, "pt", "light")[4] is False
+    assert A.atualizar(D.GEO0, "pt", "light", None)[4] is False

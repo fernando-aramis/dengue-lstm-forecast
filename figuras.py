@@ -23,13 +23,13 @@ PLOT = {
     # default (caixa semitransparente + fonte escura): no ESCURO fica texto escuro sobre fundo
     # escuro (ilegível). Fixamos fundo sólido do tema + fonte 'ink' p/ alto contraste nos dois temas.
     "light": {"ink": "#1C2620", "grid": "#E9E4D6", "axis": "#D9D4C7", "obs": "#1C2620",
-              "prev": "#2F5A42", "band": "rgba(47,90,66,0.16)", "naocob": "#DCD7C6", "paper": "#FBFAF5",
+              "prev": "#2F5A42", "cmp": "#2E6FB0", "band": "rgba(47,90,66,0.16)", "naocob": "#DCD7C6", "paper": "#FBFAF5",
               "mapstyle": "carto-positron", "legbg": "rgba(251,250,245,0.92)", "legbd": "#D9D4C7",
               "mapline": "rgba(64,92,98,0.60)", "maplinew": 0.8, "ring": "#1C2620",
               "hover_bg": "#FBFAF5", "hover_bd": "#D9D4C7",
               "escala": [[0.0, "#D5E3E2"], [0.5, "#9FC2C6"], [1.0, "#3F6E78"]]},
     "dark":  {"ink": "#ECEFEA", "grid": "#2A3330", "axis": "#3A4541", "obs": "#ECEFEA",
-              "prev": "#7FC894", "band": "rgba(127,200,148,0.22)", "naocob": "#262D30", "paper": "#1E2428",
+              "prev": "#7FC894", "cmp": "#8DB8E8", "band": "rgba(127,200,148,0.22)", "naocob": "#262D30", "paper": "#1E2428",
               "mapstyle": "carto-darkmatter", "legbg": "rgba(30,36,40,0.92)", "legbd": "#313A39",
               "mapline": "rgba(255,255,255,0.50)", "maplinew": 0.6, "ring": "#F3EFE6",
               "hover_bg": "#222A2D", "hover_bd": "#3A4541",
@@ -140,7 +140,16 @@ def sem_serie(geo_id):
     return (prev["geo_id"] == geo_id).sum() == 0 and (hist["geo_id"] == geo_id).sum() == 0
 
 
-def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
+def comparacao_valida(geo_id, comp):
+    """Cidade de comparação efetiva: só município vs. município diferente e existente; senão None."""
+    if not (isinstance(comp, str) and isinstance(geo_id, str)) or comp == geo_id:
+        return None
+    if geo_id.startswith("UF-") or comp.startswith("UF-"):
+        return None
+    return comp if (comp in set(prev["geo_id"]) and geo_id in set(prev["geo_id"])) else None
+
+
+def figura_detalhe(geo_id, lang="pt", tema_nome="light", comp=None):
     p = tema(tema_nome)
     h = hist[hist["geo_id"] == geo_id].sort_values("data")
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
@@ -154,6 +163,8 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
                           paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                           xaxis=dict(visible=False), yaxis=dict(visible=False))
         return fig
+    comp = comparacao_valida(geo_id, comp)
+    pref = f"{pv['nome'].iloc[0]} · " if (comp and len(pv)) else ""
     if len(pv):
         xb = list(pv["data_prev"]) + list(pv["data_prev"][::-1])
         yb = list(pv["sup"]) + list(pv["inf"][::-1])
@@ -166,14 +177,30 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
                                      hoverinfo="skip", line=dict(color=p["prev"], width=1)))
     if len(h):
         fig.add_trace(go.Scatter(x=h["data"], y=h["casos"], mode="lines", showlegend=False,
-                                 line=dict(color=p["obs"], width=2), name=tr(lang, "g_observado")))
+                                 line=dict(color=p["obs"], width=2),
+                                 name=pref + tr(lang, "g_observado")))
     if len(pv):
         x0 = ([h["data"].iloc[-1]] if len(h) else []) + list(pv["data_prev"])
         y0 = ([h["casos"].iloc[-1]] if len(h) else []) + list(pv["prev"])
         fig.add_trace(go.Scatter(x=x0, y=y0, mode="lines+markers", showlegend=False,
                                  line=dict(color=p["prev"], width=2.5, dash="dash"),
                                  marker=dict(size=7, color=p["paper"], line=dict(color=p["prev"], width=2)),
-                                 name=tr(lang, "g_previsto")))
+                                 name=pref + tr(lang, "g_previsto")))
+    if comp:                                   # série de comparação: azul + traço pontilhado + losango (não só cor)
+        hc = hist[hist["geo_id"] == comp].sort_values("data")
+        pc = prev[prev["geo_id"] == comp].sort_values("h")
+        nc = pc["nome"].iloc[0] if len(pc) else comp
+        if len(hc):
+            fig.add_trace(go.Scatter(x=hc["data"], y=hc["casos"], mode="lines", showlegend=False,
+                                     line=dict(color=p["cmp"], width=1.75), name=f"{nc} · {tr(lang, 'g_observado')}"))
+        if len(pc):
+            x0 = ([hc["data"].iloc[-1]] if len(hc) else []) + list(pc["data_prev"])
+            y0 = ([hc["casos"].iloc[-1]] if len(hc) else []) + list(pc["prev"])
+            fig.add_trace(go.Scatter(x=x0, y=y0, mode="lines+markers", showlegend=False,
+                                     line=dict(color=p["cmp"], width=2.5, dash="dot"),
+                                     marker=dict(size=8, symbol="diamond", color=p["paper"],
+                                                 line=dict(color=p["cmp"], width=2)),
+                                     name=f"{nc} · {tr(lang, 'g_previsto')}"))
     if len(h):                                 # linha de origem (última semana observada) + rótulo SE
         ultima = h["data"].iloc[-1]
         fig.add_shape(type="line", x0=ultima, x1=ultima, y0=0, y1=1, yref="paper",
@@ -195,7 +222,23 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light"):
     return fig
 
 
-def horizontes(geo_id, lang="pt"):
+def tabela_comparacao(geo_id, comp, lang="pt"):
+    """Alternativa textual do gráfico comparativo: t+1…t+4 das duas cidades (valor + IC de 90%)."""
+    linhas = []
+    for g in (geo_id, comp):
+        pv = prev[prev["geo_id"] == g].sort_values("h")
+        celulas = [html.Td([html.Span(fmt_int(r["prev"], lang), className="cmp-v tabular"),
+                            html.Span(f"{fmt_int(r['inf'], lang)}–{fmt_int(r['sup'], lang)}", className="cmp-ic")])
+                   for _, r in pv.iterrows()]
+        linhas.append(html.Tr([html.Th(pv["nome"].iloc[0], scope="row", className="notranslate")] + celulas))
+    cab = html.Tr([html.Td("")] + [html.Th(f"t+{h}", scope="col") for h in (1, 2, 3, 4)])
+    return html.Div(className="tabela-scroll", role="region", tabIndex=0,
+                    **{"aria-label": tr(lang, "cmp_tab_cap")},
+                    children=html.Table(className="tabela-cmp", children=[
+                        html.Caption(tr(lang, "cmp_tab_cap")), html.Thead(cab), html.Tbody(linhas)]))
+
+
+def horizontes(geo_id, lang="pt", comp=None):
     """Lista t+1…t+4 (valor + IC) + frase do alargamento da faixa. Vai abaixo do gráfico de detalhe."""
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
     if pv.empty:
@@ -213,7 +256,10 @@ def horizontes(geo_id, lang="pt"):
     m1, m4 = round((h1["sup"] - h1["inf"]) / 2), round((h4["sup"] - h4["inf"]) / 2)
     return [html.Ol(itens, className="horizontes"),
             html.P(tr(lang, "horiz_nota", a=fmt_int(m1, lang), b=fmt_int(m4, lang)),
-                   className="horiz-nota aux")]
+                   className="horiz-nota aux"),
+            html.P(tr(lang, "gloss_linha"), className="horiz-nota aux"),
+            *([tabela_comparacao(geo_id, comp, lang), html.P(tr(lang, "cmp_hint"), className="horiz-nota aux")]
+              if comparacao_valida(geo_id, comp) else [])]
 
 
 def cartao_info(geo_id, lang="pt"):
@@ -250,7 +296,7 @@ def cartao_info(geo_id, lang="pt"):
     return cartao
 
 
-def resumo_cartao(geo_id, lang="pt"):
+def resumo_cartao(geo_id, lang="pt", comp=None):
     """Resumo curto do cartão para anúncio em aria-live (ao trocar de cidade)."""
     p1 = prev[(prev["geo_id"] == geo_id) & (prev["h"] == 1)]
     if p1.empty:
@@ -259,5 +305,11 @@ def resumo_cartao(geo_id, lang="pt"):
             return tr(lang, "cartao_resumo_aria_semcob", nome=nome_uf.get(uf, uf))
         return ""
     r = p1.iloc[0]
-    return tr(lang, "cartao_resumo_aria", nome=r["nome"],
-              v=fmt_int(r["prev"], lang), nivel=nivel_tr(lang, r["nivel_alerta"]))
+    txt = tr(lang, "cartao_resumo_aria", nome=r["nome"],
+             v=fmt_int(r["prev"], lang), nivel=nivel_tr(lang, r["nivel_alerta"]))
+    comp = comparacao_valida(geo_id, comp)
+    if comp:
+        c1 = prev[(prev["geo_id"] == comp) & (prev["h"] == 1)].iloc[0]
+        txt += " " + tr(lang, "cartao_resumo_cmp_aria", nome=c1["nome"], v=fmt_int(c1["prev"], lang),
+                        nivel=nivel_tr(lang, c1["nivel_alerta"]))
+    return txt

@@ -27,7 +27,7 @@ from dados import (prev, hist, mapa_cid, mapa_uf, nome_uf, UFS, COBERTAS, NAO_CO
                    GEOJSON_UF, IDX_CHOROPLETH)
 from figuras import (figura_mapa, figura_detalhe, cartao_info, resumo_cartao, horizontes,
                      tema as _tema, PLOT, CORES_NIVEL, ORDEM_NIVEL, centro_zoom, sem_serie,
-                     indices_anel)
+                     indices_anel, comparacao_valida)
 from layout import construir_conteudo, serve_layout, opcoes_uf, cabecalho_corrido, nav_links
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
@@ -221,15 +221,15 @@ def set_lang(a, b, c):
 @app.callback(Output("app-content", "children"),
               Output("running-header", "children"), Output("topnav", "children"),
               Input("lang", "data"), State("sel", "data"), State("url-cidade", "data"),
-              State("theme-eff", "data"), State("cvd", "data"),
+              State("theme-eff", "data"), State("cvd", "data"), State("cmp", "data"),
               prevent_initial_call=True)   # conteúdo já vem do serve_layout; re-render só ao TROCAR idioma
-def render_content(lang, sel, url_cidade, tema, cvd):
+def render_content(lang, sel, url_cidade, tema, cvd, cmp):
     lang = resolver(lang)
     # preserva a seleção atual ao trocar de idioma (store sel). No boot, `lang` e `url-cidade` saem
     # na MESMA resposta do callback clientside, mas `sel` só é gravado depois (aplica_url_cidade):
     # sem este fallback o rebuild correria na frente e perderia a cidade da URL.
     alvo = sel if _geo_valido(sel) else (url_cidade if _geo_valido(url_cidade) else None)
-    return (construir_conteudo(lang, alvo, tema or "light", bool(cvd)),
+    return (construir_conteudo(lang, alvo, tema or "light", bool(cvd), cmp),
             cabecalho_corrido(lang), nav_links(lang))
 
 
@@ -445,14 +445,25 @@ def selecionar(cidade):
 @app.callback(Output("cartao", "children"), Output("detalhe", "figure"),
               Output("horizontes", "children"), Output("cartao-status", "children"),
               Output("legenda-serie", "hidden"),
-              Input("sel", "data"), Input("lang", "data"), Input("theme-eff", "data"))
-def atualizar(geo_id, lang, tema):
+              Output("dd-comparar", "disabled"), Output("legenda-cmp", "hidden"),
+              Output("legenda-cmp-nome", "children"),
+              Input("sel", "data"), Input("lang", "data"), Input("theme-eff", "data"),
+              Input("cmp", "data"))
+def atualizar(geo_id, lang, tema, cmp):
     lang, tema = resolver(lang), (tema or "light")
     if not _geo_valido(geo_id):                 # WS6: geo ausente/forjado → seleção inicial segura
         geo_id = GEO0
-    return (cartao_info(geo_id, lang), figura_detalhe(geo_id, lang, tema),
-            horizontes(geo_id, lang), resumo_cartao(geo_id, lang),
-            bool(sem_serie(geo_id)))            # legenda da série só faz sentido com série (estado sem cobertura: oculta)
+    comp = comparacao_valida(geo_id, cmp)       # só município vs. outro município existente (valor forjado → None)
+    nome_cmp = tr(lang, "serie_cmp", nome=nome_por_geo[comp]) if comp else ""
+    return (cartao_info(geo_id, lang), figura_detalhe(geo_id, lang, tema, comp),
+            horizontes(geo_id, lang, comp), resumo_cartao(geo_id, lang, comp),
+            bool(sem_serie(geo_id)),            # legenda da série só faz sentido com série (estado sem cobertura: oculta)
+            geo_id.startswith("UF-"),           # comparar só vale entre municípios
+            not comp, nome_cmp)
+@app.callback(Output("cmp", "data"), Input("dd-comparar", "value"), prevent_initial_call=True)
+def selecionar_cmp(valor):
+    """Comparação: valor do cliente validado (forjado/inexistente → sem comparação)."""
+    return valor if (isinstance(valor, str) and valor in nome_por_geo and not valor.startswith("UF-")) else None
 
 
 # anúncio "Copiado" para leitor de tela ao usar os botões de copiar (NEW/A14)

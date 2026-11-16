@@ -698,3 +698,72 @@ def test_eixo_x_do_detalhe_no_idioma_da_ui(pagina, lang, presentes, ausentes):
     assert not (ausentes & set(ticks)), f"[{lang}] meses de outro idioma: {ausentes & set(ticks)} em {ticks}"
     pagina.goto(URL.rstrip("/") + "/?lang=pt")      # devolve a página ao estado padrão dos próximos testes
     pagina.wait_for_selector("#cartao", timeout=40000)
+
+
+# ------------------------------------------------------------------ lacunas do Nielsen (refino final)
+def _escolhe_opcao(pg, seletor, indice):
+    pg.click(seletor)
+    pg.wait_for_timeout(250)
+    pg.query_selector_all(".dash-dropdown-content [role=option]")[indice].click()
+    pg.wait_for_timeout(1200)
+
+
+def test_comparar_cidades_fluxo_completo(pagina):
+    """Comparar: série + legenda + tabela t+1…t+4 + anúncio; persiste ao trocar idioma; limpar volta ao normal;
+    estado desabilita o dropdown."""
+    _abre(pagina, "/?lang=pt&cidade=4106902")
+    traces = lambda: pagina.evaluate("document.querySelectorAll('#detalhe .scatterlayer .trace').length")  # noqa: E731
+    base = traces()
+    assert pagina.evaluate("document.querySelector('#legenda-cmp').hidden") is True
+    assert pagina.locator(".tabela-cmp").count() == 0
+    _escolhe_opcao(pagina, "#dd-comparar", 0)
+    assert traces() == base + 2
+    assert pagina.locator(".tabela-cmp tbody tr").count() == 2
+    assert pagina.locator(".tabela-cmp thead th").count() == 4
+    assert "Comparação:" in pagina.inner_text("#legenda-cmp")
+    assert "Comparando com" in pagina.inner_text("#cartao-status")
+    pagina.click("#lang-en")                                  # idioma reconstrói o conteúdo: comparação fica
+    pagina.wait_for_timeout(2500)
+    assert "Comparison:" in pagina.inner_text("#legenda-cmp")
+    assert pagina.locator(".tabela-cmp").count() == 1
+    pagina.click("#dd-comparar .dash-dropdown-clear")
+    pagina.wait_for_timeout(1200)
+    assert pagina.evaluate("document.querySelector('#legenda-cmp').hidden") is True
+    assert pagina.locator(".tabela-cmp").count() == 0 and traces() == base
+    _escolhe_opcao(pagina, "#dd-uf", 3)                       # estado: comparar só vale entre municípios
+    assert pagina.evaluate("""[...document.querySelectorAll('#dd-comparar, #dd-comparar *')].some(
+        e => e.disabled || e.getAttribute('aria-disabled') === 'true' || e.getAttribute('data-disabled') === 'true')""")
+    assert not pagina.erros, pagina.erros[:3]
+
+
+def test_primeira_dobra_mostra_aviso_e_painel(pagina):
+    """Heurística 8: o painel (título + controles + topo do mapa) entra na 1ª dobra em 1440×900; o aviso
+    'não é alerta oficial' continua acima dele; os resultados-chave vêm depois do painel."""
+    pagina.set_viewport_size({"width": 1440, "height": 900})
+    pagina.goto(URL + "?lang=pt")
+    pagina.wait_for_selector("#mapa", timeout=40000)
+    pagina.wait_for_timeout(1500)
+    y = pagina.evaluate("""()=>{const t=s=>document.querySelector(s).getBoundingClientRect();
+        return {aviso:t('.indicadores .aviso.warn').bottom, h2:t('#painel-titulo').top, ctrl:t('.controles').bottom,
+                mapa:t('#mapa').top, painel:t('#painel').top+scrollY, kpi:t('#resultados-chave').top+scrollY}}""")
+    assert y["aviso"] < y["h2"] and y["ctrl"] < 900 and y["mapa"] < 900, y
+    assert y["kpi"] > y["painel"], y
+    pagina.set_viewport_size({"width": 1280, "height": 720})
+    pagina.wait_for_timeout(300)
+    assert pagina.evaluate("document.querySelector('#painel-titulo').getBoundingClientRect().bottom") < 720
+
+
+def test_estado_de_carregamento_visivel_e_trilingue(pagina):
+    """Heurística 1: enquanto o Dash marca data-dash-is-loading, o cartão esmaece e aparece 'Atualizando…'
+    (sem deslocar nada: pseudo-elemento absoluto)."""
+    esperado = {"pt": "Atualizando…", "en": "Updating…", "es": "Actualizando…"}
+    for lang, texto in esperado.items():
+        _abre(pagina, f"/?lang={lang}")
+        pagina.evaluate("document.querySelectorAll('#cartao,#detalhe,#horizontes')"
+                        ".forEach(e => e.setAttribute('data-dash-is-loading', 'true'))")
+        pagina.wait_for_timeout(600)
+        assert texto in pagina.evaluate("getComputedStyle(document.querySelector('.panel-detalhe'), '::after').content")
+        assert float(pagina.evaluate("getComputedStyle(document.querySelector('#cartao')).opacity")) < 1
+        pagina.evaluate("document.querySelectorAll('[data-dash-is-loading]').forEach(e => e.removeAttribute('data-dash-is-loading'))")
+        pagina.wait_for_timeout(500)
+        assert pagina.evaluate("getComputedStyle(document.querySelector('.panel-detalhe'), '::after').content") in ('""', "none", "normal")

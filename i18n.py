@@ -156,13 +156,13 @@ T = {
                  "en": "Data up to EW {se}/{ano} · weekly update",
                  "es": "Datos hasta SE {se}/{ano} · actualización semanal"},
     "fig1_caption": {"pt": "Previsão de casos prováveis de dengue para t+1 a t+4 semanas (origem: "
-                           "SE {se}/{ano}) com intervalo conformal de 90%. Fonte: InfoDengue/SINAN; "
+                           "SE {se}/{ano}) com intervalo de 90% (conformal: calibrado nos erros passados do próprio modelo). Fonte: InfoDengue/SINAN; "
                            "malha estadual IBGE; elaboração própria. Nível simplificado: não é o alerta oficial.",
                      "en": "Forecast of probable dengue cases for t+1 to t+4 weeks (origin: EW {se}/{ano}) "
-                           "with a 90% conformal interval. Source: InfoDengue/SINAN; IBGE state boundaries; "
+                           "with a 90% interval (conformal: calibrated on the model's own past errors). Source: InfoDengue/SINAN; IBGE state boundaries; "
                            "own elaboration. Simplified level: not the official alert.",
                      "es": "Pronóstico de casos probables de dengue para t+1 a t+4 semanas (origen: "
-                           "SE {se}/{ano}) con intervalo conforme del 90%. Fuente: InfoDengue/SINAN; "
+                           "SE {se}/{ano}) con intervalo del 90% (conforme: calibrado con los errores pasados del propio modelo). Fuente: InfoDengue/SINAN; "
                            "malla estatal del IBGE; elaboración propia. Nivel simplificado: no es la alerta oficial."},
     "leg_sem_dado": {"pt": "Sem dado", "en": "No data", "es": "Sin dato"},
     "serie_obs": {"pt": "Observado", "en": "Observed", "es": "Observado"},
@@ -219,13 +219,13 @@ T = {
                    "es": "En brotes fuera del histórico (como 2024), el modelo subestima — trate los "
                          "valores altos con cautela."},
     "aviso": {"pt": "Previsões reais. Dados do InfoDengue até a semana de {origem}; LSTM univariada "
-                    "(versão A do estudo) com intervalo conformal de 90%, uma rede por cidade. "
+                    "(versão A do estudo) com intervalo de 90% (conformal: calibrado nos erros passados do próprio modelo), uma rede por cidade. "
                     "Treino do pipeline completo; geocodes validados no IBGE.",
               "en": "Real forecasts. InfoDengue data up to the week of {origem}; univariate LSTM "
-                    "(study version A) with a 90% conformal interval, one network per city. Full "
+                    "(study version A) with a 90% interval (conformal: calibrated on the model's own past errors), one network per city. Full "
                     "pipeline training; geocodes validated against IBGE.",
               "es": "Pronósticos reales. Datos de InfoDengue hasta la semana de {origem}; LSTM "
-                    "univariada (versión A del estudio) con intervalo conforme del 90%, una red por "
+                    "univariada (versión A del estudio) con intervalo del 90% (conforme: calibrado con los errores pasados del propio modelo), una red por "
                     "ciudad. Entrenamiento del pipeline completo; geocódigos validados en el IBGE."},
     "aviso_strong": {"pt": "Previsões reais. ", "en": "Real forecasts. ", "es": "Pronósticos reales. "},
 
@@ -287,15 +287,33 @@ T = {
     "nota_piso": {"pt": "Soma das cidades monitoradas da UF; é um piso, não o total do estado.",
                   "en": "Sum of the state's monitored cities; a floor, not the state total.",
                   "es": "Suma de las ciudades monitoreadas del estado; es un piso, no el total estatal."},
+    "lbl_comparar": {"pt": "Comparar com (opcional)", "en": "Compare with (optional)", "es": "Comparar con (opcional)"},
+    "ph_comparar": {"pt": "Nenhuma cidade", "en": "No city", "es": "Ninguna ciudad"},
+    "serie_cmp": {"pt": "Comparação: {nome}", "en": "Comparison: {nome}", "es": "Comparación: {nome}"},
+    "cmp_tab_cap": {"pt": "Previsão t+1…t+4 por cidade (casos por semana; intervalo de 90%)",
+                    "en": "Forecast t+1…t+4 by city (cases per week; 90% interval)",
+                    "es": "Pronóstico t+1…t+4 por ciudad (casos por semana; intervalo del 90%)"},
+    "cmp_hint": {"pt": "Mesma escala absoluta de casos por semana: cidades de portes muito diferentes ficam em escalas distintas.",
+                 "en": "Same absolute scale of cases per week: cities of very different sizes end up on very different scales.",
+                 "es": "Misma escala absoluta de casos por semana: ciudades de tamaños muy distintos quedan en escalas muy distintas."},
+    "cartao_resumo_cmp_aria": {"pt": "Comparando com {nome}: {v} casos previstos, nível {nivel}.",
+                               "en": "Comparing with {nome}: {v} forecast cases, level {nivel}.",
+                               "es": "Comparando con {nome}: {v} casos previstos, nivel {nivel}."},
+    "nota_nivel_hero": {"pt": "Nível simplificado (incidência semanal por 100 mil hab.); não é o alerta oficial do InfoDengue. Critérios na Figura 1.",
+                        "en": "Simplified level (weekly incidence per 100k inhab.); not the official InfoDengue alert. Criteria in Figure 1.",
+                        "es": "Nivel simplificado (incidencia semanal por 100 mil hab.); no es la alerta oficial de InfoDengue. Criterios en la Figura 1."},
+    "gloss_linha": {"pt": "t+N: N semanas à frente da última semana observada. SE: semana epidemiológica (domingo a sábado).",
+                    "en": "t+N: N weeks ahead of the last observed week. EW: epidemiological week (Sunday to Saturday).",
+                    "es": "t+N: N semanas después de la última semana observada. SE: semana epidemiológica (domingo a sábado)."},
     "nota_nivel": {"pt": "Nível simplificado: incidência semanal por 100 mil hab.: <2,5 Verde · "
                          "<10 Amarelo · <30 Laranja · ≥30 Vermelho. Não é o alerta oficial do "
-                         "InfoDengue (que combina incidência, Rt e temperatura).",
+                         "InfoDengue (que combina incidência, número de reprodução Rt e temperatura).",
                    "en": "Simplified level: weekly incidence per 100k inhab.: <2.5 Green · <10 Yellow "
                          "· <30 Orange · ≥30 Red. Not the official InfoDengue alert (which combines "
-                         "incidence, Rt and temperature).",
+                         "incidence, the reproduction number Rt and temperature).",
                    "es": "Nivel simplificado: incidencia semanal por 100 mil hab.: <2,5 Verde · <10 "
                          "Amarillo · <30 Naranja · ≥30 Rojo. No es la alerta oficial de InfoDengue "
-                         "(que combina incidencia, Rt y temperatura)."},
+                         "(que combina incidencia, número reproductivo Rt y temperatura)."},
     "sem_cob_cartao": {"pt": "Ainda não há cidade monitorada neste estado. Quando uma capital ou "
                              "cidade entrar no pipeline, a previsão aparece aqui.",
                        "en": "No monitored city in this state yet. Once a capital or city enters the "

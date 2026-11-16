@@ -54,7 +54,7 @@ def situacao(lang):
         html.Div(segs, className="sit-barra", role="img",
                  **{"aria-label": tr(lang, "sit_barra_aria", n=n, lista=", ".join(aria))}),
         html.Div(linhas, className="sit-lista"),
-        html.Div(tr(lang, "nota_nivel"), className="sit-nota aux"),
+        html.Div(tr(lang, "nota_nivel_hero"), className="sit-nota aux"),
     ])
 
 
@@ -229,7 +229,9 @@ def legenda_serie(lang):
         return html.Span([html.Span(className=f"serie-sw {cls}"), texto], className="serie-item")
     return html.Div(id="legenda-serie", className="serie-legend", children=[
         item("obs", tr(lang, "serie_obs")), item("prev", tr(lang, "serie_prev")),
-        item("int", tr(lang, "serie_int")), item("orig", tr(lang, "serie_origem", se=se))])
+        item("int", tr(lang, "serie_int")), item("orig", tr(lang, "serie_origem", se=se)),
+        html.Span(id="legenda-cmp", className="serie-item", hidden=True,
+                  children=[html.Span(className="serie-sw cmp"), html.Span(id="legenda-cmp-nome")])])
 
 
 def tabela_ranking(lang, n=8):
@@ -440,8 +442,9 @@ def artigo(lang):
         sumario(lang), coluna, materiais(lang)])
 
 
-def construir_conteudo(lang, sel=None, tema="light", cvd=False):
-    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang)   # A15 — seleção inicial da URL
+def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
+    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang)
+    cmp = cmp if (isinstance(cmp, str) and cmp in _GEOS_CIDADE) else None   # A15 — seleção inicial da URL
     return [
         # hero (capa dos slides: fundo verde full-bleed + resumo da situação)
         html.Header(className="hero", children=[
@@ -474,17 +477,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False):
                     html.Span(className="aviso-ico ico-warn", **{"aria-hidden": "true"}),
                     html.Span([html.Strong(tr(lang, "aviso_warn_t")), " ",
                                *rico(tr(lang, "aviso_warn_p"))])]),
-                _aviso(lang),
             ]),
-            html.Div(className="stats", children=[
-                stat([html.Span(fmt_int(ESTUDO["casos_2023"], lang) + " "),
-                      html.Span("→", className="arrow"),
-                      html.Span(" " + fmt_int(ESTUDO["casos_2024"], lang))],
-                     tr(lang, "stat1")),
-                stat(fmt_pct(-ESTUDO["reducao_mae"], lang), tr(lang, "stat2")),
-                stat(fmt_intervalo(ESTUDO["cobertura"][0], ESTUDO["cobertura"][1], lang) + "%",
-                     tr(lang, "stat3")),
-                stat(fmt_dec(ESTUDO["pico_norm"], lang, 2), tr(lang, "stat4b"), tom="alarm")]),
         ]),
 
         # ---- conteúdo em coluna de leitura (.wrap) ----
@@ -528,19 +521,25 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False):
                         # anúncio para leitor de tela quando a cidade muda (NEW-1)
                         html.Div(id="cartao-status", className="sr-only",
                                  **{"role": "status", "aria-live": "polite", "aria-atomic": "true"}),
+                        html.Div(className="comparar", children=[
+                            html.Label(tr(lang, "lbl_comparar"), htmlFor="dd-comparar"),
+                            dcc.Dropdown(id="dd-comparar", placeholder=tr(lang, "ph_comparar"),
+                                         options=opcoes_cidade_br(), value=cmp, clearable=True,
+                                         disabled=geo.startswith("UF-"), labels=_labels_dd(lang))]),
                         legenda_serie(lang),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
-                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema),
+                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema, comp=cmp),
                                   # locale INLINE: meses/dias no idioma da UI (o Plotly do Dash não traz
                                   # locales e a CSP proíbe CDN). O Graph é recriado ao trocar de idioma.
                                   config={"displayModeBar": False, "responsive": True,
                                           "locale": lang, "locales": {lang: plotly_locale(lang)}}),
-                        html.Div(id="horizontes", children=horizontes(geo, lang))]),
+                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp))]),
                 ]),
                 html.Figcaption([html.Strong(tr(lang, "figura_pref", n=1)),
                                  tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
             ]),
             html.Div(className="painel-extra", children=[
+                html.Div(className="avisos avisos--fonte", children=[_aviso(lang)]),
                 tabela_ranking(lang),
                 html.Div(className="como-ler", children=[
                     html.H3(tr(lang, "como_ler_t"), className="como-ler-t"),
@@ -550,6 +549,17 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False):
         ]),
 
         ]),  # ---- fecha o .wrap de conteúdo (painel) ----
+        html.Section(id="resultados-chave", className="wrap indicadores indicadores--resultados", children=[
+            html.Div(className="stats", children=[
+                stat([html.Span(fmt_int(ESTUDO["casos_2023"], lang) + " "),
+                      html.Span("→", className="arrow"),
+                      html.Span(" " + fmt_int(ESTUDO["casos_2024"], lang))],
+                     tr(lang, "stat1")),
+                stat(fmt_pct(-ESTUDO["reducao_mae"], lang), tr(lang, "stat2")),
+                stat(fmt_intervalo(ESTUDO["cobertura"][0], ESTUDO["cobertura"][1], lang) + "%",
+                     tr(lang, "stat3")),
+                stat(fmt_dec(ESTUDO["pico_norm"], lang, 2), tr(lang, "stat4b"), tom="alarm")]),
+        ]),
 
         # artigo JBCS — full-bleed (fundo --paper), grid TOC | coluna | aside
         artigo(lang),
@@ -611,6 +621,7 @@ def serve_layout():
         dcc.Store(id="theme-eff"),
         dcc.Store(id="cvd"),
         dcc.Store(id="sel"),
+        dcc.Store(id="cmp"),   # cidade de comparação (fonte canônica; imune ao rebuild de render_content)
         # A15 — estado compartilhável na URL (?lang=&cidade=); tema/cvd/motion ficam no localStorage
         dcc.Location(id="url", refresh=False),
         dcc.Store(id="url-sync"),

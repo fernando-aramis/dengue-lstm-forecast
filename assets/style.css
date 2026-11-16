@@ -32,7 +32,7 @@
   --surface: var(--cream); --surface-raised: var(--paper); --surface-sunken: var(--cream-2);
   --text: var(--ink); --text-muted: var(--muted); --border: var(--line);
   --focus: var(--green-ink); --focus-on-dark: #F3EFE6;   /* anel sobre barra/hero/rodapé (fundos escuros nos 2 temas) */
-  --border-strong: #6E7A74; --series-prev: #2F5A42;   /* linha da previsão (legenda = gráfico) */                              /* componentes de UI (1.4.11): ≥3:1 nos 2 temas */
+  --border-strong: #6E7A74; --series-prev: #2F5A42; --series-cmp: #2E6FB0;   /* linha da previsão (legenda = gráfico) */                              /* componentes de UI (1.4.11): ≥3:1 nos 2 temas */
   --level-green: var(--n-verde); --level-yellow: var(--n-amarelo);
   --level-orange: var(--n-laranja); --level-red: var(--n-vermelho);
 
@@ -55,6 +55,7 @@
   --cream: #14181A; --cream-2: #222A2D; --paper: #1E2428;
   --ink: #ECEFEA; --muted: #B6BEB7; --line: #313A39;
   --green: #5FA776; --green-d: #2F5A42; --green-ink: #8FD3A4; --green-l: #274234;
+  --series-cmp: #8DB8E8;   /* = PLOT["dark"]["cmp"] */
   --series-prev: #7FC894;   /* = PLOT["dark"]["prev"]: legenda acompanha a linha do gráfico (antes 2:1) */
   --terra: #E59A5E;
   --brand: #1D3227; --on-brand: #ECEFEA; --on-brand-muted: #B6BEB7; --accent-on-brand: #8FD3A4;
@@ -587,9 +588,6 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 
 .stat--alarm .big { color: var(--terra); }
 
-@media (min-width: 768px) {
-  .avisos { grid-template-columns: 1fr 1fr; }
-}
 @media (min-width: 980px) {
   .hero-grid { grid-template-columns: 1fr 440px; gap: 20px 48px; align-items: start;
     grid-template-areas: "lead sit" "foot sit"; }
@@ -797,6 +795,50 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 @media (max-width: 559px) {
   .horizontes { grid-template-columns: 1fr 1fr; }       /* t+1..t+4 em 2x2 no telefone */
 }
+/* ==================================================== Refino final — 1ª dobra e carregamento
+   1ª dobra (desktop): hero mais baixo, avisos logo abaixo e o painel (Figura 1) sobe; os resultados-chave
+   do estudo passaram para depois do painel (o objeto central do painel é o mapa, não a faixa de KPIs). */
+.indicadores { padding-top: 20px; padding-bottom: 8px; }
+.avisos { margin-bottom: 8px; }
+.indicadores--resultados { padding-top: 0; padding-bottom: 28px; }
+.indicadores--resultados .stats { margin-top: 0; }
+@media (min-width: 980px) {
+  header.hero { padding: 24px 0 20px; }
+  header.hero h1 { font-size: clamp(2rem, 3.4vw, 2.5rem); }
+  .hero-autor { margin-bottom: 12px; }
+}
+@media (min-width: 980px) {
+  header.hero .wrap { padding-bottom: 0; }
+  #painel { margin-top: 8px; }
+  .sit-lista { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; row-gap: 8px; }
+  .sit-nota { margin-top: 12px; }
+}
+.avisos { grid-template-columns: 1fr; }
+.avisos--fonte { margin: 0 0 18px; }
+/* Comparação de cidades (heurística 7) — série azul pontilhada com losango; tabela t+1…t+4 como alternativa textual */
+.comparar { margin: 0 0 12px; padding: 0 18px; }
+.comparar label { display: block; font-size: .8125rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+.serie-sw.cmp { border-top: 2px dotted var(--series-cmp); }
+.tabela-cmp { width: 100%; border-collapse: collapse; font-size: .8125rem; margin-top: 12px; }
+.tabela-cmp caption { text-align: left; color: var(--text-muted); padding-bottom: 6px; }
+.tabela-cmp th, .tabela-cmp td { padding: 6px; text-align: right; border-top: 1px solid var(--border); vertical-align: top; }
+.tabela-cmp th[scope=row] { text-align: left; font-weight: 650; }
+.tabela-cmp thead th { color: var(--text-muted); font-weight: 600; }
+.cmp-v { display: block; font-weight: 650; }
+.cmp-ic { display: block; color: var(--text-muted); white-space: nowrap; }
+.tabela-scroll { overflow-x: auto; }
+/* Carregamento (heurística 1): o Dash marca com data-dash-is-loading o que está sendo recalculado.
+   Esmaece SÓ após 150 ms (troca rápida não pisca) e mostra o texto "Atualizando…" sem deslocar nada. */
+.panel-detalhe { position: relative; }
+#cartao, #detalhe, #horizontes { transition: opacity .12s linear; }
+#cartao[data-dash-is-loading="true"], #detalhe[data-dash-is-loading="true"],
+#horizontes[data-dash-is-loading="true"] { opacity: .55; transition-delay: .15s; }
+.panel-detalhe::after { content: ""; position: absolute; top: 24px; right: 118px; font-size: .8125rem;
+  color: var(--text-muted); pointer-events: none; opacity: 0; transition: opacity .12s linear; }
+.panel-detalhe:has([data-dash-is-loading="true"])::after { content: "Atualizando…"; opacity: 1; transition-delay: .15s; }
+.panel-detalhe:lang(en):has([data-dash-is-loading="true"])::after { content: "Updating…"; }
+.panel-detalhe:lang(es):has([data-dash-is-loading="true"])::after { content: "Actualizando…"; }
+@media (prefers-reduced-motion: reduce) { #cartao, #detalhe, #horizontes, .panel-detalhe::after { transition: none; } }
 @media print {
   .topbar, .running-header, .controles, .map-hint, .serie-legend, .hero-cta, .btn,
   .dash-clipboard, .nav-mobile, .nav-desktop, .faixa, .faixa-fim, .como-ler, .recencia,
