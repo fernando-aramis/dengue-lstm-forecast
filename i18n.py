@@ -19,12 +19,18 @@ T = {
     # ---------------------------------------------------------------- topbar / controles
     "brand": {"pt": "Dengue · Previsão LSTM", "en": "Dengue · LSTM Forecast",
               "es": "Dengue · Pronóstico LSTM"},
-    "curso": {"pt": "IAGA04 — Aprendizado Profundo · UTFPR",
-              "en": "IAGA04 — Deep Learning · UTFPR",
-              "es": "IAGA04 — Aprendizaje Profundo · UTFPR"},
+    "curso": {"pt": "IAGA04: Aprendizado Profundo · UTFPR",
+              "en": "IAGA04: Deep Learning · UTFPR",
+              "es": "IAGA04: Aprendizaje Profundo · UTFPR"},
     "tema_light": {"pt": "Modo claro", "en": "Light mode", "es": "Modo claro"},
     "tema_system": {"pt": "Modo do sistema", "en": "System mode", "es": "Modo del sistema"},
     "tema_dark": {"pt": "Modo escuro", "en": "Dark mode", "es": "Modo oscuro"},
+    "prefs_label": {"pt": "Idioma e tema", "en": "Language and theme", "es": "Idioma y tema"},
+    "a11y_label": {"pt": "Acessibilidade", "en": "Accessibility", "es": "Accesibilidad"},
+    "a11y_titulo": {"pt": "Acessibilidade", "en": "Accessibility", "es": "Accesibilidad"},
+    "a11y_cvd": {"pt": "Cores para daltonismo", "en": "Colorblind-safe colors",
+                 "es": "Colores para daltonismo"},
+    "a11y_motion": {"pt": "Reduzir movimento", "en": "Reduce motion", "es": "Reducir movimiento"},
 
     # ---- casca JBCS (F2): skip link, navegação, cabeçalho corrido, rodapé ----
     "skip": {"pt": "Pular para o conteúdo", "en": "Skip to content", "es": "Saltar al contenido"},
@@ -35,9 +41,12 @@ T = {
     "nav_metodos": {"pt": "Métodos", "en": "Methods", "es": "Métodos"},
     "nav_dados": {"pt": "Dados", "en": "Data", "es": "Datos"},
     "nav_citar": {"pt": "Como citar", "en": "How to cite", "es": "Cómo citar"},
-    "rh_esq": {"pt": "IAGA04 — Aprendizado Profundo · Especialização em IA Generativa Aplicada · UTFPR, 2026",
-               "en": "IAGA04 — Deep Learning · Graduate Certificate in Applied Generative AI · UTFPR, 2026",
-               "es": "IAGA04 — Aprendizaje Profundo · Especialización en IA Generativa Aplicada · UTFPR, 2026"},
+    "bibtex_aria": {"pt": "Citação BibTeX", "en": "BibTeX citation", "es": "Cita BibTeX"},
+    "running_header_aria": {"pt": "Cabeçalho do artigo", "en": "Running header",
+                            "es": "Encabezado del artículo"},
+    "rh_esq": {"pt": "IAGA04: Aprendizado Profundo · Especialização em IA Generativa Aplicada · UTFPR, 2026",
+               "en": "IAGA04: Deep Learning · Graduate Certificate in Applied Generative AI · UTFPR, 2026",
+               "es": "IAGA04: Aprendizaje Profundo · Especialización en IA Generativa Aplicada · UTFPR, 2026"},
     "rh_esq_curto": {"pt": "IAGA04 · UTFPR 2026", "en": "IAGA04 · UTFPR 2026", "es": "IAGA04 · UTFPR 2026"},
     "rh_dir": {"pt": "Dados: Zenodo 10.5281/zenodo.13328231 · {licenca}",
                "en": "Data: Zenodo 10.5281/zenodo.13328231 · {licenca}",
@@ -63,11 +72,11 @@ T = {
                            "supported planning, code and review.",
                      "es": "Código bajo GPL-3.0; texto bajo CC BY 4.0. El asistente Claude (Anthropic) "
                            "apoyó la planificación, el código y la revisión."},
-    "rodape_aviso": {"pt": "Projeto acadêmico — não é ferramenta oficial de vigilância epidemiológica. "
+    "rodape_aviso": {"pt": "Projeto acadêmico: não é ferramenta oficial de vigilância epidemiológica. "
                            "Para informação oficial, consulte o InfoDengue e as autoridades de saúde.",
-                     "en": "Academic project — not an official epidemiological surveillance tool. "
+                     "en": "Academic project: not an official epidemiological surveillance tool. "
                            "For official information, consult InfoDengue and health authorities.",
-                     "es": "Proyecto académico — no es una herramienta oficial de vigilancia epidemiológica. "
+                     "es": "Proyecto académico: no es una herramienta oficial de vigilancia epidemiológica. "
                            "Para información oficial, consulte InfoDengue y las autoridades de salud."},
 
     # ---------------------------------------------------------------- hero
@@ -89,9 +98,9 @@ T = {
              "es": "Proyección de una a cuatro semanas para capitales y principales ciudades, con un "
                    "intervalo de incertidumbre del 90%. Basado en el estudio LSTM para Curitiba, "
                    "extendido al mapa nacional."},
-    "stat1": {"pt": "casos prováveis em Curitiba: 2023 vs. 1º sem. 2024 — quase 2× o pico de 2016 (7.883)",
-              "en": "probable cases in Curitiba: 2023 vs. 1st half 2024 — nearly 2× the 2016 peak (7,883)",
-              "es": "casos probables en Curitiba: 2023 vs. 1er sem. 2024 — casi 2× el pico de 2016 (7.883)"},
+    "stat1": {"pt": "casos prováveis em Curitiba: 2023 vs. 1º sem. 2024, quase 2× o pico de 2016 (7.883)",
+              "en": "probable cases in Curitiba: 2023 vs. 1st half 2024, nearly 2× the 2016 peak (7,883)",
+              "es": "casos probables en Curitiba: 2023 vs. 1er sem. 2024, casi 2× el pico de 2016 (7.883)"},
     "stat2": {"pt": "erro (MAE) da LSTM vs. ingênuo em 4 semanas (2022/23)",
               "en": "LSTM error (MAE) vs. naïve at 4 weeks (2022/23)",
               "es": "error (MAE) de la LSTM vs. ingenuo a 4 semanas (2022/23)"},
@@ -124,9 +133,9 @@ T = {
                        "es": "Distribución de las {n} ciudades por nivel: {lista}"},
     "palavra_cidade": {"pt": "cidade", "en": "city", "es": "ciudad"},
     "palavra_cidades": {"pt": "cidades", "en": "cities", "es": "ciudades"},
-    "aviso_warn_t": {"pt": "Projeto acadêmico — não é alerta oficial",
-                     "en": "Academic project — not an official alert",
-                     "es": "Proyecto académico — no es una alerta oficial"},
+    "aviso_warn_t": {"pt": "Projeto acadêmico: não é alerta oficial.",
+                     "en": "Academic project: not an official alert.",
+                     "es": "Proyecto académico: no es una alerta oficial."},
     "aviso_warn_p": {"pt": "O nível exibido é uma simplificação (incidência semanal por 100 mil hab.) "
                            "e não corresponde ao alerta do InfoDengue. Não use para decisões clínicas "
                            "ou de saúde pública.",
@@ -136,9 +145,9 @@ T = {
                      "es": "El nivel mostrado es una simplificación (incidencia semanal por 100 mil hab.) "
                            "y no corresponde a la alerta de InfoDengue. No lo use para decisiones clínicas "
                            "o de salud pública."},
-    "stat4b": {"pt": "pico de 2024 na escala normalizada: fora da faixa de treino — nenhuma rede previu",
-               "en": "2024 peak on the normalized scale: outside the training range — no network predicted it",
-               "es": "pico de 2024 en la escala normalizada: fuera del rango de entrenamiento — ninguna red lo previó"},
+    "stat4b": {"pt": "pico de 2024 na escala normalizada: fora da faixa de treino; nenhuma rede previu",
+               "en": "2024 peak on the normalized scale: outside the training range; no network predicted it",
+               "es": "pico de 2024 en la escala normalizada: fuera del rango de entrenamiento; ninguna red lo previó"},
 
     # ---- Figura 1: recência, legenda da série, horizontes, Tabela 1, como ler (F4) ----
     "fig1_eyebrow": {"pt": "Figura 1 · interativa", "en": "Figure 1 · interactive",
@@ -147,18 +156,39 @@ T = {
                  "en": "Data up to EW {se}/{ano} · weekly update",
                  "es": "Datos hasta SE {se}/{ano} · actualización semanal"},
     "fig1_caption": {"pt": "Previsão de casos prováveis de dengue para t+1 a t+4 semanas (origem: "
-                           "SE {se}/{ano}) com intervalo conformal de 90%. Fonte: InfoDengue/SINAN; "
-                           "malha estadual IBGE; elaboração própria. Nível simplificado — não é o alerta oficial.",
+                           "SE {se}/{ano}) com intervalo de 90% (conformal: calibrado nos erros passados do próprio modelo). Fonte: InfoDengue/SINAN; "
+                           "malha estadual IBGE; elaboração própria. Nível simplificado: não é o alerta oficial.",
                      "en": "Forecast of probable dengue cases for t+1 to t+4 weeks (origin: EW {se}/{ano}) "
-                           "with a 90% conformal interval. Source: InfoDengue/SINAN; IBGE state boundaries; "
-                           "own elaboration. Simplified level — not the official alert.",
+                           "with a 90% interval (conformal: calibrated on the model's own past errors). Source: InfoDengue/SINAN; IBGE state boundaries; "
+                           "own elaboration. Simplified level: not the official alert.",
                      "es": "Pronóstico de casos probables de dengue para t+1 a t+4 semanas (origen: "
-                           "SE {se}/{ano}) con intervalo conforme del 90%. Fuente: InfoDengue/SINAN; "
-                           "malla estatal del IBGE; elaboración propia. Nivel simplificado — no es la alerta oficial."},
+                           "SE {se}/{ano}) con intervalo del 90% (conforme: calibrado con los errores pasados del propio modelo). Fuente: InfoDengue/SINAN; "
+                           "malla estatal del IBGE; elaboración propia. Nivel simplificado: no es la alerta oficial."},
     "leg_sem_dado": {"pt": "Sem dado", "en": "No data", "es": "Sin dato"},
     "serie_obs": {"pt": "Observado", "en": "Observed", "es": "Observado"},
     "serie_prev": {"pt": "Previsto", "en": "Forecast", "es": "Previsto"},
     "serie_int": {"pt": "Intervalo 90%", "en": "90% interval", "es": "Intervalo 90%"},
+    "leg_anel": {"pt": "Espessura do anel = nível", "en": "Ring thickness = level", "es": "Grosor del anillo = nivel"},
+    "dd_busca": {"pt": "Buscar", "en": "Search", "es": "Buscar"},
+    "dd_limpar_busca": {"pt": "Limpar busca", "en": "Clear search", "es": "Borrar búsqueda"},
+    "dd_sem_opcoes": {"pt": "Nenhum resultado", "en": "No results", "es": "Sin resultados"},
+    "dd_limpar": {"pt": "Limpar seleção", "en": "Clear selection", "es": "Borrar selección"},
+    "doc_title": {"pt": "Previsão de dengue no Brasil com LSTM", "en": "Dengue forecast for Brazil with LSTM",
+                  "es": "Pronóstico de dengue en Brasil con LSTM"},
+    "se_abrev": {"pt": "SE {se}", "en": "EW {se}", "es": "SE {se}"},
+    "figura_pref": {"pt": "Figura {n}. ", "en": "Figure {n}. ", "es": "Figura {n}. "},
+    "tabela_pref": {"pt": "Tabela {n}. ", "en": "Table {n}. ", "es": "Tabla {n}. "},
+    "idioma_label": {"pt": "Idioma", "en": "Language", "es": "Idioma"},
+    "tema_label": {"pt": "Tema", "en": "Theme", "es": "Tema"},
+    "boot_lede": {"pt": "Previsão semanal de dengue no Brasil · 1–4 semanas à frente · intervalo de 90%.",
+                  "en": "Weekly dengue forecasts for Brazil · 1–4 weeks ahead · 90% interval.",
+                  "es": "Pronóstico semanal de dengue en Brasil · 1–4 semanas por delante · intervalo del 90%."},
+    "boot_msg": {"pt": "Carregando o painel… o servidor gratuito pode levar até 1 minuto para acordar.",
+                 "en": "Loading the dashboard… the free server may take up to a minute to wake up.",
+                 "es": "Cargando el panel… el servidor gratuito puede tardar hasta 1 minuto en despertar."},
+    "boot_noscript": {"pt": "Este painel precisa de JavaScript. Leia o estudo: ",
+                      "en": "This dashboard needs JavaScript. Read the study: ",
+                      "es": "Este panel necesita JavaScript. Lea el estudio: "},
     "serie_origem": {"pt": "Origem (SE {se})", "en": "Origin (EW {se})", "es": "Origen (SE {se})"},
     "horiz_nota": {"pt": "A faixa se alarga com o horizonte: ±{a} → ±{b} casos em 4 semanas.",
                    "en": "The band widens with the horizon: ±{a} → ±{b} cases in 4 weeks.",
@@ -189,13 +219,13 @@ T = {
                    "es": "En brotes fuera del histórico (como 2024), el modelo subestima — trate los "
                          "valores altos con cautela."},
     "aviso": {"pt": "Previsões reais. Dados do InfoDengue até a semana de {origem}; LSTM univariada "
-                    "(versão A do estudo) com intervalo conformal de 90%, uma rede por cidade. "
+                    "(versão A do estudo) com intervalo de 90% (conformal: calibrado nos erros passados do próprio modelo), uma rede por cidade. "
                     "Treino do pipeline completo; geocodes validados no IBGE.",
               "en": "Real forecasts. InfoDengue data up to the week of {origem}; univariate LSTM "
-                    "(study version A) with a 90% conformal interval, one network per city. Full "
+                    "(study version A) with a 90% interval (conformal: calibrated on the model's own past errors), one network per city. Full "
                     "pipeline training; geocodes validated against IBGE.",
               "es": "Pronósticos reales. Datos de InfoDengue hasta la semana de {origem}; LSTM "
-                    "univariada (versión A del estudio) con intervalo conforme del 90%, una red por "
+                    "univariada (versión A del estudio) con intervalo del 90% (conforme: calibrado con los errores pasados del propio modelo), una red por "
                     "ciudad. Entrenamiento del pipeline completo; geocódigos validados en el IBGE."},
     "aviso_strong": {"pt": "Previsões reais. ", "en": "Real forecasts. ", "es": "Pronósticos reales. "},
 
@@ -218,15 +248,22 @@ T = {
     "map_hint": {"pt": "Fallback: estados sem cidade coberta mostram a previsão estadual agregada.",
                  "en": "Fallback: states without a covered city show the aggregated state forecast.",
                  "es": "Reserva: los estados sin ciudad cubierta muestran el pronóstico estatal agregado."},
+    "mapa_sem_webgl": {
+        "pt": "O mapa não pôde ser exibido (o navegador bloqueou o WebGL). Os seletores de estado e "
+              "cidade acima continuam funcionando, e a Tabela 1 abaixo lista as previsões.",
+        "en": "The map could not be shown (your browser blocked WebGL). The state and city selectors "
+              "above still work, and Table 1 below lists the forecasts.",
+        "es": "No se pudo mostrar el mapa (el navegador bloqueó WebGL). Los selectores de estado y "
+              "ciudad de arriba siguen funcionando, y la Tabla 1 de abajo lista los pronósticos."},
     "legend_title": {"pt": "Nível previsto (cidade)", "en": "Forecast level (city)",
                      "es": "Nivel previsto (ciudad)"},
     "estados_trace": {"pt": "Estados", "en": "States", "es": "Estados"},
     "sem_cobertura": {"pt": "Sem cidade monitorada ainda", "en": "No monitored city yet",
                       "es": "Sin ciudad monitoreada aún"},
-    "hover_estado": {"pt": "Estado · próx. semana: {v} casos", "en": "State · next week: {v} cases",
-                     "es": "Estado · próx. semana: {v} casos"},
-    "hover_cidade": {"pt": "Próx. semana: {v} casos · {nivel}", "en": "Next week: {v} cases · {nivel}",
-                     "es": "Próx. semana: {v} casos · {nivel}"},
+    "hover_estado": {"pt": "Estado · próx. semana: {v} casos", "en": "State · next week: {v} cases",
+                     "es": "Estado · próx. semana: {v} casos"},
+    "hover_cidade": {"pt": "Próx. semana: {v} casos · {nivel}", "en": "Next week: {v} cases · {nivel}",
+                     "es": "Próx. semana: {v} casos · {nivel}"},
 
     # ---------------------------------------------------------------- cartão
     "card_prompt": {"pt": "Selecione uma cidade ou estado no mapa.",
@@ -234,32 +271,63 @@ T = {
                     "es": "Selecciona una ciudad o estado en el mapa."},
     "card_prev": {"pt": "Previsão · próxima semana", "en": "Forecast · next week",
                   "es": "Pronóstico · próxima semana"},
-    "card_casos": {"pt": "{v} casos", "en": "{v} cases", "es": "{v} casos"},
-    "card_intervalo": {"pt": "Intervalo de 90%: {inf} – {sup} casos",
-                       "en": "90% interval: {inf} – {sup} cases",
+    "card_casos": {"pt": "{v} casos", "en": "{v} cases", "es": "{v} casos"},
+    "card_intervalo": {"pt": "Intervalo de 90%: {inf}–{sup} casos",
+                       "en": "90% interval: {inf}–{sup} cases",
                        "es": "Intervalo del 90%: {inf} – {sup} casos"},
     "card_nivel": {"pt": "Nível: ", "en": "Level: ", "es": "Nivel: "},
+    "cartao_resumo_aria": {
+        "pt": "{nome}: {v} casos previstos para a próxima semana, nível {nivel}.",
+        "en": "{nome}: {v} cases forecast for next week, level {nivel}.",
+        "es": "{nome}: {v} casos previstos para la próxima semana, nivel {nivel}."},
+    "copiado": {"pt": "Copiado.", "en": "Copied.", "es": "Copiado."},
     "escopo_municipio": {"pt": "Município", "en": "Municipality", "es": "Municipio"},
     "escopo_estado": {"pt": "Estado", "en": "State", "es": "Estado"},
     "escopo_cidades": {"pt": "Cidades monitoradas", "en": "Monitored cities", "es": "Ciudades monitoreadas"},
-    "nota_piso": {"pt": "Soma das cidades monitoradas da UF — é um piso, não o total do estado.",
-                  "en": "Sum of the state's monitored cities — a floor, not the state total.",
-                  "es": "Suma de las ciudades monitoreadas del estado — es un piso, no el total estatal."},
-    "nota_nivel": {"pt": "Nível simplificado — incidência semanal por 100 mil hab.: <2,5 Verde · "
+    "nota_piso": {"pt": "Soma das cidades monitoradas da UF; é um piso, não o total do estado.",
+                  "en": "Sum of the state's monitored cities; a floor, not the state total.",
+                  "es": "Suma de las ciudades monitoreadas del estado; es un piso, no el total estatal."},
+    "lbl_comparar": {"pt": "Comparar com (opcional)", "en": "Compare with (optional)", "es": "Comparar con (opcional)"},
+    "ph_comparar": {"pt": "Nenhuma cidade", "en": "No city", "es": "Ninguna ciudad"},
+    "serie_cmp": {"pt": "Comparação: {nome}", "en": "Comparison: {nome}", "es": "Comparación: {nome}"},
+    "cmp_tab_cap": {"pt": "Previsão t+1…t+4 por cidade (casos por semana; intervalo de 90%)",
+                    "en": "Forecast t+1…t+4 by city (cases per week; 90% interval)",
+                    "es": "Pronóstico t+1…t+4 por ciudad (casos por semana; intervalo del 90%)"},
+    "cmp_hint": {"pt": "Mesma escala absoluta de casos por semana: cidades de portes muito diferentes ficam em escalas distintas.",
+                 "en": "Same absolute scale of cases per week: cities of very different sizes end up on very different scales.",
+                 "es": "Misma escala absoluta de casos por semana: ciudades de tamaños muy distintos quedan en escalas muy distintas."},
+    "cartao_resumo_cmp_aria": {"pt": "Comparando com {nome}: {v} casos previstos, nível {nivel}.",
+                               "en": "Comparing with {nome}: {v} forecast cases, level {nivel}.",
+                               "es": "Comparando con {nome}: {v} casos previstos, nivel {nivel}."},
+    "nota_nivel_hero": {"pt": "Nível simplificado (incidência semanal por 100 mil hab.); não é o alerta oficial do InfoDengue. Critérios na Figura 1.",
+                        "en": "Simplified level (weekly incidence per 100k inhab.); not the official InfoDengue alert. Criteria in Figure 1.",
+                        "es": "Nivel simplificado (incidencia semanal por 100 mil hab.); no es la alerta oficial de InfoDengue. Criterios en la Figura 1."},
+    "gloss_linha": {"pt": "t+N: N semanas à frente da última semana observada. SE: semana epidemiológica (domingo a sábado).",
+                    "en": "t+N: N weeks ahead of the last observed week. EW: epidemiological week (Sunday to Saturday).",
+                    "es": "t+N: N semanas después de la última semana observada. SE: semana epidemiológica (domingo a sábado)."},
+    "nota_nivel": {"pt": "Nível simplificado: incidência semanal por 100 mil hab.: <2,5 Verde · "
                          "<10 Amarelo · <30 Laranja · ≥30 Vermelho. Não é o alerta oficial do "
-                         "InfoDengue (que combina incidência, Rt e temperatura).",
-                   "en": "Simplified level — weekly incidence per 100k inhab.: <2.5 Green · <10 Yellow "
+                         "InfoDengue (que combina incidência, número de reprodução Rt e temperatura).",
+                   "en": "Simplified level: weekly incidence per 100k inhab.: <2.5 Green · <10 Yellow "
                          "· <30 Orange · ≥30 Red. Not the official InfoDengue alert (which combines "
-                         "incidence, Rt and temperature).",
-                   "es": "Nivel simplificado — incidencia semanal por 100 mil hab.: <2,5 Verde · <10 "
+                         "incidence, the reproduction number Rt and temperature).",
+                   "es": "Nivel simplificado: incidencia semanal por 100 mil hab.: <2,5 Verde · <10 "
                          "Amarillo · <30 Naranja · ≥30 Rojo. No es la alerta oficial de InfoDengue "
-                         "(que combina incidencia, Rt y temperatura)."},
+                         "(que combina incidencia, número reproductivo Rt y temperatura)."},
     "sem_cob_cartao": {"pt": "Ainda não há cidade monitorada neste estado. Quando uma capital ou "
                              "cidade entrar no pipeline, a previsão aparece aqui.",
                        "en": "No monitored city in this state yet. Once a capital or city enters the "
                              "pipeline, its forecast shows up here.",
                        "es": "Aún no hay ciudad monitoreada en este estado. Cuando una capital o "
                              "ciudad entre al pipeline, el pronóstico aparecerá aquí."},
+    # anúncio aria-live e texto do gráfico quando o estado não tem cidade monitorada
+    "cartao_resumo_aria_semcob": {
+        "pt": "{nome}: ainda sem cidade monitorada, sem previsão disponível.",
+        "en": "{nome}: no monitored city yet, no forecast available.",
+        "es": "{nome}: aún sin ciudad monitoreada, sin pronóstico disponible."},
+    "detalhe_sem_serie": {"pt": "Sem série temporal: nenhuma cidade monitorada neste estado.",
+                          "en": "No time series: no monitored city in this state.",
+                          "es": "Sin serie temporal: ninguna ciudad monitoreada en este estado."},
 
     # ---------------------------------------------------------------- gráfico de detalhe
     "g_intervalo": {"pt": "Intervalo 90%", "en": "90% interval", "es": "Intervalo 90%"},
@@ -411,17 +479,17 @@ T = {
     "foot_title": {"pt": "Previsão semanal de casos de dengue em Curitiba com redes LSTM",
                    "en": "Weekly dengue case forecasting in Curitiba with LSTM networks",
                    "es": "Pronóstico semanal de casos de dengue en Curitiba con redes LSTM"},
-    "foot_author": {"pt": " — Fernando Aramis Colque · IAGA04, Especialização em IA Generativa "
+    "foot_author": {"pt": ". Fernando Aramis Colque · IAGA04, Especialização em IA Generativa "
                           "Aplicada, UTFPR (2026).",
-                    "en": " — Fernando Aramis Colque · IAGA04, Specialization in Applied Generative "
+                    "en": ". Fernando Aramis Colque · IAGA04, Specialization in Applied Generative "
                           "AI, UTFPR (2026).",
-                    "es": " — Fernando Aramis Colque · IAGA04, Especialización en IA Generativa "
+                    "es": ". Fernando Aramis Colque · IAGA04, Especialización en IA Generativa "
                           "Aplicada, UTFPR (2026)."},
-    "foot_ref1": {"pt": "Dados: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024 — "
+    "foot_ref1": {"pt": "Dados: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024. "
                         "Zenodo 10.5281/zenodo.13328231.",
-                  "en": "Data: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024 — "
+                  "en": "Data: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024. "
                         "Zenodo 10.5281/zenodo.13328231.",
-                  "es": "Datos: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024 — "
+                  "es": "Datos: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024. "
                         "Zenodo 10.5281/zenodo.13328231."},
     "foot_ref2": {"pt": "Referências: Araujo et al. (2026), PNAS · Chen & Moraga (2025), BMC Public "
                         "Health · Mussumeci & Coelho (2020) · Hochreiter & Schmidhuber (1997).",
@@ -459,7 +527,5 @@ def nivel(lang, chave_pt):
     return NIVEIS.get(lang, NIVEIS[FALLBACK]).get(chave_pt, chave_pt)
 
 
-def fmt_int(v, lang="pt"):
-    """Inteiro com separador de milhar por idioma: 5291 -> '5.291' (pt/es) / '5,291' (en)."""
-    s = f"{int(round(v)):,}"
-    return s if lang == "en" else s.replace(",", ".")
+# Formatação centralizada em formato.py; re-exportada aqui para `from i18n import fmt_int`.
+from formato import fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo  # noqa: E402,F401

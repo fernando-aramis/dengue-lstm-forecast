@@ -4,3 +4,20 @@ __pycache__/
 .pytest_cache/
 tests/screenshots/
 pipeline/.cache/
+
+# UI baseline/after full-page screenshots (kept on disk, out of git by decision)
+docs/ui/shots/**/*full*.png
+
+# Impeccable local hook state (shared config.json is tracked)
+.impeccable/config.local.json
+.impeccable/hook.cache.json
+
+# graphify (grafo local, regenerável)
+graphify-out/
+
+# capturas intermediárias de cada fase do refino de UI (checkpoints antes/depois): ficam em disco, fora do git.
+# O estado final versionado é docs/ui/shots/before/ e docs/ui/shots/after/.
+docs/ui/shots/a16/
+docs/ui/shots/after-fase3/
+docs/ui/shots/after-fase4/
+docs/ui/shots/fase5/

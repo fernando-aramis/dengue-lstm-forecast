@@ -311,9 +311,18 @@ def test_cabecalhos_seguranca():
     assert r.headers.get("Permissions-Policy"), "falta Permissions-Policy"
     assert r.headers.get("Content-Security-Policy-Report-Only"), "CSP deve existir (Report-Only por decisão)"
     assert "no-cache" in (r.headers.get("Cache-Control") or ""), "HTML não deve ter cache longo"
-    css = c.get("/assets/style.css")
+    css = c.get("/assets/style.css?m=123")
     assert css.status_code == 200, "assets/style.css deveria responder 200"
-    assert "immutable" in (css.headers.get("Cache-Control") or ""), "estático versionado deve ser imutável"
+    assert "immutable" in (css.headers.get("Cache-Control") or ""), "estático versionado (?m=) deve ser imutável"
+    # sem ?m= (fontes/ícones via url() do CSS) NÃO pode ser imutável por 1 ano
+    fonte = c.get("/assets/fonts/inter-var.woff2")
+    assert "immutable" not in (fonte.headers.get("Cache-Control") or "") and "max-age=86400" in fonte.headers["Cache-Control"]
+    # erro nunca é cacheado como imutável (404/500 transitório ficaria 1 ano no navegador/CDN)
+    nf = c.get("/assets/nao-existe.png?m=1")
+    assert nf.status_code == 404 and nf.headers.get("Cache-Control") == "no-store"
+    # o layout varia por Referer/Accept-Language: nada de cache compartilhável
+    lay = c.get("/_dash-layout")
+    assert lay.headers.get("Cache-Control") == "no-cache" and "Referer" in lay.headers.get("Vary", "")
 
 
 # ---------------------------------------------------------------- UI nova (F3–F5)
@@ -381,3 +390,192 @@ def test_clipboard_citar():
     import app as A
     j = A.app.server.test_client().get("/_dash-layout").get_data(as_text=True)
     assert j.count('"Clipboard"') == 2, "esperava 2 dcc.Clipboard (ABNT e BibTeX)"
+
+
+# ---------------------------------------------------------------- Fase 5: gráficos
+def _tokens_css():
+    """Resolve os tokens de assets/style.css: (claro, escuro). Segue var(--x) em cadeia."""
+    import re
+    css = open(os.path.join(WEBAPP, "assets", "style.css"), encoding="utf-8").read()
+    claro_bloco = re.search(r":root\s*\{(.*?)\n\}", css, re.S).group(1)
+    escuro_bloco = re.search(r':root\[data-theme="dark"\]\s*\{(.*?)\n\}', css, re.S).group(1)
+    par = lambda b: dict(re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", b))
+    claro = par(claro_bloco)
+    escuro = {**claro, **par(escuro_bloco)}
+
+    def resolve(d):
+        def r(v, n=0):
+            m = re.fullmatch(r"var\((--[\w-]+)\)", v.strip())
+            return r(d[m.group(1)], n + 1) if m and n < 5 else v.strip()
+        return {k: r(v).upper() for k, v in d.items()}
+    return resolve(claro), resolve(escuro)
+
+
+def test_plot_sincronizado_com_tokens_css():
+    """CLAUDE.md: as cores existem em DOIS lugares (tokens CSS e PLOT de figuras.py) e devem ficar em
+    sincronia. Este teste trava o que hoje é idêntico. EXCEÇÕES CONHECIDAS no escuro (valores próprios do
+    gráfico, escolhidos p/ contraste sobre o papel escuro): grid, axis — não entram aqui. `prev` agora tem
+    token próprio (--series-prev) e a legenda HTML acompanha a linha em ambos os temas."""
+    import figuras
+    claro, escuro = _tokens_css()
+    L, D = figuras.PLOT["light"], figuras.PLOT["dark"]
+    esperado_claro = {"ink": "--ink", "obs": "--ink", "grid": "--cream-2", "axis": "--line",
+                      "paper": "--paper", "prev": "--series-prev", "hover_bg": "--paper", "hover_bd": "--line"}
+    for chave, token in esperado_claro.items():
+        assert L[chave].upper() == claro[token], f"PLOT[light][{chave}]={L[chave]} ≠ {token}={claro[token]}"
+    esperado_escuro = {"ink": "--ink", "obs": "--ink", "paper": "--paper", "hover_bg": "--cream-2",
+                       "prev": "--series-prev"}
+    for chave, token in esperado_escuro.items():
+        assert D[chave].upper() == escuro[token], f"PLOT[dark][{chave}]={D[chave]} ≠ {token}={escuro[token]}"
+
+
+def test_banda_90_tem_bordas_visiveis_3a1():
+    """A banda sozinha tem ~1,3:1 (claro) / 1,6:1 (escuro) — abaixo dos 3:1 de WCAG 1.4.11. As bordas finas
+    (sup/inf) na cor da previsão devem existir e ter ≥3:1 contra o papel nos dois temas."""
+    import figuras
+    from dados import GEO0
+    for tema in ("light", "dark"):
+        fig = figuras.figura_detalhe(GEO0, "pt", tema)
+        p = figuras.PLOT[tema]
+        bordas = [t for t in fig.data if t.mode == "lines" and t.line.width == 1 and t.line.color == p["prev"]]
+        assert len(bordas) == 2, f"[{tema}] esperava 2 bordas (sup/inf), achei {len(bordas)}"
+        assert contraste(p["prev"], p["paper"]) >= 3.0, f"[{tema}] borda {p['prev']} sobre {p['paper']}"
+
+
+def test_figura_detalhe_localiza_data_no_hover():
+    import figuras
+    from dados import GEO0
+    assert figuras.figura_detalhe(GEO0, "pt").layout.xaxis.hoverformat == "%d/%m/%Y"
+    assert figuras.figura_detalhe(GEO0, "es").layout.xaxis.hoverformat == "%d/%m/%Y"
+    assert figuras.figura_detalhe(GEO0, "en").layout.xaxis.hoverformat == "%m/%d/%Y"
+
+
+def test_callbacks_toleram_payloads_forjados():
+    """Antes: int em _geo_valido → AttributeError/500; clickData malformado → IndexError/TypeError."""
+    import app as A
+    import dados as D
+    assert A._geo_valido(4106902) is False and A._geo_valido(["x"]) is False
+    assert A._geo_valido(D.GEO0) is True and A._geo_valido("UF-PR") is True and A._geo_valido("UF-ZZ") is False
+    ns = A.no_update
+    for click in ({"points": []}, {"points": ["x"]}, {"points": [{"location": ["SP"]}]},
+                  {"points": [{"customdata": 4106902}]}, {}, None, {"points": [{"location": "ZZ"}]}):
+        assert A.clique_mapa(click) == (ns, ns)
+    assert A.clique_mapa({"points": [{"location": "SP"}]}) == ("SP", ns)
+    for uf in (["SP"], 1, {"a": 1}, "ZZ"):                      # uf forjada → escopo nacional, sem exceção
+        A.zoom_uf(uf)
+        A.remapa_idioma("pt", False, uf, "light")
+
+
+def test_tema_mapa_espelha_contorno_dos_estados():
+    """O Patch de tema deve recolorir também marker.line (antes ficava com o valor do tema claro)."""
+    import app as A
+    import dados as D
+    from figuras import PLOT
+    ops = {tuple(o["location"]): o["params"]["value"] for o in A.tema_mapa("dark")._operations}
+    assert ops[("data", D.IDX_CHOROPLETH, "marker", "line", "color")] == PLOT["dark"]["mapline"]
+    assert ops[("data", D.IDX_CHOROPLETH, "marker", "line", "width")] == PLOT["dark"]["maplinew"]
+
+
+def test_popular_cidades_ao_trocar_idioma_nao_reverte_a_cidade():
+    """Trocar idioma só traduz os rótulos; o value (cidade escolhida) não pode voltar para 'UF-xx'."""
+    import app as A
+    import dados as D
+    from dash._callback_context import context_value
+    from dash._utils import AttributeDict
+    uf = next(u for u, l in D.cidades_por_uf.items() if l)
+
+    def chama(trigger):
+        ctx_val = AttributeDict(triggered_inputs=[{"prop_id": trigger}], inputs_list=[], states_list=[],
+                                outputs_list=[], args_grouping=[], response=None)
+        tok = context_value.set(ctx_val)
+        try:
+            return A.popular_cidades.__wrapped__(uf, "es") if hasattr(A.popular_cidades, "__wrapped__") \
+                else A.popular_cidades(uf, "es")
+        finally:
+            context_value.reset(tok)
+    _, v_lang = chama("lang.data")
+    _, v_uf = chama("dd-uf.value")
+    assert v_lang is A.no_update and v_uf == f"UF-{uf}"
+
+
+def _mistura(frente_rgb, alfa, fundo_hex):
+    f = fundo_hex.lstrip("#")
+    fr = [int(f[i:i + 2], 16) for i in (0, 2, 4)]
+    return "#%02X%02X%02X" % tuple(round(alfa * a + (1 - alfa) * b) for a, b in zip(frente_rgb, fr))
+
+
+def test_contraste_derivado_dos_tokens_reais_dos_dois_temas():
+    """Pares derivados de style.css (não hex digitados): o overlay do .seg-group, o anel de foco sobre
+    barra/hero (fundos escuros nos 2 temas), a borda do dropdown e a legenda da série. Regressões medidas
+    na auditoria: topbar-muted no escuro 6,2:1 sobre o overlay; foco claro 1,4–1,8:1 sobre barra/hero."""
+    claro, escuro = _tokens_css()
+    for nome, t in (("claro", claro), ("escuro", escuro)):
+        seg_bg = _mistura((255, 255, 255), 0.07, t["--topbar-bg"])          # fundo real dos botões .seg
+        assert contraste(t["--topbar-muted"], seg_bg) >= 7.0, f"{nome}: topbar-muted/seg-group"
+        assert contraste(t["--topbar-muted"], t["--topbar-bg"]) >= 7.0, f"{nome}: topbar-muted/topbar"
+        for fundo in ("--topbar-bg", "--brand"):                             # barra, hero, faixa, rodapé
+            assert contraste(t["--focus-on-dark"], t[fundo]) >= 3.0, f"{nome}: foco/{fundo}"
+        assert contraste(t["--border-strong"], t["--paper"]) >= 3.0, f"{nome}: borda do dropdown/paper"
+        assert contraste(t["--series-prev"], t["--paper"]) >= 3.0, f"{nome}: legenda da série/paper"
+
+
+def _lab_sim(hexc, mat):
+    import numpy as np
+    c = np.array([int(hexc[i:i + 2], 16) for i in (1, 3, 5)]) / 255
+    lin = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+    s = np.clip(np.array(mat) @ lin, 0, 1)
+    lin = s
+    m = np.array([[.4124, .3576, .1805], [.2126, .7152, .0722], [.0193, .1192, .9505]])
+    x = m @ lin / np.array([.95047, 1, 1.08883])
+    f = np.where(x > 216 / 24389, np.cbrt(x), (24389 / 27 * x + 16) / 116)
+    return np.array([116 * f[1] - 16, 500 * (f[0] - f[1]), 200 * (f[1] - f[2])])
+
+
+def test_paleta_cvd_nao_piora_e_valores_documentados():
+    """dados.py documenta o pior par (ΔE76, Machado 2009, sev. 1,0). Trava os números e a direção:
+    a paleta CVD nunca pode ser pior que a padrão (antes o comentário afirmava 59,3 — não reproduzível)."""
+    import itertools
+    import numpy as np
+    import dados
+    mach = {"deuter": [[.367322, .860646, -.227968], [.280085, .672501, .047413], [-.011820, .042940, .968881]],
+            "prot": [[.152286, 1.052583, -.204868], [.114503, .786281, .099216], [-.003882, -.048116, 1.051998]]}
+
+    def pior(pal, k):
+        labs = {n: _lab_sim(pal[n], mach[k]) for n in dados.ORDEM_NIVEL}
+        return min(np.linalg.norm(labs[a] - labs[b]) for a, b in itertools.combinations(dados.ORDEM_NIVEL, 2))
+    esperado = {("padrao", "prot"): 17.4, ("cvd", "prot"): 26.9, ("padrao", "deuter"): 10.1, ("cvd", "deuter"): 11.6}
+    for (nome, k), v in esperado.items():
+        pal = dados.CORES_NIVEL if nome == "padrao" else dados.CORES_NIVEL_CVD
+        assert abs(pior(pal, k) - v) < 0.2, (nome, k, pior(pal, k), v)
+    for k in mach:
+        assert pior(dados.CORES_NIVEL_CVD, k) >= pior(dados.CORES_NIVEL, k)
+
+
+def test_bolhas_tem_anel_com_espessura_por_nivel_e_contraste():
+    """Cor não é canal único (1.4.1) e a bolha precisa de contorno ≥3:1 (1.4.11): camada de anel sob cada nível,
+    espessura crescente e hoverinfo=skip (o clique/hover continua só na bolha)."""
+    import figuras
+    import dados
+    fig = figuras.figura_mapa()
+    aneis = [i for i, t in enumerate(fig.data) if str(t.name or "").startswith("anel-")]
+    assert aneis == figuras.indices_anel() and aneis
+    for i in aneis:
+        anel, bolha = fig.data[i], fig.data[i + 1]
+        assert anel.hoverinfo == "skip" and anel.customdata is None and bolha.customdata is not None
+        assert all(a > b for a, b in zip(anel.marker.size, bolha.marker.size))
+    esp = [figuras.ESPESSURA_ANEL[n] for n in dados.ORDEM_NIVEL]
+    assert esp == sorted(esp) and len(set(esp)) == 4
+    for tema_, fundo_mapa in (("light", "#F5F3EE"), ("dark", "#1A1A1A")):
+        ring = figuras.PLOT[tema_]["ring"]
+        assert contraste(ring, fundo_mapa) >= 3.0, f"{tema_}: anel/mapa"
+        for pal in (dados.CORES_NIVEL, dados.CORES_NIVEL_CVD):
+            for nv, cor in pal.items():           # borda perceptível: preenchimento×mapa OU anel×preenchimento
+                assert max(contraste(cor, fundo_mapa), contraste(ring, cor)) >= 3.0, f"{tema_}: {nv} {cor}"
+
+
+def test_tema_do_mapa_recolore_os_aneis():
+    import app as A
+    import figuras
+    ops = {tuple(o["location"]): o["params"]["value"] for o in A.tema_mapa("dark")._operations}
+    for i in figuras.indices_anel():
+        assert ops[("data", i, "marker", "color")] == figuras.PLOT["dark"]["ring"]

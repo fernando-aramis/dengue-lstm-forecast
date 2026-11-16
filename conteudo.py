@@ -20,9 +20,9 @@ LINKS = {
 }
 PUBLIC_URL = "https://dengue-lstm-forecast.onrender.com"
 
-# ---- números do estudo (NÃO vêm dos CSVs) ----
-ESTUDO = {"casos_2023": "913", "casos_2024": "15.389", "pico_2016": "7.883",
-          "reducao_mae": "14%", "cobertura": "94–98%", "pico_norm": "1,16", "semanas": "749"}
+# ---- números do estudo (NÃO vêm dos CSVs) — valores CRUS; formatados por idioma na renderização ----
+ESTUDO = {"casos_2023": 913, "casos_2024": 15389, "pico_2016": 7883,
+          "reducao_mae": 0.14, "cobertura": (94, 98), "pico_norm": 1.16, "semanas": 749}
 
 # tabela de resultados (Tabela 2) — (chave_modelo, E1h1, E1h4, E2h1, E2h4, colunas_destaque)
 TAB_RES = [

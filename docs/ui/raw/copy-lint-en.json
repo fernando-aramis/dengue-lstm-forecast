@@ -1,0 +1,159 @@
+{
+ "files": [
+  {
+   "words": 1930,
+   "headings": [
+    "Weekly dengue case forecasting in Brazil with LSTM networks",
+    "Where dengue is expected to rise in the coming weeks",
+    "Previsão semanal de casos de dengue em Curitiba com redes LSTM: casos, clima e intervalos de previsão",
+    "1 Introduction",
+    "2 Data and methods",
+    "Input window",
+    "Recurrent network",
+    "Uncertainty",
+    "Data",
+    "3 Results",
+    "Gain within the historical range",
+    "Climate hurt",
+    "The 2024 epidemic escaped",
+    "The intervals warned",
+    "4 Limitations and next steps",
+    "Regional model",
+    "Forecast growth",
+    "Lagged climate",
+    "Ensembles",
+    "5 Conclusion",
+    "Declarations",
+    "Author contributions",
+    "Conflict of interest",
+    "Use of AI tools",
+    "Data and materials availability",
+    "References",
+    "How to cite",
+    "Supplementary materials"
+   ],
+   "findings": [
+    {
+     "sev": "WARN",
+     "id": "copy-em-dash",
+     "count": 15,
+     "msg": "15 em dashes in the body (budget 2)",
+     "fix": "use a comma, a colon, parentheses or a full stop where each is natural",
+     "examples": [],
+     "hits": []
+    },
+    {
+     "sev": "WARN",
+     "id": "copy-stat-strip",
+     "count": 3,
+     "msg": "stat strip x3",
+     "fix": "a strip only of figures the brief gives (a price, hours, a count); otherwise put each number in the sentence it proves, or leave it out",
+     "examples": [
+      "1,197 / 1,235 / 1,197 / 1,160",
+      "1,197 / 993 / 1,443 / 635 / 532 / 758 / 528 / 433 / 645 / 289 / 205 / 407 / 289 / 235 / 356 / 244 / 193 / 3...",
+      "4,8 / 11,0 / 72 / 184 / 11,9 / 11,9 / 409 / 409 / 4,6 / 9,5 / 150 / 274 / 7,8 / 10,4 / 284 / 354 / 5,4 / 9,..."
+     ],
+     "hits": [
+      {
+       "match": "1,197 / 1,235 / 1,197 / 1,160",
+       "sentence": "1,197 / 1,235 / 1,197 / 1,160"
+      },
+      {
+       "match": "1,197 / 993 / 1,443 / 635 / 532 / 758 / 528 / 433 / 645 / 289 / 205 / 407 / 2...",
+       "sentence": "1,197 / 993 / 1,443 / 635 / 532 / 758 / 528 / 433 / 645 / 289 / 205 / 407 / 289 / 235 / 356 / 244 / 193 / 308 / 218 / 150 / 316 / 199 / 155 / 256"
+      },
+      {
+       "match": "4,8 / 11,0 / 72 / 184 / 11,9 / 11,9 / 409 / 409 / 4,6 / 9,5 / 150 / 274 / 7,8...",
+       "sentence": "4,8 / 11,0 / 72 / 184 / 11,9 / 11,9 / 409 / 409 / 4,6 / 9,5 / 150 / 274 / 7,8 / 10,4 / 284 / 354 / 5,4 / 9,5 / 183 / 306"
+      }
+     ]
+    },
+    {
+     "sev": "WARN",
+     "id": "copy-eyebrows",
+     "count": 10,
+     "msg": "10 eyebrow or kicker labels",
+     "fix": "one or two a page; a heading that names the thing needs no label over it",
+     "examples": [],
+     "hits": []
+    },
+    {
+     "sev": "INFO",
+     "id": "copy-contrast",
+     "count": 2,
+     "msg": "contrast frames (\"X, not Y\", isn't, rather than, instead of, without the): 2 of 2",
+     "fix": "",
+     "examples": [
+      "\"instead of\" in: Model the growth rate instead of the absolute level, to avoid saturating in outbreaks outs...",
+      "\"instead of\" in: Select temperature (~5-week lag, r=0.46) and rainfall (~8-week lag, r=0.26) instead of the..."
+     ],
+     "hits": [
+      {
+       "match": "instead of",
+       "sentence": "Model the growth rate instead of the absolute level, to avoid saturating in outbreaks outside the historical range."
+      },
+      {
+       "match": "instead of",
+       "sentence": "Select temperature (~5-week lag, r=0.46) and rainfall (~8-week lag, r=0.26) instead of the raw variables that caused overfitting."
+      }
+     ],
+     "budget": 2
+    },
+    {
+     "sev": "INFO",
+     "id": "copy-triads",
+     "count": 6,
+     "msg": "6 lists of three (about one in 322 words)",
+     "fix": "fine when there are three things; never back to back",
+     "examples": [
+      "Curitiba, subtropical and historically",
+      "optionally, climate and seasonality",
+      "modelling, analyses and the",
+      "preprocessing review, code review and text"
+     ],
+     "hits": [
+      {
+       "match": "Curitiba, subtropical and historically",
+       "sentence": "Curitiba, subtropical and historically"
+      },
+      {
+       "match": "optionally, climate and seasonality",
+       "sentence": "optionally, climate and seasonality"
+      },
+      {
+       "match": "modelling, analyses and the",
+       "sentence": "modelling, analyses and the"
+      },
+      {
+       "match": "preprocessing review, code review and text",
+       "sentence": "preprocessing review, code review and text"
+      },
+      {
+       "match": "comparing LSTM, random forest and lasso",
+       "sentence": "comparing LSTM, random forest and lasso"
+      },
+      {
+       "match": "For official information, consult InfoDengue and health",
+       "sentence": "For official information, consult InfoDengue and health"
+      }
+     ]
+    },
+    {
+     "sev": "INFO",
+     "id": "copy-rhythm",
+     "count": 0,
+     "msg": "100 sentences, mean 16.3 words, spread 16.4, 18% of 4 words or fewer",
+     "fix": "",
+     "examples": [],
+     "hits": []
+    }
+   ],
+   "file": "docs/ui/raw/page-en.html",
+   "kind": null
+  }
+ ],
+ "cross": {
+  "heroes": [],
+  "shared": []
+ }
+}

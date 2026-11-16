@@ -1,0 +1,7 @@
+{
+  "status": "WAIVED",
+  "tool": "taste-skill/scripts/consistency.mjs",
+  "command": "node consistency.mjs http://127.0.0.1:8050 --quick --widths 1440,390 --json",
+  "reason": "Script crashes deterministically (2 attempts) with Node v24.19.0 undici HTTP-parser assertion: AssertionError [ERR_ASSERTION] assert(!this.paused) at Parser.finish (undici) on socket end, triggered while fetching the app's gzip/chunked response. Not a Chrome-driving failure. Unfixable without editing app source (forbidden by Phase-0 scope) or the vendored taste script.",
+  "mitigation": "Horizontal-overflow / responsive layout coverage collected instead via self-authored Playwright probe at widths 320/390/768/1024/1440 -> docs/ui/raw/overflow-probe.json (result: 0 overflow at all widths)."
+}

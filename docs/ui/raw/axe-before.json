@@ -1,0 +1,309 @@
+{
+  "meta": {
+    "url": "http://127.0.0.1:8050",
+    "when": "2026-11-13T03:27:01.379Z",
+    "lang": "pt",
+    "tags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22aa",
+      "best-practice"
+    ]
+  },
+  "runs": {
+    "360-light-pt": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "wcag": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "n": 37,
+          "nodes": [
+            {
+              "target": [
+                "#theme-dark"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<button id=\"theme-dark\" class=\"seg\" title=\"Dark\" aria-label=\"Dark\">☾</button>"
+            },
+            {
+              "target": [
+                ".arrow"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<span class=\"arrow\">→</span>"
+            },
+            {
+              "target": [
+                ".leg-label"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-label\">Nível previsto (cidade)</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(2)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo verde\" aria-hidden=\"true\"></span>Verde</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(3)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo amarelo\" aria-hidden=\"true\"></span>Amarelo</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(4)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo laranja\" aria-hidden=\"true\"></span>Laranja</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(5)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo vermelho\" aria-hidden=\"true\"></span>Vermelho</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(6)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo sem-dado\" aria-hidden=\"true\"></span>Sem dado</span>"
+            }
+          ]
+        }
+      ]
+    },
+    "360-dark-pt": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "wcag": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "n": 37,
+          "nodes": [
+            {
+              "target": [
+                "#theme-dark"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<button id=\"theme-dark\" class=\"seg on\" title=\"Dark\" aria-label=\"Dark\">☾</button>"
+            },
+            {
+              "target": [
+                ".arrow"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<span class=\"arrow\">→</span>"
+            },
+            {
+              "target": [
+                ".leg-label"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-label\">Nível previsto (cidade)</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(2)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo verde\" aria-hidden=\"true\"></span>Verde</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(3)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo amarelo\" aria-hidden=\"true\"></span>Amarelo</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(4)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo laranja\" aria-hidden=\"true\"></span>Laranja</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(5)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo vermelho\" aria-hidden=\"true\"></span>Vermelho</span>"
+            },
+            {
+              "target": [
+                ".leg-item:nth-child(6)"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<span class=\"leg-item\"><span class=\"glifo sem-dado\" aria-hidden=\"true\"></span>Sem dado</span>"
+            }
+          ]
+        }
+      ]
+    },
+    "1440-light-pt": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "wcag": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "n": 11,
+          "nodes": [
+            {
+              "target": [
+                "#theme-dark"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<button id=\"theme-dark\" class=\"seg\" title=\"Dark\" aria-label=\"Dark\">☾</button>"
+            },
+            {
+              "target": [
+                ".arrow"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<span class=\"arrow\">→</span>"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"Jul 2026\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"middle\" x=\"0\" y=\"214.4\" data-unformatted=\"Jul 2026\" data-math=\"N\" transform=\"translate(98.65,0)\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rg"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"Sep 2026\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"middle\" x=\"0\" y=\"214.4\" data-unformatted=\"Sep 2026\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(28, 38, 32); fill-opacity: 1;"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"Nov 2026\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"middle\" x=\"0\" y=\"214.4\" data-unformatted=\"Nov 2026\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(28, 38, 32); fill-opacity: 1;"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"0\"]"
+              ],
+              "summary": "Fix any of the following: Element content is too short to determine if it is actual text content",
+              "html": "<text text-anchor=\"end\" x=\"62\" y=\"4.199999999999999\" data-unformatted=\"0\" data-math=\"N\" transform=\"translate(0,199)\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: r"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"500\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"end\" x=\"62\" y=\"4.199999999999999\" data-unformatted=\"500\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(28, 38, 32); fill-opacit"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"1000\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"end\" x=\"62\" y=\"4.199999999999999\" data-unformatted=\"1000\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(28, 38, 32); fill-opaci"
+            }
+          ]
+        }
+      ]
+    },
+    "1440-dark-pt": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "wcag": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "n": 11,
+          "nodes": [
+            {
+              "target": [
+                "#theme-dark"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<button id=\"theme-dark\" class=\"seg on\" title=\"Dark\" aria-label=\"Dark\">☾</button>"
+            },
+            {
+              "target": [
+                ".arrow"
+              ],
+              "summary": "Fix any of the following: Element content contains only non-text characters",
+              "html": "<span class=\"arrow\">→</span>"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"Jul 2026\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"middle\" x=\"0\" y=\"214.4\" data-unformatted=\"Jul 2026\" data-math=\"N\" transform=\"translate(98.65,0)\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rg"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"Sep 2026\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"middle\" x=\"0\" y=\"214.4\" data-unformatted=\"Sep 2026\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(236, 239, 234); fill-opacity:"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"Nov 2026\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"middle\" x=\"0\" y=\"214.4\" data-unformatted=\"Nov 2026\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(236, 239, 234); fill-opacity:"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"0\"]"
+              ],
+              "summary": "Fix any of the following: Element content is too short to determine if it is actual text content",
+              "html": "<text text-anchor=\"end\" x=\"62\" y=\"4.199999999999999\" data-unformatted=\"0\" data-math=\"N\" transform=\"translate(0,199)\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: r"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"500\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"end\" x=\"62\" y=\"4.199999999999999\" data-unformatted=\"500\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(236, 239, 234); fill-opa"
+            },
+            {
+              "target": [
+                "text[data-unformatted=\"1000\"]"
+              ],
+              "summary": "Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+              "html": "<text text-anchor=\"end\" x=\"62\" y=\"4.199999999999999\" data-unformatted=\"1000\" data-math=\"N\" style=\"font-family: Inter, sans-serif; font-size: 12px; fill: rgb(236, 239, 234); fill-op"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -3,22 +3,26 @@
 Layout da página: blocos editoriais, barra de controles (idioma/tema) e montagem
 (`construir_conteudo` + `serve_layout`). Textos vêm de i18n; figuras vêm de figuras.py.
 """
+import re
 import flask
 from datetime import date, timedelta
 
 from dash import dcc, html
 
-from i18n import tr, resolver, nivel as nivel_tr, fmt_int
+from urllib.parse import urlsplit, parse_qs
+from i18n import IDIOMAS, tr, resolver, nivel as nivel_tr, fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo
+from formato import plotly_locale
 from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf, mapa_cid,
                    RESUMO, SE_H1, SE_ORIGEM, DATA_PREV_H1)
 from figuras import (figura_mapa, figura_detalhe, cartao_info, horizontes,
                      CORES_NIVEL, ORDEM_NIVEL)
-from conteudo import (TAB_RES, REFERENCIAS, BIBTEX, abnt, ORCID, ORCID_URL, LINKS)
+from conteudo import (TAB_RES, REFERENCIAS, BIBTEX, abnt, ORCID, ORCID_URL, LINKS, ESTUDO)
 
 
 # ---------------------------------------------------------------- blocos reutilizáveis
 def stat(big, lbl, tom=None):
-    """KPI. tom: None (neutro) | 'brand' (fundo verde) | 'alarm' (número terracota)."""
+    """Resultado-chave da faixa (A10). tom: None (neutro) | 'alarm' (número terracota,
+    reservado ao excepcional — p.ex. o pico fora da faixa de treino)."""
     corpo = list(big) if isinstance(big, (list, tuple)) else [big]
     cls = "stat" + (f" stat--{tom}" if tom else "")
     return html.Div(className=cls, children=[
@@ -34,8 +38,7 @@ def situacao(lang):
     for nv in ORDEM_NIVEL:
         c = por.get(nv, 0)
         if c:
-            segs.append(html.Span(className="barra-seg",
-                                  style={"flexGrow": c, "background": CORES_NIVEL[nv]}))
+            segs.append(html.Span(className=f"barra-seg {nv.lower()}", style={"flexGrow": c}))
             aria.append(f"{c} {nivel_tr(lang, nv)}")
     linhas = [html.Div(className="sit-linha", children=[
         html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
@@ -44,14 +47,14 @@ def situacao(lang):
                   f"{tr(lang, 'palavra_cidade' if por.get(nv, 0) == 1 else 'palavra_cidades')}",
                   className="sit-n tabular")]) for nv in ORDEM_NIVEL]
     return html.Div(className="situacao", children=[
-        html.Span(tr(lang, "sit_eyebrow", se=se, ini=ini.strftime("%d/%m"),
-                     fim=fim.strftime("%d/%m/%Y")), className="eyebrow"),
+        html.Span(tr(lang, "sit_eyebrow", se=se, ini=fmt_data(ini, lang, "curto"),
+                     fim=fmt_data(fim, lang, "ano")), className="sit-quando"),
         html.Div(fmt_int(RESUMO["total_h1"], lang), className="sit-total tabular"),
         html.Div(tr(lang, "sit_total", n=n), className="sit-sub"),
         html.Div(segs, className="sit-barra", role="img",
                  **{"aria-label": tr(lang, "sit_barra_aria", n=n, lista=", ".join(aria))}),
         html.Div(linhas, className="sit-lista"),
-        html.Div(tr(lang, "nota_nivel"), className="sit-nota aux"),
+        html.Div(tr(lang, "nota_nivel_hero"), className="sit-nota aux"),
     ])
 
 
@@ -80,18 +83,61 @@ def opcoes_cidade_br():
     return [{"label": n, "value": g} for n, g in todas]
 
 
+_GEOS_CIDADE = set(mapa_cid["geo_id"].astype(str))
+_UFS = set(UFS)
+
+
+def _sel_inicial(sel, lang):
+    """A15 — resolve a seleção vinda da URL (validada) → (geo p/ renderizar, uf, opções, valor).
+    Cidade "UF-XX" abre no escopo estadual; cidade normal abre direto; inválida cai no GEO0."""
+    if isinstance(sel, str) and sel.startswith("UF-") and sel[3:] in _UFS:
+        uf = sel[3:]
+        rot = f"◼ {nome_uf.get(uf, uf)} ({tr(lang, 'escopo_estado').lower()})"
+        opts = [{"label": rot, "value": sel}] + [{"label": n, "value": g}
+                                                 for n, g in cidades_por_uf.get(uf, [])]
+        return sel, uf, opts, sel
+    s = str(sel) if sel is not None else ""
+    if s in _GEOS_CIDADE:
+        return s, "BR", opcoes_cidade_br(), s
+    return GEO0, "BR", opcoes_cidade_br(), GEO0
+
+
+_NOMES_PROPRIOS = re.compile(r"\b(InfoDengue|Mosqlimate|SINAN|IBGE|UTFPR|LSTM|JBCS|Zenodo|GitHub|Colab|Anthropic|Claude)\b")
+
+
+def rico(texto):
+    """Texto corrido com nomes próprios marcados `notranslate` (tradutor automático não os 'traduz').
+    Devolve lista PLANA de str/Span — use direto como `children` (Dash: sem listas aninhadas)."""
+    partes, ult = [], 0
+    for m in _NOMES_PROPRIOS.finditer(texto):
+        if m.start() > ult:
+            partes.append(texto[ult:m.start()])
+        partes.append(html.Span(m.group(0), className="notranslate"))   # Dash não expõe translate=; a classe vale p/ tradutores
+        ult = m.end()
+    partes.append(texto[ult:])
+    return [p for p in partes if p != ""]
+
+
 def _aviso(lang):
-    origem_se = f"SE {SE_ORIGEM[1]}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
+    origem_se = f"{tr(lang, 'se_abrev', se=SE_ORIGEM[1])}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
     full = tr(lang, "aviso", origem=origem_se)
     strong = tr(lang, "aviso_strong")
     resto = full[len(strong):] if full.startswith(strong) else full
     return html.Div(className="aviso info", children=[
-        html.Span("ℹ"), html.Span([html.Strong(strong), resto])])
+        html.Span(className="aviso-ico ico-info", **{"aria-hidden": "true"}),
+        html.Span([html.Strong(strong), *rico(resto)])])
 
 
-def _seg(tid, conteudo, aria):
+def _labels_dd(lang):
+    """Textos internos do dcc.Dropdown (busca, limpar, sem resultados) no idioma da UI — antes em inglês."""
+    return {"search": tr(lang, "dd_busca"), "clear_search": tr(lang, "dd_limpar_busca"),
+            "no_options_found": tr(lang, "dd_sem_opcoes"), "clear_selection": tr(lang, "dd_limpar")}
+
+
+def _seg(tid, conteudo, aria, lang=None):
+    extra = {"lang": lang} if lang else {}      # nome do idioma na própria língua (WCAG 3.1.2)
     return html.Button(conteudo, id=tid, className="seg", n_clicks=0,
-                       title=aria, **{"aria-label": aria})
+                       title=aria, **{"aria-label": aria}, **extra)
 
 
 def cabecalho_corrido(lang):
@@ -118,19 +164,49 @@ def nav_links(lang):
     ]
 
 
-def barra_controles():
+def barra_controles(lang):
     return html.Div(className="controls", children=[
-        html.Div(className="seg-group lang-group", role="group",
-                 **{"aria-label": "Idioma / Language / Idioma"}, children=[
-                     _seg("lang-pt", "PT", "Português"),
-                     _seg("lang-en", "EN", "English"),
-                     _seg("lang-es", "ES", "Español")]),
-        html.Div(className="seg-group theme-group", role="group",
-                 **{"aria-label": "Tema / Theme / Tema"}, children=[
-                     _seg("theme-light", "☀", "Light"),
-                     _seg("theme-system", "🖥", "System"),
-                     _seg("theme-dark", "☾", "Dark"),
-                     html.Span(id="theme-label", className="seg-label")]),
+        # A11 — no mobile, idioma/tema recolhem num disclosure (<details>, gatilho só-mobile,
+        # sem JS, aria-expanded nativo); no desktop voltam inline (CSS display:contents). Os
+        # grupos ficam sempre no DOM e dentro de barra_controles (fora da área re-renderizada)
+        # → os callbacks de tema/idioma por id seguem intactos.
+        html.Div(className="prefs-wrap", children=[
+            html.Details(className="prefs", children=html.Summary(
+                className="prefs-trigger", title=tr(lang, "prefs_label"),
+                **{"aria-label": tr(lang, "prefs_label")},
+                children=html.Span(className="prefs-ico", **{"aria-hidden": "true"}))),
+            html.Div(className="prefs-pop", children=[
+                html.Div(className="seg-group lang-group", role="group",
+                         **{"aria-label": tr(lang, "idioma_label")}, children=[
+                             _seg("lang-pt", "PT", "Português", "pt"),
+                             _seg("lang-en", "EN", "English", "en"),
+                             _seg("lang-es", "ES", "Español", "es")]),
+                html.Div(className="seg-group theme-group", role="group",
+                         **{"aria-label": tr(lang, "tema_label")}, children=[
+                             _seg("theme-light", html.Span(className="seg-ico ico-sun",
+                                  **{"aria-hidden": "true"}), tr(lang, "tema_light")),
+                             _seg("theme-system", html.Span(className="seg-ico ico-monitor",
+                                  **{"aria-hidden": "true"}), tr(lang, "tema_system")),
+                             _seg("theme-dark", html.Span(className="seg-ico ico-moon",
+                                  **{"aria-hidden": "true"}), tr(lang, "tema_dark")),
+                             # nasce com o rótulo do modo padrão (system): o callback só o troca se a
+                             # escolha salva for outra → sem vazio→texto na hidratação (CLS da barra)
+                             html.Span(id="theme-label", className="seg-label",
+                                       children=tr(lang, "tema_system"))]),
+            ]),
+        ]),
+        html.Details(className="a11y-menu", children=[
+            html.Summary(className="a11y-summary", title=tr(lang, "a11y_label"),
+                         **{"aria-label": tr(lang, "a11y_label")},
+                         children=html.Span(className="a11y-ico", **{"aria-hidden": "true"})),
+            html.Div(className="a11y-pop", children=[
+                html.Span(tr(lang, "a11y_titulo"), id="a11y-pop-title", className="a11y-pop-t"),
+                dcc.Checklist(id="a11y-opts", className="a11y-list", value=[],
+                              inputClassName="a11y-cb", labelClassName="a11y-lbl",
+                              options=[{"label": tr(lang, "a11y_cvd"), "value": "cvd"},
+                                       {"label": tr(lang, "a11y_motion"), "value": "motion"}]),
+            ]),
+        ]),
     ])
 
 
@@ -141,6 +217,7 @@ def legenda_niveis(lang):
                         nivel_tr(lang, nv)], className="leg-item") for nv in ORDEM_NIVEL]
     itens.append(html.Span([html.Span(className="glifo sem-dado", **{"aria-hidden": "true"}),
                             tr(lang, "leg_sem_dado")], className="leg-item"))
+    itens.append(html.Span(tr(lang, "leg_anel"), className="leg-item leg-nota"))   # canal além da cor
     return html.Div(className="map-legend",
                     children=[html.Span(tr(lang, "legend_title"), className="leg-label"), *itens])
 
@@ -150,9 +227,11 @@ def legenda_serie(lang):
     _, se = SE_ORIGEM
     def item(cls, texto):
         return html.Span([html.Span(className=f"serie-sw {cls}"), texto], className="serie-item")
-    return html.Div(className="serie-legend", children=[
+    return html.Div(id="legenda-serie", className="serie-legend", children=[
         item("obs", tr(lang, "serie_obs")), item("prev", tr(lang, "serie_prev")),
-        item("int", tr(lang, "serie_int")), item("orig", tr(lang, "serie_origem", se=se))])
+        item("int", tr(lang, "serie_int")), item("orig", tr(lang, "serie_origem", se=se)),
+        html.Span(id="legenda-cmp", className="serie-item", hidden=True,
+                  children=[html.Span(className="serie-sw cmp"), html.Span(id="legenda-cmp-nome")])])
 
 
 def tabela_ranking(lang, n=8):
@@ -169,8 +248,10 @@ def tabela_ranking(lang, n=8):
             html.Td(fmt_int(r["sup"], lang), className="tabular"),
             html.Td(html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
                                nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}"))]))
-    return html.Div(className="tbl-wrap", children=[html.Table(className="res tab-rank", children=[
-        html.Caption([html.Strong("Tabela 1. "), tr(lang, "tab1_caption", se=se)]),
+    return html.Div(className="tbl-wrap", tabIndex=0,
+                    **{"role": "region", "aria-label": tr(lang, "tab1_caption", se=se)},
+                    children=[html.Table(className="res tab-rank", children=[
+        html.Caption([html.Strong(tr(lang, "tabela_pref", n=1)), tr(lang, "tab1_caption", se=se)]),
         html.Thead(html.Tr([html.Th(tr(lang, "tab1_cidade")), html.Th(tr(lang, "tab1_prev")),
                             html.Th(tr(lang, "tab1_inf")), html.Th(tr(lang, "tab1_sup")),
                             html.Th(tr(lang, "tab1_nivel"))])),
@@ -188,7 +269,8 @@ def _data_abnt():
 def selo_orcid():
     if not ORCID:
         return None
-    return html.A(html.Span("iD", className="orcid-id"), href=ORCID_URL, className="orcid",
+    return html.A(html.Img(src="/assets/icons/orcid.svg", className="orcid-id", alt="", width=16, height=16),
+                  href=ORCID_URL, className="orcid",
                   target="_blank", rel="noopener noreferrer", title=f"ORCID {ORCID}",
                   **{"aria-label": f"ORCID: {ORCID}"})
 
@@ -199,7 +281,7 @@ def linha_autor():
     if selo:
         filhos.append(selo)
     filhos.append(html.Span("[ Especialização em IA Generativa Aplicada · UTFPR ]",
-                            className="autor-afil"))
+                            className="autor-afil", lang="pt"))
     return html.Div(filhos, className="autor")
 
 
@@ -211,7 +293,7 @@ def card_etapa(tag, titulo, texto):
 def referencia(r):
     doi = r["doi"]
     return html.Li([r["texto"] + " ",
-                    html.A(f"https://doi.org/{doi}", href=f"https://doi.org/{doi}", className="doi",
+                    html.A(f"https://doi.org/{doi}", href=f"https://doi.org/{doi}", className="doi notranslate",
                            target="_blank", rel="noopener noreferrer")],
                    id=f"ref-{r['slug']}", className="ref", lang=r.get("lang", "en"))
 
@@ -220,13 +302,12 @@ def declaracao(titulo, corpo):
     return html.Div(className="decl", children=[html.H3(titulo), html.P(corpo)])
 
 
-def _sec(num, lang, paras, eyebrow_key, titulo_key, extra=None):
-    """Seção numerada do artigo: eyebrow + H2 'n Título' + parágrafos (+ extra opcional)."""
+def _sec(num, lang, paras, titulo_key, extra=None):
+    """Seção numerada do artigo: H2 'n Título' + parágrafos (+ extra opcional)."""
     corpo = [html.P(p, className="prosa-p") for p in paras]
     if extra:
         corpo += extra
     return html.Section(id=f"sec-{num}", **{"aria-labelledby": f"sec-{num}-t"}, children=[
-        html.Span(tr(lang, eyebrow_key), className="eyebrow"),
         html.H2(f"{num} {tr(lang, titulo_key)}", id=f"sec-{num}-t", className="sec-titulo"),
         html.Div(corpo, className="prosa")])
 
@@ -248,12 +329,14 @@ def fig2_pipeline(lang):
     return html.Figure(className="figura fig2", children=[
         html.Ol(className="pipeline", children=[
             html.Li(txt, className=f"pipe-node {cls}") for txt, cls in nos]),
-        html.Figcaption([html.Strong("Figura 2. "), tr(lang, "fig2_caption")])])
+        html.Figcaption([html.Strong(tr(lang, "figura_pref", n=2)), tr(lang, "fig2_caption")])])
 
 
 def tabela2(lang):
-    return html.Div(className="tbl-wrap", children=[html.Table(className="res", children=[
-        html.Caption([html.Strong("Tabela 2. "), tr(lang, "tab2_caption")]),
+    return html.Div(className="tbl-wrap", tabIndex=0,
+                    **{"role": "region", "aria-label": tr(lang, "tab2_caption")},
+                    children=[html.Table(className="res", children=[
+        html.Caption([html.Strong(tr(lang, "tabela_pref", n=2)), tr(lang, "tab2_caption")]),
         html.Thead(html.Tr([html.Th(tr(lang, "th_modelo")), html.Th(tr(lang, "th_e1h1")),
                             html.Th(tr(lang, "th_e1h4")), html.Th(tr(lang, "th_e2h1")),
                             html.Th(tr(lang, "th_e2h4"))])),
@@ -264,12 +347,13 @@ def tabela2(lang):
 
 
 def _link_ext(texto, href):
-    return html.A([texto, html.Span(" ↗", **{"aria-hidden": "true"})], href=href,
+    return html.A([texto, html.Span(className="ico-ext", **{"aria-hidden": "true"})], href=href,
                   target="_blank", rel="noopener noreferrer")
 
 
 def materiais(lang):
-    return html.Aside(id="dados", className="materiais", children=[
+    return html.Section(id="dados", className="materiais",
+                        **{"aria-label": tr(lang, "nav_dados")}, children=[
         html.H3(tr(lang, "mat_t")),
         html.Ul([
             html.Li(_link_ext(tr(lang, "mat_nb"), LINKS["colab"])),
@@ -285,13 +369,13 @@ def materiais(lang):
 def artigo(lang):
     nota = tr(lang, "artigo_nota_idioma") if lang != "pt" else ""
     cab = [
-        html.Div(tr(lang, "artigo_cab_disc"), className="artigo-cab-disc mono"),
-        html.Div(tr(lang, "artigo_cab_lic"), className="artigo-cab-lic mono"),
+        html.Div(tr(lang, "artigo_cab_disc"), className="artigo-cab-disc"),
+        html.Div(tr(lang, "artigo_cab_lic"), className="artigo-cab-lic"),
         html.H2(tr(lang, "artigo_titulo"), className="artigo-titulo", lang="pt"),
     ]
     if nota:
-        cab.append(html.P(nota, className="artigo-nota-idioma aux", lang="pt"))
-    cab += [linha_autor(), html.Div(tr(lang, "artigo_meta"), className="artigo-meta mono")]
+        cab.append(html.P(nota, className="artigo-nota-idioma aux", lang=lang))
+    cab += [linha_autor(), html.Div(tr(lang, "artigo_meta"), className="artigo-meta")]
 
     resumo = html.Section(id="resumo", className="resumo", children=[
         html.P([html.Strong(tr(lang, "resumo_rotulo")), " ", tr(lang, "resumo_texto")], className="serif"),
@@ -299,8 +383,8 @@ def artigo(lang):
                   *[html.Span(tr(lang, f"kw{i}"), className="chip chip--outline") for i in range(1, 6)]],
                  className="keywords")])
 
-    s1 = _sec(1, lang, [tr(lang, "sec1_p1"), tr(lang, "sec1_p2")], "sec1_eb", "sec1_t")
-    s2 = _sec(2, lang, [tr(lang, "sec2_p1")], "sec2_eb", "sec2_t", extra=[
+    s1 = _sec(1, lang, [tr(lang, "sec1_p1"), tr(lang, "sec1_p2")], "sec1_t")
+    s2 = _sec(2, lang, [tr(lang, "sec2_p1")], "sec2_t", extra=[
         fig2_pipeline(lang),
         html.Div(className="cards cards-2", children=[
             card_etapa("12", tr(lang, "how1_t"), tr(lang, "how1_p")),
@@ -308,7 +392,6 @@ def artigo(lang):
             card_etapa("E1·E2", tr(lang, "how3_t"), tr(lang, "how3_p")),
             card_etapa("3×", tr(lang, "how4_t"), tr(lang, "how4_p"))])])
     s3 = html.Section(id="sec-3", **{"aria-labelledby": "sec-3-t"}, children=[
-        html.Span(tr(lang, "sec3_eb"), className="eyebrow"),
         html.H2(f"3 {tr(lang, 'sec3_t')}", id="sec-3-t", className="sec-titulo"),
         html.P(tr(lang, "sec3_lead"), className="sec-sub"),
         tabela2(lang),
@@ -318,16 +401,15 @@ def artigo(lang):
             finding(tr(lang, "find2_t"), tr(lang, "find2_p"), warn=True),
             finding(tr(lang, "find3_t"), tr(lang, "find3_p"), warn=True),
             finding(tr(lang, "find4_t"), tr(lang, "find4_p"))])])
-    s4 = _sec(4, lang, [], "sec4_eb", "sec4_t", extra=[
+    s4 = _sec(4, lang, [], "sec4_t", extra=[
         html.Div(className="cards", children=[
             card_etapa("01", tr(lang, "fut1_t"), tr(lang, "fut1_p")),
             card_etapa("02", tr(lang, "fut2_t"), tr(lang, "fut2_p")),
             card_etapa("03", tr(lang, "fut3_t"), tr(lang, "fut3_p")),
             card_etapa("04", tr(lang, "fut4_t"), tr(lang, "fut4_p"))])])
-    s5 = _sec(5, lang, [tr(lang, "sec5_p1")], "sec5_eb", "sec5_t")
+    s5 = _sec(5, lang, [tr(lang, "sec5_p1")], "sec5_t")
 
     declaracoes = html.Section(id="declaracoes", children=[
-        html.Span(tr(lang, "decl_t") + " · JBCS", className="eyebrow"),
         html.H2(tr(lang, "decl_t"), className="sec-titulo"),
         declaracao(tr(lang, "decl_contrib_t"), tr(lang, "decl_contrib_p")),
         declaracao(tr(lang, "decl_conflito_t"), tr(lang, "decl_conflito_p")),
@@ -341,13 +423,15 @@ def artigo(lang):
     como_citar = html.Section(id="como-citar", className="como-citar", children=[
         html.H2(tr(lang, "citar_t"), className="sec-titulo"),
         html.Div(className="cite-bloco", children=[
-            html.P(abnt(_data_abnt()), id="cite-abnt", className="serif"),
-            html.Div([dcc.Clipboard(target_id="cite-abnt", title=tr(lang, "copiar_abnt")),
+            html.P(abnt(_data_abnt()), id="cite-abnt", className="serif", lang="pt"),
+            html.Div([dcc.Clipboard(id="clip-abnt", target_id="cite-abnt", title=tr(lang, "copiar_abnt")),
                       html.Span(tr(lang, "copiar_abnt"), className="aux")], className="cite-copy")]),
         html.Div(className="cite-bloco", children=[
-            html.Pre(html.Code(BIBTEX), id="cite-bibtex", className="bibtex"),
-            html.Div([dcc.Clipboard(target_id="cite-bibtex", title=tr(lang, "copiar_bibtex")),
+            html.Pre(html.Code(BIBTEX), id="cite-bibtex", className="bibtex notranslate", tabIndex=0,
+                     **{"role": "region", "aria-label": tr(lang, "bibtex_aria")}),
+            html.Div([dcc.Clipboard(id="clip-bibtex", target_id="cite-bibtex", title=tr(lang, "copiar_bibtex")),
                       html.Span(tr(lang, "copiar_bibtex"), className="aux")], className="cite-copy")]),
+        html.Div(id="copia-status", className="sr-only", **{"role": "status", "aria-live": "polite"}),
         html.A(tr(lang, "baixar_cff"), href=LINKS["cff"], className="btn btn--primary cite-cff")])
 
     coluna = html.Div(className="artigo-coluna", children=[
@@ -358,21 +442,22 @@ def artigo(lang):
         sumario(lang), coluna, materiais(lang)])
 
 
-def construir_conteudo(lang):
+def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
+    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang)
+    cmp = cmp if (isinstance(cmp, str) and cmp in _GEOS_CIDADE) else None   # A15 — seleção inicial da URL
     return [
         # hero (capa dos slides: fundo verde full-bleed + resumo da situação)
         html.Header(className="hero", children=[
+            # A11 — ordem mobile: h1 → lede (hero-lead) → Situação → autor/CTAs (hero-foot).
+            # No desktop, grid-template-areas recompõe (lead+foot à esquerda, Situação à direita).
             html.Div(className="wrap hero-grid", children=[
-                html.Div(className="hero-main", children=[
-                    html.Div(className="chips", children=[
-                        html.Span(tr(lang, "chip1"), className="chip chip--inverse"),
-                        html.Span(tr(lang, "chip2"), className="chip chip--inverse"),
-                        html.Span(tr(lang, "chip3"), className="chip chip--inverse"),
-                        html.Span(tr(lang, "chip4"), className="chip chip--inverse")]),
-                    html.Span(tr(lang, "hero_eyebrow"), className="eyebrow eyebrow--inverse"),
+                html.Div(className="hero-lead enter", children=[   # A16 — única entrada autoral
                     html.H1([tr(lang, "h1"), html.Br(),
                              html.Span(tr(lang, "h1_acento"), className="acento")]),
-                    html.P(tr(lang, "lede"), className="lede"),
+                    html.P(rico(tr(lang, "lede")), className="lede"),
+                ]),
+                situacao(lang),
+                html.Div(className="hero-foot", children=[
                     html.Div(className="hero-autor", children=[
                         html.Strong("Fernando Aramis Colque"),
                         html.Span(tr(lang, "autor_afil"), className="hero-afil")]),
@@ -381,7 +466,6 @@ def construir_conteudo(lang):
                         html.A(tr(lang, "cta_artigo"), href="#artigo", className="btn btn--secondary"),
                         html.A(tr(lang, "cta_citar"), href="#como-citar", className="btn btn--ghost")]),
                 ]),
-                situacao(lang),
             ]),
         ]),
         html.Div(className="faixa", **{"aria-hidden": "true"}),
@@ -390,69 +474,92 @@ def construir_conteudo(lang):
         html.Section(id="indicadores", className="wrap indicadores", children=[
             html.Div(className="avisos", children=[
                 html.Div(className="aviso warn", children=[
-                    html.Span("⚠"),
+                    html.Span(className="aviso-ico ico-warn", **{"aria-hidden": "true"}),
                     html.Span([html.Strong(tr(lang, "aviso_warn_t")), " ",
-                               tr(lang, "aviso_warn_p")])]),
-                _aviso(lang),
+                               *rico(tr(lang, "aviso_warn_p"))])]),
             ]),
-            html.Div(className="stats", children=[
-                stat([html.Span("913 "), html.Span("→", className="arrow"), html.Span(" 15.389")],
-                     tr(lang, "stat1")),
-                stat("−14%", tr(lang, "stat2"), tom="brand"),
-                stat("94–98%", tr(lang, "stat3")),
-                stat("1,16", tr(lang, "stat4b"), tom="alarm")]),
         ]),
 
         # ---- conteúdo em coluna de leitura (.wrap) ----
         html.Div(className="wrap", children=[
 
         # painel interativo (Figura 1)
-        html.Section(id="painel", className="enter", **{"aria-labelledby": "painel-titulo"}, children=[
+        html.Section(id="painel", **{"aria-labelledby": "painel-titulo"}, children=[
             html.Div(className="painel-head", children=[
                 html.Div(className="sec-head", children=[
-                    html.Span(tr(lang, "fig1_eyebrow"), className="eyebrow"),
                     html.H2(tr(lang, "map_h2"), id="painel-titulo")]),
                 html.Span([html.Span(className="rec-dot", **{"aria-hidden": "true"}),
                            tr(lang, "recencia", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])],
-                          className="recencia mono")]),
+                          className="recencia")]),
             html.P(tr(lang, "map_sub", origem=DATA_ORIGEM), className="sec-sub"),
             html.Figure(className="figura", children=[
                 html.Div(className="grid", children=[
                     html.Div(className="panel panel-mapa", children=[
                         html.Div(className="pad", children=[
+                            # a11y: no Dash 4.5 o dcc.Dropdown vira um <button>
+                            # tabindex=-1 (com a ARIA de combobox) + um <input>
+                            # focus-target tabindex=0 aria-hidden="true" (axe:
+                            # aria-hidden-focus). assets/a11y_dropdown.js inverte
+                            # isso no cliente: botão vira o tab stop, shim fica
+                            # inerte — teclado preservado (bug upstream do Dash).
                             html.Div(className="controles", children=[
                                 html.Div([html.Label(tr(lang, "lbl_estado")),
-                                          dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value="BR",
-                                                       clearable=False)]),
+                                          dcc.Dropdown(id="dd-uf", options=opcoes_uf(lang), value=uf_ini,
+                                                       clearable=False, labels=_labels_dd(lang))]),
                                 html.Div([html.Label(tr(lang, "lbl_cidade")),
                                           dcc.Dropdown(id="dd-cidade", placeholder=tr(lang, "ph_cidade"),
-                                                       options=opcoes_cidade_br(), value=GEO0,
-                                                       clearable=False)])])]),
-                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(lang=lang),
+                                                       options=cid_opts, value=cid_val,
+                                                       clearable=False, labels=_labels_dd(lang))])])]),
+                        html.Div(id="mapa-fallback", className="mapa-fallback", hidden=True,
+                                 role="status", children=html.P(tr(lang, "mapa_sem_webgl"))),
+                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang, tema_nome=tema, cvd=cvd),
                                   config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
                         legenda_niveis(lang),
                         html.Div(tr(lang, "map_hint"), className="map-hint")]),
                     html.Div(className="panel panel-detalhe", children=[
-                        html.Div(id="cartao", className="cartao", children=cartao_info(GEO0, lang)),
+                        html.Div(id="cartao", className="cartao", children=cartao_info(geo, lang)),
+                        # anúncio para leitor de tela quando a cidade muda (NEW-1)
+                        html.Div(id="cartao-status", className="sr-only",
+                                 **{"role": "status", "aria-live": "polite", "aria-atomic": "true"}),
+                        html.Div(className="comparar", children=[
+                            html.Label(tr(lang, "lbl_comparar"), htmlFor="dd-comparar"),
+                            dcc.Dropdown(id="dd-comparar", placeholder=tr(lang, "ph_comparar"),
+                                         options=opcoes_cidade_br(), value=cmp, clearable=True,
+                                         disabled=geo.startswith("UF-"), labels=_labels_dd(lang))]),
                         legenda_serie(lang),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
-                                  figure=figura_detalhe(GEO0, lang=lang),
-                                  config={"displayModeBar": False, "responsive": True}),
-                        html.Div(id="horizontes", children=horizontes(GEO0, lang))]),
+                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema, comp=cmp),
+                                  # locale INLINE: meses/dias no idioma da UI (o Plotly do Dash não traz
+                                  # locales e a CSP proíbe CDN). O Graph é recriado ao trocar de idioma.
+                                  config={"displayModeBar": False, "responsive": True,
+                                          "locale": lang, "locales": {lang: plotly_locale(lang)}}),
+                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp))]),
                 ]),
-                html.Figcaption([html.Strong("Figura 1. "),
+                html.Figcaption([html.Strong(tr(lang, "figura_pref", n=1)),
                                  tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
             ]),
             html.Div(className="painel-extra", children=[
+                html.Div(className="avisos avisos--fonte", children=[_aviso(lang)]),
                 tabela_ranking(lang),
                 html.Div(className="como-ler", children=[
-                    html.Span(tr(lang, "como_ler_t"), className="eyebrow eyebrow--inverse"),
+                    html.H3(tr(lang, "como_ler_t"), className="como-ler-t"),
                     html.Ol([html.Li(tr(lang, "como_ler_1")), html.Li(tr(lang, "como_ler_2")),
                              html.Li(tr(lang, "como_ler_3"))])]),
             ]),
         ]),
 
         ]),  # ---- fecha o .wrap de conteúdo (painel) ----
+        html.Section(id="resultados-chave", className="wrap indicadores indicadores--resultados", children=[
+            html.Div(className="stats", children=[
+                stat([html.Span(fmt_int(ESTUDO["casos_2023"], lang) + " "),
+                      html.Span("→", className="arrow"),
+                      html.Span(" " + fmt_int(ESTUDO["casos_2024"], lang))],
+                     tr(lang, "stat1")),
+                stat(fmt_pct(-ESTUDO["reducao_mae"], lang), tr(lang, "stat2")),
+                stat(fmt_intervalo(ESTUDO["cobertura"][0], ESTUDO["cobertura"][1], lang) + "%",
+                     tr(lang, "stat3")),
+                stat(fmt_dec(ESTUDO["pico_norm"], lang, 2), tr(lang, "stat4b"), tom="alarm")]),
+        ]),
 
         # artigo JBCS — full-bleed (fundo --paper), grid TOC | coluna | aside
         artigo(lang),
@@ -460,34 +567,64 @@ def construir_conteudo(lang):
         # rodapé (JBCS/slides): 3 colunas + aviso + faixa verde
         html.Footer(className="rodape", children=[
             html.Div(className="rodape-cols", children=[
-                html.Div([html.H3(tr(lang, "rodape_sobre_t")), html.P(tr(lang, "rodape_sobre_p"))]),
-                html.Div([html.H3(tr(lang, "rodape_dados_t")), html.P(tr(lang, "rodape_dados_p"))]),
-                html.Div([html.H3(tr(lang, "rodape_lic_t")), html.P(tr(lang, "rodape_lic_p"))]),
+                html.Div([html.H3(tr(lang, "rodape_sobre_t")), html.P(rico(tr(lang, "rodape_sobre_p")))]),
+                html.Div([html.H3(tr(lang, "rodape_dados_t")), html.P(rico(tr(lang, "rodape_dados_p")))]),
+                html.Div([html.H3(tr(lang, "rodape_lic_t")), html.P(rico(tr(lang, "rodape_lic_p")))]),
             ]),
-            html.P(tr(lang, "rodape_aviso"), className="rodape-aviso mono"),
+            html.P(rico(tr(lang, "rodape_aviso")), className="rodape-aviso"),
             html.Div(className="faixa-fim", **{"aria-hidden": "true"}),
         ]),
     ]
 
 
+def _contexto_inicial():
+    """(lang, sel) do 1º render. O layout vem de /_dash-layout (sem a query da página), mas o Referer
+    traz a URL — assim `?lang=pt&cidade=…` já nasce no idioma/seleção certos, sem piscar em outro idioma
+    (e sem deslocar o layout quando o boot aplica a URL). Valores inválidos caem no Accept-Language/GEO0."""
+    if not flask.has_request_context():
+        return resolver(""), None
+    lang = resolver(flask.request.headers.get("Accept-Language", ""))
+    sel = None
+    try:
+        q = parse_qs(urlsplit(flask.request.headers.get("Referer", "")).query)
+        pedido = (q.get("lang") or [""])[0].lower()
+        if pedido in IDIOMAS:
+            lang = pedido
+        sel = (q.get("cidade") or [None])[0]
+    except ValueError:
+        pass
+    return lang, sel
+
+
 def serve_layout():
-    lang = resolver(flask.request.headers.get("Accept-Language", "") if flask.has_request_context() else "")
+    # 1º render: idioma/cidade da URL (via Referer) ou Accept-Language; o boot (callback clientside)
+    # reaplica a URL e o idioma salvo em localStorage.
+    lang, sel = _contexto_inicial()
     return html.Div([
         html.A(tr(lang, "skip"), href="#conteudo", className="skip-link"),
-        html.Div(id="running-header", className="running-header", children=cabecalho_corrido(lang)),
+        html.Div(id="running-header", className="running-header",
+                 **{"role": "region", "aria-label": tr(lang, "running_header_aria")},
+                 children=cabecalho_corrido(lang)),
         html.Header(className="topbar", children=[html.Div(className="inner", children=[
             html.Div(className="brand", children=[
                 html.Span(className="brand-dot"),
-                html.Strong(tr(lang, "brand")),
+                html.Strong(tr(lang, "brand"), className="notranslate"),
                 html.Span(tr(lang, "curso"), className="muted hide-sm")]),
             html.Nav(id="topnav", className="topnav", children=nav_links(lang),
                      **{"aria-label": tr(lang, "nav_label")}),
-            barra_controles()])]),
+            barra_controles(lang)])]),
         html.Main(id="conteudo", children=html.Div(id="app-content",
-                                                   children=construir_conteudo(lang))),
-        dcc.Store(id="lang", storage_type="local", data=lang),
+                                                   children=construir_conteudo(lang, sel))),
+        dcc.Store(id="lang", data=lang),   # memória: no boot reseta ao idioma do servidor (Accept-Language);
+                                           # o idioma escolhido persiste em localStorage (ver callback de pílula)
         dcc.Store(id="theme"),
         dcc.Store(id="theme-eff"),
+        dcc.Store(id="cvd"),
         dcc.Store(id="sel"),
+        dcc.Store(id="cmp"),   # cidade de comparação (fonte canônica; imune ao rebuild de render_content)
+        # A15 — estado compartilhável na URL (?lang=&cidade=); tema/cvd/motion ficam no localStorage
+        dcc.Location(id="url", refresh=False),
+        dcc.Store(id="url-sync"),
+        dcc.Store(id="url-cidade"),   # ?cidade= CRU lido no boot; validado no servidor (aplica_url_cidade)
         dcc.Interval(id="boot", interval=80, n_intervals=0, max_intervals=1),
     ])

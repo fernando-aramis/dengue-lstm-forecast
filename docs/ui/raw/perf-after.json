@@ -1,0 +1,46 @@
+{
+ "1440": {
+  "cls_mediana": 0,
+  "cls_max": 0,
+  "lcp_ms": 116,
+  "KiB": {
+   "html": 15.4,
+   "font": 200.0,
+   "js": 6066.6,
+   "css": 55.4,
+   "other": 1360.1,
+   "img": 2.7
+  },
+  "total_KiB": 7700.2,
+  "requisicoes": 49,
+  "fontes": [
+   "0-255.pbf",
+   "ibm-plex-mono-400.woff2",
+   "inter-var.woff2",
+   "source-serif-4-var.woff2"
+  ],
+  "n_fontes": 4
+ },
+ "390": {
+  "cls_mediana": 0,
+  "cls_max": 0,
+  "lcp_ms": 456,
+  "KiB": {
+   "html": 15.4,
+   "js": 6066.6,
+   "css": 55.4,
+   "font": 200.0,
+   "other": 1360.1,
+   "img": 2.2
+  },
+  "total_KiB": 7699.7,
+  "requisicoes": 47,
+  "fontes": [
+   "0-255.pbf",
+   "ibm-plex-mono-400.woff2",
+   "inter-var.woff2",
+   "source-serif-4-var.woff2"
+  ],
+  "n_fontes": 4
+ }
+}

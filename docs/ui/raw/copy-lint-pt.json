@@ -1,0 +1,114 @@
+{
+ "files": [
+  {
+   "words": 2031,
+   "headings": [
+    "Previsão semanal de casos de dengue no Brasil com redes LSTM",
+    "Onde a dengue deve subir nas próximas semanas",
+    "Previsão semanal de casos de dengue em Curitiba com redes LSTM: casos, clima e intervalos de previsão",
+    "1 Introdução",
+    "2 Dados e métodos",
+    "Janela de entrada",
+    "Rede recorrente",
+    "Incerteza",
+    "Dados",
+    "3 Resultados",
+    "Ganho dentro da faixa histórica",
+    "Clima atrapalhou",
+    "A epidemia de 2024 escapou",
+    "Os intervalos avisaram",
+    "4 Limitações e próximos passos",
+    "Modelo regional",
+    "Prever crescimento",
+    "Clima defasado",
+    "Ensembles",
+    "5 Conclusão",
+    "Declarações",
+    "Contribuições do autor",
+    "Conflito de interesses",
+    "Uso de ferramentas de IA",
+    "Disponibilidade de dados e materiais",
+    "Referências",
+    "Como citar",
+    "Materiais suplementares"
+   ],
+   "findings": [
+    {
+     "sev": "WARN",
+     "id": "copy-em-dash",
+     "count": 15,
+     "msg": "15 em dashes in the body (budget 2)",
+     "fix": "use a comma, a colon, parentheses or a full stop where each is natural",
+     "examples": [],
+     "hits": []
+    },
+    {
+     "sev": "WARN",
+     "id": "copy-stat-strip",
+     "count": 3,
+     "msg": "stat strip x3",
+     "fix": "a strip only of figures the brief gives (a price, hours, a count); otherwise put each number in the sentence it proves, or leave it out",
+     "examples": [
+      "1.197 / 1.235 / 1.197 / 1.160",
+      "1.197 / 993 / 1.443 / 635 / 532 / 758 / 528 / 433 / 645 / 289 / 205 / 407 / 289 / 235 / 356 / 244 / 193 / 3...",
+      "4,8 / 11,0 / 72 / 184 / 11,9 / 11,9 / 409 / 409 / 4,6 / 9,5 / 150 / 274 / 7,8 / 10,4 / 284 / 354 / 5,4 / 9,..."
+     ],
+     "hits": [
+      {
+       "match": "1.197 / 1.235 / 1.197 / 1.160",
+       "sentence": "1.197 / 1.235 / 1.197 / 1.160"
+      },
+      {
+       "match": "1.197 / 993 / 1.443 / 635 / 532 / 758 / 528 / 433 / 645 / 289 / 205 / 407 / 2...",
+       "sentence": "1.197 / 993 / 1.443 / 635 / 532 / 758 / 528 / 433 / 645 / 289 / 205 / 407 / 289 / 235 / 356 / 244 / 193 / 308 / 218 / 150 / 316 / 199 / 155 / 256"
+      },
+      {
+       "match": "4,8 / 11,0 / 72 / 184 / 11,9 / 11,9 / 409 / 409 / 4,6 / 9,5 / 150 / 274 / 7,8...",
+       "sentence": "4,8 / 11,0 / 72 / 184 / 11,9 / 11,9 / 409 / 409 / 4,6 / 9,5 / 150 / 274 / 7,8 / 10,4 / 284 / 354 / 5,4 / 9,5 / 183 / 306"
+      }
+     ]
+    },
+    {
+     "sev": "WARN",
+     "id": "copy-eyebrows",
+     "count": 10,
+     "msg": "10 eyebrow or kicker labels",
+     "fix": "one or two a page; a heading that names the thing needs no label over it",
+     "examples": [],
+     "hits": []
+    },
+    {
+     "sev": "INFO",
+     "id": "copy-triads",
+     "count": 1,
+     "msg": "1 list of three (about one in 2031 words)",
+     "fix": "fine when there are three things; never back to back",
+     "examples": [
+      "comparing LSTM, random forest and lasso"
+     ],
+     "hits": [
+      {
+       "match": "comparing LSTM, random forest and lasso",
+       "sentence": "comparing LSTM, random forest and lasso"
+      }
+     ]
+    },
+    {
+     "sev": "INFO",
+     "id": "copy-rhythm",
+     "count": 0,
+     "msg": "103 sentences, mean 17.0 words, spread 16.5, 17% of 4 words or fewer",
+     "fix": "",
+     "examples": [],
+     "hits": []
+    }
+   ],
+   "file": "docs/ui/raw/page-pt.html",
+   "kind": null
+  }
+ ],
+ "cross": {
+  "heroes": [],
+  "shared": []
+ }
+}

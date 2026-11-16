@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "url": "http://127.0.0.1:8050",
+    "when": "2026-11-13T03:31:27.372Z",
+    "note": "Self-authored overflow probe (taste consistency.mjs waived: Node v24 undici assert(!this.paused) crash fetching gzip response)."
+  },
+  "widths": {
+    "320": {
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "hasOverflow": false,
+      "overflowPx": 0,
+      "offenders": []
+    },
+    "390": {
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "hasOverflow": false,
+      "overflowPx": 0,
+      "offenders": []
+    },
+    "768": {
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "hasOverflow": false,
+      "overflowPx": 0,
+      "offenders": []
+    },
+    "1024": {
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "hasOverflow": false,
+      "overflowPx": 0,
+      "offenders": []
+    },
+    "1440": {
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "hasOverflow": false,
+      "overflowPx": 0,
+      "offenders": []
+    }
+  }
+}

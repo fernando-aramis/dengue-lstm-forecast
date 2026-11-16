@@ -1,0 +1,316 @@
+{
+ "page": "http://127.0.0.1:8050",
+ "partial": false,
+ "results": [
+  {
+   "w": 1440,
+   "rows": [
+    {
+     "name": "host CPU load (before/after)",
+     "value": "1/2 %",
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "total transfer",
+     "value": "2220.7 KiB",
+     "verdict": "WARN",
+     "note": "html 3.9K  css 11.4K  js 1735.6K  font 309.7K  img 1.5K  other 158.6K"
+    },
+    {
+     "name": "requests",
+     "value": 41,
+     "verdict": "PASS",
+     "note": "33 by load"
+    },
+    {
+     "name": "images bytes",
+     "value": "1.5 KiB",
+     "verdict": "PASS",
+     "note": "1 files"
+    },
+    {
+     "name": "largest image",
+     "value": "1.5 KiB",
+     "verdict": "PASS",
+     "note": "icons/orcid.svg"
+    },
+    {
+     "name": "JS parsed",
+     "value": "6065.6 KiB",
+     "verdict": "FAIL",
+     "note": "15 files, 1735.6K gz"
+    },
+    {
+     "name": "CSS",
+     "value": "11.4 KiB",
+     "verdict": "PASS",
+     "note": "2 files"
+    },
+    {
+     "name": "font families",
+     "value": 3,
+     "verdict": "WARN",
+     "note": "Inter, Source Serif 4, IBM Plex Mono"
+    },
+    {
+     "name": "font files",
+     "value": 7,
+     "verdict": "FAIL",
+     "note": "309.7K"
+    },
+    {
+     "name": "font bytes",
+     "value": "309.7 KiB",
+     "verdict": "WARN",
+     "note": ""
+    },
+    {
+     "name": "images without width+height",
+     "value": 1,
+     "verdict": "WARN",
+     "note": "orcid.svg"
+    },
+    {
+     "name": "below-fold images not lazy",
+     "value": 1,
+     "verdict": "WARN",
+     "note": "orcid.svg"
+    },
+    {
+     "name": "oversized images (natural > 2.2x shown)",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "WebGL live at load",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "WebGL live at bottom",
+     "value": 1,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "WebGL peak live",
+     "value": 1,
+     "verdict": "PASS",
+     "note": "1 contexts made in all"
+    },
+    {
+     "name": "long tasks (WebGL off)",
+     "value": 6,
+     "verdict": "PASS",
+     "note": "runs 3, 6..6, max 1052ms"
+    },
+    {
+     "name": "blocking time (WebGL off)",
+     "value": "1892 ms",
+     "verdict": "WARN",
+     "note": "runs 3, 1873..2094 ms; at load 999ms"
+    },
+    {
+     "name": "FCP (CPU, relative)",
+     "value": "44 ms",
+     "verdict": "PASS",
+     "note": "runs 3, 44..100"
+    },
+    {
+     "name": "LCP (CPU, relative)",
+     "value": "440 ms",
+     "verdict": "PASS",
+     "note": "runs 3, 428..488, h1"
+    },
+    {
+     "name": "layout shift",
+     "value": "0.690",
+     "verdict": "FAIL",
+     "note": "runs 3, 0.690..0.690; at load 0.163"
+    },
+    {
+     "name": "  info: one load with WebGL on the CPU",
+     "value": "2235 ms",
+     "verdict": "INFO",
+     "note": "13 long tasks; SwiftShader runs shaders on the CPU, not a verdict, and shader compile on a real GPU is not measured"
+    },
+    {
+     "name": "modules loaded, never mounted",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "broken requests",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "page height",
+     "value": "8.8 screens",
+     "verdict": "PASS",
+     "note": "DOM 805 nodes"
+    }
+   ]
+  },
+  {
+   "w": 390,
+   "rows": [
+    {
+     "name": "host CPU load (before/after)",
+     "value": "1/2 %",
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "total transfer",
+     "value": "2169 KiB",
+     "verdict": "WARN",
+     "note": "html 3.9K  css 11.4K  js 1735.6K  font 261.5K  img 1.5K  other 155.1K"
+    },
+    {
+     "name": "requests",
+     "value": 40,
+     "verdict": "PASS",
+     "note": "32 by load"
+    },
+    {
+     "name": "images bytes",
+     "value": "1.5 KiB",
+     "verdict": "PASS",
+     "note": "1 files"
+    },
+    {
+     "name": "largest image",
+     "value": "1.5 KiB",
+     "verdict": "PASS",
+     "note": "icons/orcid.svg"
+    },
+    {
+     "name": "JS parsed",
+     "value": "6065.6 KiB",
+     "verdict": "FAIL",
+     "note": "15 files, 1735.6K gz"
+    },
+    {
+     "name": "CSS",
+     "value": "11.4 KiB",
+     "verdict": "PASS",
+     "note": "2 files"
+    },
+    {
+     "name": "font families",
+     "value": 3,
+     "verdict": "WARN",
+     "note": "Inter, Source Serif 4, IBM Plex Mono"
+    },
+    {
+     "name": "font files",
+     "value": 7,
+     "verdict": "FAIL",
+     "note": "261.5K"
+    },
+    {
+     "name": "font bytes",
+     "value": "261.5 KiB",
+     "verdict": "WARN",
+     "note": ""
+    },
+    {
+     "name": "images without width+height",
+     "value": 1,
+     "verdict": "WARN",
+     "note": "orcid.svg"
+    },
+    {
+     "name": "below-fold images not lazy",
+     "value": 1,
+     "verdict": "WARN",
+     "note": "orcid.svg"
+    },
+    {
+     "name": "oversized images (natural > 2.2x shown)",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "WebGL live at load",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "WebGL live at bottom",
+     "value": 1,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "WebGL peak live",
+     "value": 1,
+     "verdict": "PASS",
+     "note": "1 contexts made in all"
+    },
+    {
+     "name": "long tasks (WebGL off)",
+     "value": 7,
+     "verdict": "PASS",
+     "note": "runs 3, 6..7, max 1010ms"
+    },
+    {
+     "name": "blocking time (WebGL off)",
+     "value": "1851 ms",
+     "verdict": "WARN",
+     "note": "runs 3, 1840..2066 ms; at load 946ms"
+    },
+    {
+     "name": "FCP (CPU, relative)",
+     "value": "88 ms",
+     "verdict": "PASS",
+     "note": "runs 3, 40..96"
+    },
+    {
+     "name": "LCP (CPU, relative)",
+     "value": "404 ms",
+     "verdict": "PASS",
+     "note": "runs 3, 404..416, p.lede"
+    },
+    {
+     "name": "layout shift",
+     "value": "0.146",
+     "verdict": "WARN",
+     "note": "runs 3, 0.146..0.146; at load 0.000"
+    },
+    {
+     "name": "  info: one load with WebGL on the CPU",
+     "value": "2535 ms",
+     "verdict": "INFO",
+     "note": "12 long tasks; SwiftShader runs shaders on the CPU, not a verdict, and shader compile on a real GPU is not measured"
+    },
+    {
+     "name": "modules loaded, never mounted",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "broken requests",
+     "value": 0,
+     "verdict": "PASS",
+     "note": ""
+    },
+    {
+     "name": "page height",
+     "value": "16.6 screens",
+     "verdict": "PASS",
+     "note": "DOM 823 nodes"
+    }
+   ]
+  }
+ ]
+}
