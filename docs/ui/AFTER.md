@@ -26,7 +26,8 @@ LCP/FCP servem só de comparação relativa, não de promessa.
 | **CSS** | 11,4 KiB | **15,9 KiB** (+4,5) | Aumentou: menu de acessibilidade, paleta CVD, ícones por máscara, estados novos |
 | **LCP** | 440 ms @1440 | ~115 ms @1440 · ~465 ms @390 | Comparação só indicativa (host diferente) |
 | **Testes automatizados** | — | **183** (unit + formato + i18n + sem cobertura + E2E + axe AAA) | Cada correção de bug tem teste, provado por mutação quando possível |
-| **Copy-lint / Nielsen** | em-dash ×15, eyebrows ×10, stat-strip ×3 · Nielsen 24/36 | **não remedidos** | Eyebrows/chips foram removidos (A7); o score Nielsen é qualitativo e exige nova rodada de `critique` |
+| **Copy-lint** | em-dash ×15, eyebrows ×10, stat-strip ×3 | em-dash **×6** (limite 2), eyebrows **0**, stat-strip ×3 | Em-dashes de interface trocados por `:` `,` `;` (PT/EN/ES). Os 6 restantes são prosa do artigo (decisão editorial do autor). `stat-strip` é falso positivo: o detector lê linhas de tabelas de dados como "faixa de números" |
+| **Nielsen** | 24/36 | _ver §5_ | Qualitativo (julgamento de modelo), não métrica |
 | **impeccable detect** | side-tab ×2 + advisories | **63 advisories** (font-size 36, color 23, radius 4); **0 antipadrões bloqueantes** | Job não bloqueante no CI |
 
 ---
@@ -84,5 +85,5 @@ Todos corrigidos e com teste:
 - **Links do menu na barra** com ~33 px (passam de 24 px, não de 44 px); **foco sobre a atribuição de terceiros** do mapa.
 - **Cabeçalho corrido** em `.72rem` (exceção do piso tipográfico: o texto longo estouraria 1180 px).
 - **Pares de contraste antigos** em hex digitado em `test_unit.py` (os novos derivam dos tokens).
-- **Score Nielsen e copy-lint** não foram remedidos nesta rodada.
+- **Copy-lint**: 6 em-dashes na prosa do artigo e `stat-strip` ×3 (falso positivo) ficam como exceção documentada.
 - **CI no GitHub não foi executado** (repositório ainda local): YAML e comandos do job foram validados localmente.

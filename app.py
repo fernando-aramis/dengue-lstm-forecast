@@ -34,7 +34,7 @@ logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
                     format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("dengue.app")
 
-app = Dash(__name__, title="Previsão de dengue no Brasil — LSTM",
+app = Dash(__name__, title="Previsão de dengue no Brasil com LSTM",
            update_title=None, suppress_callback_exceptions=True,
            meta_tags=[{"name": "viewport",
                        "content": "width=device-width, initial-scale=1, viewport-fit=cover"},

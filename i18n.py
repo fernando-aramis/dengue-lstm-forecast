@@ -19,9 +19,9 @@ T = {
     # ---------------------------------------------------------------- topbar / controles
     "brand": {"pt": "Dengue · Previsão LSTM", "en": "Dengue · LSTM Forecast",
               "es": "Dengue · Pronóstico LSTM"},
-    "curso": {"pt": "IAGA04 — Aprendizado Profundo · UTFPR",
-              "en": "IAGA04 — Deep Learning · UTFPR",
-              "es": "IAGA04 — Aprendizaje Profundo · UTFPR"},
+    "curso": {"pt": "IAGA04: Aprendizado Profundo · UTFPR",
+              "en": "IAGA04: Deep Learning · UTFPR",
+              "es": "IAGA04: Aprendizaje Profundo · UTFPR"},
     "tema_light": {"pt": "Modo claro", "en": "Light mode", "es": "Modo claro"},
     "tema_system": {"pt": "Modo do sistema", "en": "System mode", "es": "Modo del sistema"},
     "tema_dark": {"pt": "Modo escuro", "en": "Dark mode", "es": "Modo oscuro"},
@@ -44,9 +44,9 @@ T = {
     "bibtex_aria": {"pt": "Citação BibTeX", "en": "BibTeX citation", "es": "Cita BibTeX"},
     "running_header_aria": {"pt": "Cabeçalho do artigo", "en": "Running header",
                             "es": "Encabezado del artículo"},
-    "rh_esq": {"pt": "IAGA04 — Aprendizado Profundo · Especialização em IA Generativa Aplicada · UTFPR, 2026",
-               "en": "IAGA04 — Deep Learning · Graduate Certificate in Applied Generative AI · UTFPR, 2026",
-               "es": "IAGA04 — Aprendizaje Profundo · Especialización en IA Generativa Aplicada · UTFPR, 2026"},
+    "rh_esq": {"pt": "IAGA04: Aprendizado Profundo · Especialização em IA Generativa Aplicada · UTFPR, 2026",
+               "en": "IAGA04: Deep Learning · Graduate Certificate in Applied Generative AI · UTFPR, 2026",
+               "es": "IAGA04: Aprendizaje Profundo · Especialización en IA Generativa Aplicada · UTFPR, 2026"},
     "rh_esq_curto": {"pt": "IAGA04 · UTFPR 2026", "en": "IAGA04 · UTFPR 2026", "es": "IAGA04 · UTFPR 2026"},
     "rh_dir": {"pt": "Dados: Zenodo 10.5281/zenodo.13328231 · {licenca}",
                "en": "Data: Zenodo 10.5281/zenodo.13328231 · {licenca}",
@@ -72,11 +72,11 @@ T = {
                            "supported planning, code and review.",
                      "es": "Código bajo GPL-3.0; texto bajo CC BY 4.0. El asistente Claude (Anthropic) "
                            "apoyó la planificación, el código y la revisión."},
-    "rodape_aviso": {"pt": "Projeto acadêmico — não é ferramenta oficial de vigilância epidemiológica. "
+    "rodape_aviso": {"pt": "Projeto acadêmico: não é ferramenta oficial de vigilância epidemiológica. "
                            "Para informação oficial, consulte o InfoDengue e as autoridades de saúde.",
-                     "en": "Academic project — not an official epidemiological surveillance tool. "
+                     "en": "Academic project: not an official epidemiological surveillance tool. "
                            "For official information, consult InfoDengue and health authorities.",
-                     "es": "Proyecto académico — no es una herramienta oficial de vigilancia epidemiológica. "
+                     "es": "Proyecto académico: no es una herramienta oficial de vigilancia epidemiológica. "
                            "Para información oficial, consulte InfoDengue y las autoridades de salud."},
 
     # ---------------------------------------------------------------- hero
@@ -98,9 +98,9 @@ T = {
              "es": "Proyección de una a cuatro semanas para capitales y principales ciudades, con un "
                    "intervalo de incertidumbre del 90%. Basado en el estudio LSTM para Curitiba, "
                    "extendido al mapa nacional."},
-    "stat1": {"pt": "casos prováveis em Curitiba: 2023 vs. 1º sem. 2024 — quase 2× o pico de 2016 (7.883)",
-              "en": "probable cases in Curitiba: 2023 vs. 1st half 2024 — nearly 2× the 2016 peak (7,883)",
-              "es": "casos probables en Curitiba: 2023 vs. 1er sem. 2024 — casi 2× el pico de 2016 (7.883)"},
+    "stat1": {"pt": "casos prováveis em Curitiba: 2023 vs. 1º sem. 2024, quase 2× o pico de 2016 (7.883)",
+              "en": "probable cases in Curitiba: 2023 vs. 1st half 2024, nearly 2× the 2016 peak (7,883)",
+              "es": "casos probables en Curitiba: 2023 vs. 1er sem. 2024, casi 2× el pico de 2016 (7.883)"},
     "stat2": {"pt": "erro (MAE) da LSTM vs. ingênuo em 4 semanas (2022/23)",
               "en": "LSTM error (MAE) vs. naïve at 4 weeks (2022/23)",
               "es": "error (MAE) de la LSTM vs. ingenuo a 4 semanas (2022/23)"},
@@ -133,9 +133,9 @@ T = {
                        "es": "Distribución de las {n} ciudades por nivel: {lista}"},
     "palavra_cidade": {"pt": "cidade", "en": "city", "es": "ciudad"},
     "palavra_cidades": {"pt": "cidades", "en": "cities", "es": "ciudades"},
-    "aviso_warn_t": {"pt": "Projeto acadêmico — não é alerta oficial.",
-                     "en": "Academic project — not an official alert.",
-                     "es": "Proyecto académico — no es una alerta oficial."},
+    "aviso_warn_t": {"pt": "Projeto acadêmico: não é alerta oficial.",
+                     "en": "Academic project: not an official alert.",
+                     "es": "Proyecto académico: no es una alerta oficial."},
     "aviso_warn_p": {"pt": "O nível exibido é uma simplificação (incidência semanal por 100 mil hab.) "
                            "e não corresponde ao alerta do InfoDengue. Não use para decisões clínicas "
                            "ou de saúde pública.",
@@ -145,9 +145,9 @@ T = {
                      "es": "El nivel mostrado es una simplificación (incidencia semanal por 100 mil hab.) "
                            "y no corresponde a la alerta de InfoDengue. No lo use para decisiones clínicas "
                            "o de salud pública."},
-    "stat4b": {"pt": "pico de 2024 na escala normalizada: fora da faixa de treino — nenhuma rede previu",
-               "en": "2024 peak on the normalized scale: outside the training range — no network predicted it",
-               "es": "pico de 2024 en la escala normalizada: fuera del rango de entrenamiento — ninguna red lo previó"},
+    "stat4b": {"pt": "pico de 2024 na escala normalizada: fora da faixa de treino; nenhuma rede previu",
+               "en": "2024 peak on the normalized scale: outside the training range; no network predicted it",
+               "es": "pico de 2024 en la escala normalizada: fuera del rango de entrenamiento; ninguna red lo previó"},
 
     # ---- Figura 1: recência, legenda da série, horizontes, Tabela 1, como ler (F4) ----
     "fig1_eyebrow": {"pt": "Figura 1 · interativa", "en": "Figure 1 · interactive",
@@ -157,13 +157,13 @@ T = {
                  "es": "Datos hasta SE {se}/{ano} · actualización semanal"},
     "fig1_caption": {"pt": "Previsão de casos prováveis de dengue para t+1 a t+4 semanas (origem: "
                            "SE {se}/{ano}) com intervalo conformal de 90%. Fonte: InfoDengue/SINAN; "
-                           "malha estadual IBGE; elaboração própria. Nível simplificado — não é o alerta oficial.",
+                           "malha estadual IBGE; elaboração própria. Nível simplificado: não é o alerta oficial.",
                      "en": "Forecast of probable dengue cases for t+1 to t+4 weeks (origin: EW {se}/{ano}) "
                            "with a 90% conformal interval. Source: InfoDengue/SINAN; IBGE state boundaries; "
-                           "own elaboration. Simplified level — not the official alert.",
+                           "own elaboration. Simplified level: not the official alert.",
                      "es": "Pronóstico de casos probables de dengue para t+1 a t+4 semanas (origen: "
                            "SE {se}/{ano}) con intervalo conforme del 90%. Fuente: InfoDengue/SINAN; "
-                           "malla estatal del IBGE; elaboración propia. Nivel simplificado — no es la alerta oficial."},
+                           "malla estatal del IBGE; elaboración propia. Nivel simplificado: no es la alerta oficial."},
     "leg_sem_dado": {"pt": "Sem dado", "en": "No data", "es": "Sin dato"},
     "serie_obs": {"pt": "Observado", "en": "Observed", "es": "Observado"},
     "serie_prev": {"pt": "Previsto", "en": "Forecast", "es": "Previsto"},
@@ -173,8 +173,8 @@ T = {
     "dd_limpar_busca": {"pt": "Limpar busca", "en": "Clear search", "es": "Borrar búsqueda"},
     "dd_sem_opcoes": {"pt": "Nenhum resultado", "en": "No results", "es": "Sin resultados"},
     "dd_limpar": {"pt": "Limpar seleção", "en": "Clear selection", "es": "Borrar selección"},
-    "doc_title": {"pt": "Previsão de dengue no Brasil — LSTM", "en": "Dengue forecast for Brazil — LSTM",
-                  "es": "Pronóstico de dengue en Brasil — LSTM"},
+    "doc_title": {"pt": "Previsão de dengue no Brasil com LSTM", "en": "Dengue forecast for Brazil with LSTM",
+                  "es": "Pronóstico de dengue en Brasil con LSTM"},
     "se_abrev": {"pt": "SE {se}", "en": "EW {se}", "es": "SE {se}"},
     "figura_pref": {"pt": "Figura {n}. ", "en": "Figure {n}. ", "es": "Figura {n}. "},
     "tabela_pref": {"pt": "Tabela {n}. ", "en": "Table {n}. ", "es": "Tabla {n}. "},
@@ -284,16 +284,16 @@ T = {
     "escopo_municipio": {"pt": "Município", "en": "Municipality", "es": "Municipio"},
     "escopo_estado": {"pt": "Estado", "en": "State", "es": "Estado"},
     "escopo_cidades": {"pt": "Cidades monitoradas", "en": "Monitored cities", "es": "Ciudades monitoreadas"},
-    "nota_piso": {"pt": "Soma das cidades monitoradas da UF — é um piso, não o total do estado.",
-                  "en": "Sum of the state's monitored cities — a floor, not the state total.",
-                  "es": "Suma de las ciudades monitoreadas del estado — es un piso, no el total estatal."},
-    "nota_nivel": {"pt": "Nível simplificado — incidência semanal por 100 mil hab.: <2,5 Verde · "
+    "nota_piso": {"pt": "Soma das cidades monitoradas da UF; é um piso, não o total do estado.",
+                  "en": "Sum of the state's monitored cities; a floor, not the state total.",
+                  "es": "Suma de las ciudades monitoreadas del estado; es un piso, no el total estatal."},
+    "nota_nivel": {"pt": "Nível simplificado: incidência semanal por 100 mil hab.: <2,5 Verde · "
                          "<10 Amarelo · <30 Laranja · ≥30 Vermelho. Não é o alerta oficial do "
                          "InfoDengue (que combina incidência, Rt e temperatura).",
-                   "en": "Simplified level — weekly incidence per 100k inhab.: <2.5 Green · <10 Yellow "
+                   "en": "Simplified level: weekly incidence per 100k inhab.: <2.5 Green · <10 Yellow "
                          "· <30 Orange · ≥30 Red. Not the official InfoDengue alert (which combines "
                          "incidence, Rt and temperature).",
-                   "es": "Nivel simplificado — incidencia semanal por 100 mil hab.: <2,5 Verde · <10 "
+                   "es": "Nivel simplificado: incidencia semanal por 100 mil hab.: <2,5 Verde · <10 "
                          "Amarillo · <30 Naranja · ≥30 Rojo. No es la alerta oficial de InfoDengue "
                          "(que combina incidencia, Rt y temperatura)."},
     "sem_cob_cartao": {"pt": "Ainda não há cidade monitorada neste estado. Quando uma capital ou "
@@ -461,17 +461,17 @@ T = {
     "foot_title": {"pt": "Previsão semanal de casos de dengue em Curitiba com redes LSTM",
                    "en": "Weekly dengue case forecasting in Curitiba with LSTM networks",
                    "es": "Pronóstico semanal de casos de dengue en Curitiba con redes LSTM"},
-    "foot_author": {"pt": " — Fernando Aramis Colque · IAGA04, Especialização em IA Generativa "
+    "foot_author": {"pt": ". Fernando Aramis Colque · IAGA04, Especialização em IA Generativa "
                           "Aplicada, UTFPR (2026).",
-                    "en": " — Fernando Aramis Colque · IAGA04, Specialization in Applied Generative "
+                    "en": ". Fernando Aramis Colque · IAGA04, Specialization in Applied Generative "
                           "AI, UTFPR (2026).",
-                    "es": " — Fernando Aramis Colque · IAGA04, Especialización en IA Generativa "
+                    "es": ". Fernando Aramis Colque · IAGA04, Especialización en IA Generativa "
                           "Aplicada, UTFPR (2026)."},
-    "foot_ref1": {"pt": "Dados: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024 — "
+    "foot_ref1": {"pt": "Dados: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024. "
                         "Zenodo 10.5281/zenodo.13328231.",
-                  "en": "Data: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024 — "
+                  "en": "Data: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024. "
                         "Zenodo 10.5281/zenodo.13328231.",
-                  "es": "Datos: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024 — "
+                  "es": "Datos: Coelho et al. (2024), Infodengue-Mosqlimate Sprint 2024. "
                         "Zenodo 10.5281/zenodo.13328231."},
     "foot_ref2": {"pt": "Referências: Araujo et al. (2026), PNAS · Chen & Moraga (2025), BMC Public "
                         "Health · Mussumeci & Coelho (2020) · Hochreiter & Schmidhuber (1997).",
