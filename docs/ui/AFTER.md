@@ -23,11 +23,11 @@ LCP/FCP servem só de comparação relativa, não de promessa.
 | **CLS** | **0,690 @1440 (FAIL)** · 0,146 @390 | **0** @1440 e @390 (mediana de 7 execuções) | Causas tratadas: barra do topo (1,15→0,03), footer do Dash, 1º render em idioma errado, fontes, `content-visibility` |
 | **Fontes** | 3 famílias / 7 arq. / ~310 KiB / sem preload | **3 famílias / 3 arq. no carregamento (112 KiB)**; 5 no repositório (145 KiB, itálico e Mono 500 sob demanda); `preload` de Inter e Source Serif; **teste trava os 3 woff2 (≤120 KiB) na carga inicial** | O Google servia os **mesmos bytes** do Inter sob 4 URLs e do Serif sob 2 |
 | **Transferência total** | ~2220 KiB | **~2004 KiB** (`transferSize`) | JS ~1726 KiB gz (Dash/Plotly/MapLibre): inerente, ver [waivers](waivers.md) |
-| **CSS** | 11,4 KiB | **15,9 KiB** (+4,5) | Aumentou: menu de acessibilidade, paleta CVD, ícones por máscara, estados novos |
+| **CSS** | 11,4 KiB (base da Fase 0, não comparável) | **55,4 KiB sem compressão · 14,3 KiB gz** (52,3 na medição anterior do "depois") | Aumentou: menu de acessibilidade, paleta CVD, ícones por máscara, estados novos, comparação e carregamento |
 | **LCP** | 440 ms @1440 | ~115 ms @1440 · ~465 ms @390 | Comparação só indicativa (host diferente) |
-| **Testes automatizados** | — | **183** (unit + formato + i18n + sem cobertura + E2E + axe AAA) | Cada correção de bug tem teste, provado por mutação quando possível |
+| **Testes automatizados** | — | **214** (unit + formato + i18n + sem cobertura + E2E + axe AAA) | Cada correção de bug tem teste, provado por mutação quando possível |
 | **Copy-lint** | em-dash ×15, eyebrows ×10, stat-strip ×3 | em-dash **×6** (limite 2), eyebrows **0**, stat-strip ×3 | Em-dashes de interface trocados por `:` `,` `;` (PT/EN/ES). Os 6 restantes são prosa do artigo (decisão editorial do autor). `stat-strip` é falso positivo: o detector lê linhas de tabelas de dados como "faixa de números" |
-| **Nielsen** | 24/36 | **26/36** (72%, banda Good) | Mesma rubrica do baseline (9 de 10 heurísticas; Error Recovery n/a). Ver §5 | Qualitativo (julgamento de modelo), não métrica |
+| **Nielsen** | 24/36 | **27/36** (75%, banda Good) | Mesma rubrica do baseline (9 de 10 heurísticas; Error Recovery n/a). Ver §5 (julgamento de modelo, não métrica) |
 | **impeccable detect** | side-tab ×2 + advisories | **63 advisories** (font-size 36, color 23, radius 4); **0 antipadrões bloqueantes** | Job não bloqueante no CI |
 
 ---
@@ -93,29 +93,44 @@ Todos corrigidos e com teste:
 ## 5. Nielsen: baseline × depois (julgamento de modelo, não métrica)
 
 Mesma rubrica do baseline (`raw/impeccable-audit.md`): 0–4 por heurística, 9 pontuadas, máximo 36.
-Base da nota: capturas em 1440 e 390 px (`shots/after/`) e as medições deste documento.
+Base da nota: capturas em 1440 e 390 px (`shots/after/`), as medições deste documento e o comportamento
+verificado no navegador. **Duas rodadas:** 26/36 antes de tratar as lacunas encontradas e **27/36** depois.
 
 | # | Heurística | Antes | Depois | Por quê |
 |---|---|---|---|---|
-| 1 | Visibilidade do estado | 2 | **3** | `#cartao-status` (`role=status`), shell trilíngue no cold-start, selo "Dados até SE 43". Falta um estado visível de "atualizando" na troca de cidade |
-| 2 | Correspondência com o mundo real | 3 | 3 | Formatos e meses por idioma resolvidos; "SE", "t+1" e "Rt" seguem sem glossário no ponto de uso |
-| 3 | Controle e liberdade | 3 | 3 | `?lang=&cidade=` dá link compartilhável; continua sem desfazer nem comparação |
+| 1 | Visibilidade do estado | 2 | **3** | `#cartao-status` (`role=status`), shell trilíngue no cold-start, selo "Dados até SE 43"; **novo:** o cartão esmaece e mostra "Atualizando…" (PT/EN/ES) enquanto o Dash recalcula |
+| 2 | Correspondência com o mundo real | 3 | 3 | Formatos e meses por idioma; **novo:** glossário de `t+N`/`SE` sob os cartões, `Rt` e "conformal" explicados onde aparecem. Segue sem glossário completo |
+| 3 | Controle e liberdade | 3 | 3 | `?lang=&cidade=` dá link compartilhável; continua sem desfazer |
 | 4 | Consistência e padrões | 3 | 3 | Tokens e mono com regra única; exceções do Dash nos menus abertos |
-| 5 | Prevenção de erro | 3 | 3 | Validação forjada e `?cidade=` limitado; pouco a errar num app só de leitura |
+| 5 | Prevenção de erro | 3 | 3 | Validação forjada (inclusive do novo `cmp`) e `?cidade=` limitado |
 | 6 | Reconhecimento | 3 | 3 | Legenda, anel por nível, Tabela 1 (mas só 8 de 33 cidades) |
-| 7 | Flexibilidade e eficiência | 2 | 2 | Deep links ajudam; segue sem comparar duas cidades e sem atalhos |
-| 8 | Estética e minimalismo | 2 | **3** | Sem eyebrows/chips, KPIs em faixa plana, menus recolhidos. Ainda denso na 1ª dobra |
+| 7 | Flexibilidade e eficiência | 2 | **3** | Deep links + **comparar duas cidades** (série sobreposta, tabela t+1…t+4). Sem atalhos de teclado |
+| 8 | Estética e minimalismo | 2 | **3** | Sem eyebrows/chips, KPIs em faixa plana, menus recolhidos; **novo:** hero mais baixo, avisos enxutos e KPIs depois do painel |
 | 9 | Recuperação de erro | n/a | n/a | Sem formulários nem caminhos destrutivos |
 | 10 | Ajuda e documentação | 3 | 3 | Sem mudança |
-| | **Total** | **24/36** | **26/36** | 72% = Good (era 67%, Acceptable) |
+| | **Total** | **24/36** | **27/36** | 75% = Good (era 67%, Acceptable) |
 
 **Como ler esse número.** Quem avaliou foi o mesmo modelo que fez as mudanças, então tende a ser benevolente:
-tratem +2 como "melhorou nos dois pontos que o baseline citou" e não como medida. O valor está na lista abaixo.
+trate +3 como "os três pontos fracos do baseline foram atendidos", não como medida. O valor está nas lacunas e nas
+verificações abaixo, que são fatos.
 
-**Lacunas que a avaliação encontrou** (nada bloqueante; nenhuma foi tratada nesta rodada):
-1. **P1, 1ª dobra no desktop**: o hero ocupa ~530 px e, com os dois avisos e a faixa de KPIs, o mapa (o objeto central do painel) só aparece depois da dobra em 1440×900.
-2. **P2, jargão sem glossário no ponto de uso**: "SE", "t+1…t+4", "Rt" (na nota do nível) e "conformal".
-3. **P2, sem comparação entre cidades** (heurística 7) e sem estado visível de carregamento na troca de cidade (heurística 1).
-4. **P3**: Tabela 1 com 8 de 33 cidades; cabeçalho corrido em .72rem (exceção já documentada).
+**Lacunas da rodada anterior e o que foi feito** (cada uma com teste; testes novos conferidos por mutação):
 
-**Personas.** Usuário avançado: sem atalhos nem comparação de duas cidades. Primeira visita: entende o nível pelo glifo e pelo anel, mas tropeça em "SE 44" e "Rt" sem explicação.
+1. **1ª dobra no desktop** — o mapa começava em y=944 (fora da tela em 1440×900). Agora: hero mais baixo
+   (sem `padding-bottom` herdado de `.wrap`), estado do resumo em 2 colunas, nota do hero encurtada (o critério completo
+   já está na Figura 1), aviso "não é alerta oficial" mantido acima do painel, o aviso de fonte dos dados e os
+   resultados-chave do estudo foram para depois do painel. **Resultado medido:** mapa em y=797 (≈100 px visíveis em 1440×900;
+   título e controles visíveis também em 1280×720). Em telas pequenas a ordem h1 → lede → Situação → CTAs (A11) não mudou.
+2. **Jargão sem glossário** — `t+N` e `SE` explicados sob os cartões; `Rt` vira "número de reprodução Rt";
+   "conformal" ganha glosa na 1ª aparição visível (PT/EN/ES).
+3. **Comparação e carregamento** — "Comparar com (opcional)" no painel de detalhe: 2ª série em azul **pontilhada com losango**
+   (não só cor; ≥3:1 nos dois temas, sincronizada com o CSS), legenda, tabela t+1…t+4 das duas cidades como alternativa textual,
+   anúncio por `role=status`, persiste ao trocar idioma, só entre municípios (desabilita com estado). Valor forjado → ignorado.
+   Estado de carregamento: o cartão esmaece após 150 ms e aparece "Atualizando…" (sem deslocar nada).
+
+**Ainda aberto (nada bloqueante):**
+- A comparação usa **escala absoluta de casos/semana**; cidades de portes muito diferentes ficam em escalas distintas (avisado na tela).
+  Normalizar por 100 mil hab. exigiria população no contrato dos CSVs (fora do escopo do app, que só lê CSVs).
+- `?comparar=` **não** está na URL (a comparação não é compartilhável por link).
+- Em 1440×900 só ~100 px do mapa entram na 1ª dobra; no mobile o mapa fica abaixo do hero por desenho (A11).
+- Sem atalhos de teclado; Tabela 1 com 8 de 33 cidades; cabeçalho corrido em .72rem (exceção documentada).

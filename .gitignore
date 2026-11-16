@@ -14,3 +14,10 @@ docs/ui/shots/**/*full*.png
 
 # graphify (grafo local, regenerável)
 graphify-out/
+
+# capturas intermediárias de cada fase do refino de UI (checkpoints antes/depois): ficam em disco, fora do git.
+# O estado final versionado é docs/ui/shots/before/ e docs/ui/shots/after/.
+docs/ui/shots/a16/
+docs/ui/shots/after-fase3/
+docs/ui/shots/after-fase4/
+docs/ui/shots/fase5/
