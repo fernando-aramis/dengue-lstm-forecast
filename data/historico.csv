@@ -1,5 +1,4 @@
 nivel_geo,geo_id,uf,nome,lat,lon,data,casos
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-06-14,138
 municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-06-21,89
 municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-06-28,121
 municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-07-05,127
@@ -14,32 +13,32 @@ municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-08-30,127
 municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-09-06,99
 municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-09-13,85
 municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-09-20,91
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-09-27,127
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-04,119
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-11,105
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-18,97
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-25,83
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-06-14,68
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-09-27,126
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-04,118
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-11,102
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-18,99
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-25,106
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-11-01,75
 municipio,2704302,AL,Maceió,-9.67,-35.74,2026-06-21,82
 municipio,2704302,AL,Maceió,-9.67,-35.74,2026-06-28,124
 municipio,2704302,AL,Maceió,-9.67,-35.74,2026-07-05,112
 municipio,2704302,AL,Maceió,-9.67,-35.74,2026-07-12,96
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-07-19,75
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-07-19,76
 municipio,2704302,AL,Maceió,-9.67,-35.74,2026-07-26,103
 municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-02,92
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-09,94
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-16,83
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-23,92
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-30,96
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-06,74
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-13,106
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-20,89
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-27,78
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-04,76
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-11,76
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-18,84
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-25,82
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-06-14,101
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-09,97
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-16,86
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-23,91
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-08-30,92
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-06,68
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-13,101
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-20,90
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-09-27,87
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-04,87
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-11,79
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-18,76
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-25,78
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-11-01,87
 municipio,1600303,AP,Macapá,0.03,-51.07,2026-06-21,104
 municipio,1600303,AP,Macapá,0.03,-51.07,2026-06-28,90
 municipio,1600303,AP,Macapá,0.03,-51.07,2026-07-05,76
@@ -49,17 +48,17 @@ municipio,1600303,AP,Macapá,0.03,-51.07,2026-07-26,49
 municipio,1600303,AP,Macapá,0.03,-51.07,2026-08-02,38
 municipio,1600303,AP,Macapá,0.03,-51.07,2026-08-09,40
 municipio,1600303,AP,Macapá,0.03,-51.07,2026-08-16,77
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-08-23,71
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-08-30,48
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-09-06,59
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-08-23,69
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-08-30,43
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-09-06,57
 municipio,1600303,AP,Macapá,0.03,-51.07,2026-09-13,58
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-09-20,60
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-09-27,44
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-04,45
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-11,48
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-18,50
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-25,51
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-06-14,100
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-09-20,58
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-09-27,36
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-04,36
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-11,33
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-18,34
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-25,36
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-11-01,36
 municipio,1302603,AM,Manaus,-3.12,-60.02,2026-06-21,95
 municipio,1302603,AM,Manaus,-3.12,-60.02,2026-06-28,79
 municipio,1302603,AM,Manaus,-3.12,-60.02,2026-07-05,62
@@ -72,37 +71,37 @@ municipio,1302603,AM,Manaus,-3.12,-60.02,2026-08-16,126
 municipio,1302603,AM,Manaus,-3.12,-60.02,2026-08-23,97
 municipio,1302603,AM,Manaus,-3.12,-60.02,2026-08-30,87
 municipio,1302603,AM,Manaus,-3.12,-60.02,2026-09-06,78
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-09-13,85
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-09-13,84
 municipio,1302603,AM,Manaus,-3.12,-60.02,2026-09-20,81
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-09-27,62
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-04,66
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-11,66
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-18,63
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-25,56
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-06-14,246
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-09-27,65
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-04,68
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-11,70
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-18,75
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-25,58
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-11-01,63
 municipio,2927408,BA,Salvador,-12.97,-38.51,2026-06-21,239
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-06-28,262
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-06-28,264
 municipio,2927408,BA,Salvador,-12.97,-38.51,2026-07-05,306
 municipio,2927408,BA,Salvador,-12.97,-38.51,2026-07-12,375
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-07-19,432
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-07-26,419
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-02,372
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-07-19,433
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-07-26,421
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-02,374
 municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-09,377
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-16,322
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-23,271
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-30,243
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-06,267
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-13,255
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-20,265
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-27,224
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-04,219
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-11,172
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-18,172
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-25,156
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-06-14,280
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-16,324
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-23,275
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-08-30,248
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-06,264
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-13,258
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-20,275
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-09-27,221
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-04,211
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-11,169
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-18,152
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-25,132
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-11-01,120
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-06-21,260
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-06-28,236
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-07-05,249
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-07-05,250
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-07-12,243
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-07-19,271
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-07-26,256
@@ -110,16 +109,16 @@ municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-08-02,230
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-08-09,240
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-08-16,233
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-08-23,198
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-08-30,193
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-09-06,154
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-09-13,180
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-08-30,192
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-09-06,152
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-09-13,179
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-09-20,148
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-09-27,120
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-04,111
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-11,101
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-09-27,121
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-04,103
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-11,110
 municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-18,105
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-25,103
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-06-14,390
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-25,93
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-11-01,91
 municipio,5300108,DF,Brasília,-15.79,-47.88,2026-06-21,329
 municipio,5300108,DF,Brasília,-15.79,-47.88,2026-06-28,299
 municipio,5300108,DF,Brasília,-15.79,-47.88,2026-07-05,279
@@ -130,16 +129,16 @@ municipio,5300108,DF,Brasília,-15.79,-47.88,2026-08-02,236
 municipio,5300108,DF,Brasília,-15.79,-47.88,2026-08-09,231
 municipio,5300108,DF,Brasília,-15.79,-47.88,2026-08-16,282
 municipio,5300108,DF,Brasília,-15.79,-47.88,2026-08-23,244
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-08-30,265
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-09-06,230
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-09-13,264
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-08-30,264
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-09-06,229
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-09-13,263
 municipio,5300108,DF,Brasília,-15.79,-47.88,2026-09-20,207
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-09-27,250
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-04,236
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-11,261
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-18,282
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-25,265
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-06-14,68
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-09-27,251
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-04,240
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-11,265
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-18,283
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-25,280
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-11-01,282
 municipio,3205309,ES,Vitória,-20.32,-40.34,2026-06-21,68
 municipio,3205309,ES,Vitória,-20.32,-40.34,2026-06-28,77
 municipio,3205309,ES,Vitória,-20.32,-40.34,2026-07-05,90
@@ -154,12 +153,12 @@ municipio,3205309,ES,Vitória,-20.32,-40.34,2026-08-30,58
 municipio,3205309,ES,Vitória,-20.32,-40.34,2026-09-06,57
 municipio,3205309,ES,Vitória,-20.32,-40.34,2026-09-13,82
 municipio,3205309,ES,Vitória,-20.32,-40.34,2026-09-20,65
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-09-27,80
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-09-27,81
 municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-04,73
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-11,67
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-18,98
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-25,71
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-06-14,1094
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-11,66
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-18,95
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-25,72
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-11-01,71
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-06-21,911
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-06-28,847
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-07-05,747
@@ -167,39 +166,39 @@ municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-07-12,594
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-07-19,662
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-07-26,591
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-08-02,569
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-08-09,559
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-08-09,560
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-08-16,506
 municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-08-23,409
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-08-30,440
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-06,465
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-13,484
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-20,500
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-27,485
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-04,568
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-11,588
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-18,631
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-25,586
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-06-14,303
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-08-30,438
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-06,463
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-13,482
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-20,495
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-09-27,479
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-04,555
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-11,592
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-18,633
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-25,646
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-11-01,634
 municipio,2111300,MA,São Luís,-2.53,-44.3,2026-06-21,205
 municipio,2111300,MA,São Luís,-2.53,-44.3,2026-06-28,330
 municipio,2111300,MA,São Luís,-2.53,-44.3,2026-07-05,296
 municipio,2111300,MA,São Luís,-2.53,-44.3,2026-07-12,251
 municipio,2111300,MA,São Luís,-2.53,-44.3,2026-07-19,268
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-07-26,240
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-02,247
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-07-26,243
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-02,248
 municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-09,214
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-16,162
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-23,135
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-30,125
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-06,118
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-13,112
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-20,109
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-27,112
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-04,133
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-11,111
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-18,96
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-25,96
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-06-14,77
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-16,163
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-23,153
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-08-30,123
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-06,115
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-13,105
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-20,96
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-09-27,94
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-04,111
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-11,90
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-18,72
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-25,63
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-11-01,65
 municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-06-21,40
 municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-06-28,55
 municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-07-05,44
@@ -207,79 +206,79 @@ municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-07-12,64
 municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-07-19,60
 municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-07-26,69
 municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-02,55
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-09,33
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-16,57
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-23,45
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-30,25
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-06,22
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-13,10
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-20,8
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-27,9
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-04,14
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-11,14
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-18,20
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-09,35
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-16,62
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-23,52
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-08-30,34
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-06,34
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-13,12
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-20,7
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-09-27,8
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-04,13
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-11,12
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-18,17
 municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-25,12
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-06-14,28
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-11-01,11
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-06-21,25
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-06-28,21
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-07-05,17
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-07-12,30
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-07-19,17
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-07-26,22
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-02,29
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-02,30
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-09,28
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-16,25
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-23,14
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-30,23
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-09-06,13
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-16,26
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-23,16
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-08-30,24
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-09-06,14
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-09-13,20
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-09-20,25
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-09-27,47
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-04,45
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-11,54
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-09-20,31
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-09-27,44
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-04,41
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-11,49
 municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-18,41
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-25,38
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-06-14,374
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-25,31
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-11-01,34
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-06-21,334
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-06-28,324
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-07-05,310
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-07-12,261
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-07-19,232
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-07-26,246
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-07-26,245
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-08-02,231
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-08-09,318
 municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-08-16,332
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-08-23,321
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-08-30,239
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-06,267
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-13,302
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-20,289
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-27,326
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-04,293
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-11,399
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-18,454
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-25,502
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-06-14,89
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-08-23,318
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-08-30,232
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-06,259
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-13,292
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-20,287
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-09-27,314
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-04,282
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-11,386
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-18,414
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-25,490
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-11-01,591
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-06-21,57
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-06-28,75
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-07-05,67
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-07-12,59
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-07-12,60
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-07-19,53
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-07-26,58
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-08-02,60
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-08-09,55
 municipio,1501402,PA,Belém,-1.46,-48.5,2026-08-16,70
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-08-23,44
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-08-30,46
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-06,40
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-13,45
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-20,38
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-27,34
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-04,31
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-11,36
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-18,35
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-25,32
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-06-14,127
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-08-23,43
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-08-30,44
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-06,38
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-13,43
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-20,40
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-09-27,37
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-04,35
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-11,42
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-18,46
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-25,46
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-11-01,40
 municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-06-21,118
 municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-06-28,160
 municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-07-05,159
@@ -290,16 +289,16 @@ municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-08-02,151
 municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-08-09,140
 municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-08-16,157
 municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-08-23,143
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-08-30,159
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-08-30,158
 municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-09-06,143
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-09-13,146
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-09-20,120
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-09-27,146
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-04,152
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-11,149
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-18,167
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-25,136
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-06-14,13
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-09-13,147
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-09-20,121
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-09-27,149
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-04,157
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-11,154
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-18,172
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-25,146
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-11-01,134
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-06-21,4
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-06-28,14
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-07-05,12
@@ -311,15 +310,15 @@ municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-08-09,12
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-08-16,16
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-08-23,12
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-08-30,19
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-09-06,17
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-09-06,18
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-09-13,13
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-09-20,15
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-09-27,27
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-04,30
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-11,33
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-09-20,14
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-09-27,28
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-04,29
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-11,34
 municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-18,26
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-25,30
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-06-14,323
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-25,27
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-11-01,25
 municipio,2611606,PE,Recife,-8.05,-34.88,2026-06-21,253
 municipio,2611606,PE,Recife,-8.05,-34.88,2026-06-28,366
 municipio,2611606,PE,Recife,-8.05,-34.88,2026-07-05,347
@@ -329,57 +328,57 @@ municipio,2611606,PE,Recife,-8.05,-34.88,2026-07-26,319
 municipio,2611606,PE,Recife,-8.05,-34.88,2026-08-02,315
 municipio,2611606,PE,Recife,-8.05,-34.88,2026-08-09,304
 municipio,2611606,PE,Recife,-8.05,-34.88,2026-08-16,285
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-08-23,257
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-08-30,268
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-06,265
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-13,268
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-20,264
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-27,217
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-04,212
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-11,209
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-18,232
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-25,221
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-06-14,634
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-08-23,256
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-08-30,264
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-06,259
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-13,262
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-20,257
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-09-27,205
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-04,200
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-11,183
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-18,209
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-25,202
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-11-01,194
 municipio,2211001,PI,Teresina,-5.09,-42.8,2026-06-21,374
 municipio,2211001,PI,Teresina,-5.09,-42.8,2026-06-28,337
 municipio,2211001,PI,Teresina,-5.09,-42.8,2026-07-05,288
 municipio,2211001,PI,Teresina,-5.09,-42.8,2026-07-12,187
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-07-19,182
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-07-26,196
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-02,192
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-07-19,183
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-07-26,197
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-02,193
 municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-09,144
 municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-16,118
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-23,61
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-30,78
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-06,67
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-13,56
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-20,68
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-27,51
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-04,46
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-11,42
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-18,37
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-23,60
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-08-30,85
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-06,66
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-13,54
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-20,73
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-09-27,61
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-04,51
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-11,43
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-18,40
 municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-25,29
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-06-14,344
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-11-01,26
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-06-21,279
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-06-28,309
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-05,258
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-12,278
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-12,282
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-19,307
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-26,223
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-02,262
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-09,246
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-16,242
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-23,235
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-23,234
 municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-30,223
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-06,171
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-13,241
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-20,294
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-27,316
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-04,266
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-11,313
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-18,272
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,237
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-06-14,74
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-06,170
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-13,239
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-20,291
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-27,317
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-04,265
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-11,311
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-18,285
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,254
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-01,356
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-06-21,60
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-06-28,84
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-07-05,68
@@ -393,13 +392,13 @@ municipio,2408102,RN,Natal,-5.79,-35.21,2026-08-23,78
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-08-30,63
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-09-06,47
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-09-13,57
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-09-20,50
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-09-20,49
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-09-27,47
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-04,51
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-04,50
 municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-11,58
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-18,55
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-25,57
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-06-14,37
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-18,52
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-25,54
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-11-01,50
 municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-06-21,18
 municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-06-28,24
 municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-07-05,1
@@ -415,31 +414,31 @@ municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-09-06,14
 municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-09-13,9
 municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-09-20,19
 municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-09-27,27
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-04,28
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-11,25
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-18,39
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-25,23
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-06-14,27
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-04,27
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-11,23
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-18,37
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-25,32
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-11-01,24
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-06-21,16
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-06-28,24
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-07-05,10
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-07-12,18
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-07-19,19
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-07-26,24
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-07-26,25
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-08-02,19
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-08-09,60
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-08-16,45
 municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-08-23,49
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-08-30,31
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-06,32
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-13,21
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-20,29
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-27,33
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-04,21
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-11,23
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-18,26
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-25,27
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-06-14,45
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-08-30,29
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-06,29
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-13,18
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-20,26
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-09-27,29
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-04,17
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-11,17
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-18,21
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-25,22
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-11-01,23
 municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-06-21,30
 municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-06-28,36
 municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-07-05,35
@@ -454,12 +453,12 @@ municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-08-30,37
 municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-09-06,19
 municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-09-13,30
 municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-09-20,31
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-09-27,26
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-04,24
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-11,19
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-18,20
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-25,17
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-06-14,58
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-09-27,25
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-04,23
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-11,20
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-18,17
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-25,11
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-11-01,22
 municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-06-21,30
 municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-06-28,39
 municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-07-05,49
@@ -473,33 +472,33 @@ municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-08-23,41
 municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-08-30,26
 municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-09-06,36
 municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-09-13,43
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-09-20,38
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-09-27,34
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-04,48
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-11,75
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-18,80
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-25,54
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-06-14,1615
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-09-20,37
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-09-27,33
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-04,46
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-11,73
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-18,76
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-25,53
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-11-01,59
 municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-06-21,1338
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-06-28,1422
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-06-28,1423
 municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-07-05,1039
 municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-07-12,1087
 municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-07-19,1119
 municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-07-26,1144
 municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-02,1199
 municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-09,1092
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-16,1269
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-23,1088
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-30,1042
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-06,963
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-13,1000
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-20,1155
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-27,1304
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-04,1263
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-11,1388
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-18,1357
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-25,1132
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-06-14,71
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-16,1274
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-23,1086
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-08-30,1039
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-06,959
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-13,994
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-20,1152
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-09-27,1318
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-04,1281
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-11,1425
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-18,1487
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-25,1324
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-11-01,1554
 municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-06-21,48
 municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-06-28,40
 municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-07-05,57
@@ -512,14 +511,14 @@ municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-08-16,74
 municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-08-23,64
 municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-08-30,68
 municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-09-06,61
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-09-13,69
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-09-13,68
 municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-09-20,61
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-09-27,68
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-04,70
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-11,47
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-18,62
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-25,57
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-06-14,407
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-09-27,67
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-04,68
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-11,52
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-18,60
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-25,55
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-11-01,64
 municipio,1721000,TO,Palmas,-10.18,-48.33,2026-06-21,321
 municipio,1721000,TO,Palmas,-10.18,-48.33,2026-06-28,269
 municipio,1721000,TO,Palmas,-10.18,-48.33,2026-07-05,258
@@ -534,12 +533,12 @@ municipio,1721000,TO,Palmas,-10.18,-48.33,2026-08-30,175
 municipio,1721000,TO,Palmas,-10.18,-48.33,2026-09-06,156
 municipio,1721000,TO,Palmas,-10.18,-48.33,2026-09-13,190
 municipio,1721000,TO,Palmas,-10.18,-48.33,2026-09-20,194
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-09-27,156
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-04,146
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-11,148
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-18,154
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-25,122
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-06-14,200
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-09-27,155
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-04,145
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-11,153
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-18,153
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-25,161
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-11-01,158
 municipio,3509502,SP,Campinas,-22.91,-47.06,2026-06-21,185
 municipio,3509502,SP,Campinas,-22.91,-47.06,2026-06-28,209
 municipio,3509502,SP,Campinas,-22.91,-47.06,2026-07-05,142
@@ -555,11 +554,11 @@ municipio,3509502,SP,Campinas,-22.91,-47.06,2026-09-06,139
 municipio,3509502,SP,Campinas,-22.91,-47.06,2026-09-13,143
 municipio,3509502,SP,Campinas,-22.91,-47.06,2026-09-20,195
 municipio,3509502,SP,Campinas,-22.91,-47.06,2026-09-27,210
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-04,193
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-04,192
 municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-11,181
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-18,242
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-25,238
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-06-14,58
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-18,245
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-25,242
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-11-01,242
 municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-06-21,42
 municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-06-28,55
 municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-07-05,39
@@ -573,16 +572,16 @@ municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-08-23,19
 municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-08-30,17
 municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-09-06,35
 municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-09-13,34
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-09-20,28
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-09-27,37
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-04,32
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-11,40
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-18,51
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-25,46
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-06-14,177
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-09-20,27
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-09-27,36
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-04,31
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-11,39
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-18,45
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-25,41
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-11-01,35
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-06-21,145
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-06-28,158
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-07-05,152
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-07-05,153
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-07-12,121
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-07-19,95
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-07-26,135
@@ -593,13 +592,13 @@ municipio,4113700,PR,Londrina,-23.31,-51.16,2026-08-23,188
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-08-30,183
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-09-06,142
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-09-13,166
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-09-20,185
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-09-20,184
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-09-27,190
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-04,161
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-04,160
 municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-11,203
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-18,239
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-25,194
-municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-06-14,67
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-18,235
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-25,211
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-11-01,227
 municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-06-21,37
 municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-06-28,66
 municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-07-05,47
@@ -617,9 +616,9 @@ municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-09-20,85
 municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-09-27,81
 municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-04,82
 municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-11,85
-municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-18,65
-municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-25,77
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-06-14,139
+municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-18,64
+municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-25,78
+municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-11-01,86
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-06-21,145
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-06-28,153
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-07-05,124
@@ -629,17 +628,17 @@ municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-07-26,163
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-08-02,135
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-08-09,105
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-08-16,104
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-08-23,120
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-08-23,121
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-08-30,76
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-09-06,123
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-09-06,122
 municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-09-13,88
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-09-20,92
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-09-27,101
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-04,73
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-11,84
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-18,107
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-25,68
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-06-14,192
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-09-20,91
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-09-27,98
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-04,70
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-11,75
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-18,89
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-25,45
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-11-01,44
 municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-06-21,134
 municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-06-28,156
 municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-07-05,185
@@ -652,14 +651,14 @@ municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-08-16,121
 municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-08-23,115
 municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-08-30,117
 municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-09-06,152
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-09-13,108
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-09-20,113
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-09-27,116
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-04,111
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-11,117
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-18,61
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-25,65
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-06-14,138
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-09-13,107
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-09-20,112
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-09-27,118
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-04,119
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-11,155
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-18,107
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-25,68
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-11-01,96
 estado,UF-AC,AC,Acre,-9.97,-67.81,2026-06-21,89
 estado,UF-AC,AC,Acre,-9.97,-67.81,2026-06-28,121
 estado,UF-AC,AC,Acre,-9.97,-67.81,2026-07-05,127
@@ -674,32 +673,32 @@ estado,UF-AC,AC,Acre,-9.97,-67.81,2026-08-30,127
 estado,UF-AC,AC,Acre,-9.97,-67.81,2026-09-06,99
 estado,UF-AC,AC,Acre,-9.97,-67.81,2026-09-13,85
 estado,UF-AC,AC,Acre,-9.97,-67.81,2026-09-20,91
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-09-27,127
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-04,119
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-11,105
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-18,97
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-25,83
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-06-14,68
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-09-27,126
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-04,118
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-11,102
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-18,99
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-25,106
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-11-01,75
 estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-06-21,82
 estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-06-28,124
 estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-07-05,112
 estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-07-12,96
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-07-19,75
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-07-19,76
 estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-07-26,103
 estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-02,92
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-09,94
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-16,83
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-23,92
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-30,96
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-06,74
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-13,106
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-20,89
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-27,78
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-04,76
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-11,76
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-18,84
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-25,82
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-06-14,101
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-09,97
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-16,86
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-23,91
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-08-30,92
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-06,68
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-13,101
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-20,90
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-09-27,87
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-04,87
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-11,79
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-18,76
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-25,78
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-11-01,87
 estado,UF-AP,AP,Amapá,0.03,-51.07,2026-06-21,104
 estado,UF-AP,AP,Amapá,0.03,-51.07,2026-06-28,90
 estado,UF-AP,AP,Amapá,0.03,-51.07,2026-07-05,76
@@ -709,17 +708,17 @@ estado,UF-AP,AP,Amapá,0.03,-51.07,2026-07-26,49
 estado,UF-AP,AP,Amapá,0.03,-51.07,2026-08-02,38
 estado,UF-AP,AP,Amapá,0.03,-51.07,2026-08-09,40
 estado,UF-AP,AP,Amapá,0.03,-51.07,2026-08-16,77
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-08-23,71
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-08-30,48
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-09-06,59
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-08-23,69
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-08-30,43
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-09-06,57
 estado,UF-AP,AP,Amapá,0.03,-51.07,2026-09-13,58
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-09-20,60
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-09-27,44
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-04,45
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-11,48
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-18,50
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-25,51
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-06-14,100
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-09-20,58
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-09-27,36
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-04,36
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-11,33
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-18,34
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-25,36
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-11-01,36
 estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-06-21,95
 estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-06-28,79
 estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-07-05,62
@@ -732,37 +731,37 @@ estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-08-16,126
 estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-08-23,97
 estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-08-30,87
 estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-09-06,78
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-09-13,85
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-09-13,84
 estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-09-20,81
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-09-27,62
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-04,66
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-11,66
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-18,63
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-25,56
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-06-14,385
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-09-27,65
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-04,68
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-11,70
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-18,75
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-25,58
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-11-01,63
 estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-06-21,384
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-06-28,415
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-06-28,417
 estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-07-05,430
 estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-07-12,536
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-07-19,548
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-07-26,582
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-02,507
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-07-19,549
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-07-26,584
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-02,509
 estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-09,482
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-16,426
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-23,391
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-30,319
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-06,390
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-13,343
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-20,357
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-27,325
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-04,292
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-11,256
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-18,279
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-25,224
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-06-14,280
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-16,428
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-23,396
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-08-30,324
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-06,386
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-13,346
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-20,366
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-09-27,319
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-04,281
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-11,244
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-18,241
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-25,177
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-11-01,164
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-06-21,260
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-06-28,236
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-07-05,249
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-07-05,250
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-07-12,243
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-07-19,271
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-07-26,256
@@ -770,16 +769,16 @@ estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-08-02,230
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-08-09,240
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-08-16,233
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-08-23,198
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-08-30,193
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-09-06,154
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-09-13,180
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-08-30,192
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-09-06,152
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-09-13,179
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-09-20,148
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-09-27,120
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-04,111
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-11,101
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-09-27,121
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-04,103
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-11,110
 estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-18,105
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-25,103
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-06-14,390
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-25,93
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-11-01,91
 estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-06-21,329
 estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-06-28,299
 estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-07-05,279
@@ -790,16 +789,16 @@ estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-08-02,236
 estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-08-09,231
 estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-08-16,282
 estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-08-23,244
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-08-30,265
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-09-06,230
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-09-13,264
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-08-30,264
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-09-06,229
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-09-13,263
 estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-09-20,207
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-09-27,250
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-04,236
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-11,261
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-18,282
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-25,265
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-06-14,68
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-09-27,251
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-04,240
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-11,265
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-18,283
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-25,280
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-11-01,282
 estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-06-21,68
 estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-06-28,77
 estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-07-05,90
@@ -814,12 +813,12 @@ estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-08-30,58
 estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-09-06,57
 estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-09-13,82
 estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-09-20,65
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-09-27,80
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-09-27,81
 estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-04,73
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-11,67
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-18,98
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-25,71
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-06-14,1094
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-11,66
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-18,95
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-25,72
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-11-01,71
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-06-21,911
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-06-28,847
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-07-05,747
@@ -827,39 +826,39 @@ estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-07-12,594
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-07-19,662
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-07-26,591
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-08-02,569
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-08-09,559
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-08-09,560
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-08-16,506
 estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-08-23,409
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-08-30,440
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-06,465
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-13,484
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-20,500
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-27,485
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-04,568
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-11,588
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-18,631
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-25,586
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-06-14,303
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-08-30,438
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-06,463
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-13,482
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-20,495
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-09-27,479
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-04,555
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-11,592
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-18,633
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-25,646
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-11-01,634
 estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-06-21,205
 estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-06-28,330
 estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-07-05,296
 estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-07-12,251
 estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-07-19,268
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-07-26,240
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-02,247
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-07-26,243
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-02,248
 estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-09,214
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-16,162
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-23,135
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-30,125
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-06,118
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-13,112
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-20,109
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-27,112
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-04,133
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-11,111
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-18,96
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-25,96
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-06-14,77
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-16,163
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-23,153
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-08-30,123
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-06,115
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-13,105
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-20,96
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-09-27,94
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-04,111
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-11,90
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-18,72
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-25,63
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-11-01,65
 estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-06-21,40
 estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-06-28,55
 estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-07-05,44
@@ -867,79 +866,79 @@ estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-07-12,64
 estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-07-19,60
 estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-07-26,69
 estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-02,55
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-09,33
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-16,57
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-23,45
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-30,25
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-06,22
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-13,10
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-20,8
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-27,9
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-04,14
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-11,14
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-18,20
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-09,35
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-16,62
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-23,52
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-08-30,34
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-06,34
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-13,12
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-20,7
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-09-27,8
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-04,13
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-11,12
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-18,17
 estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-25,12
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-06-14,28
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-11-01,11
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-06-21,25
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-06-28,21
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-07-05,17
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-07-12,30
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-07-19,17
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-07-26,22
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-02,29
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-02,30
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-09,28
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-16,25
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-23,14
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-30,23
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-09-06,13
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-16,26
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-23,16
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-08-30,24
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-09-06,14
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-09-13,20
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-09-20,25
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-09-27,47
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-04,45
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-11,54
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-09-20,31
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-09-27,44
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-04,41
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-11,49
 estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-18,41
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-25,38
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-06-14,566
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-25,31
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-11-01,34
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-06-21,468
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-06-28,480
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-07-05,495
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-07-12,379
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-07-19,341
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-07-26,364
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-07-26,363
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-08-02,346
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-08-09,445
 estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-08-16,453
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-08-23,436
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-08-30,356
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-06,419
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-13,410
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-20,402
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-27,442
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-04,404
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-11,516
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-18,515
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-25,567
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-06-14,89
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-08-23,433
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-08-30,349
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-06,411
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-13,399
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-20,399
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-09-27,432
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-04,401
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-11,541
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-18,521
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-25,558
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-11-01,687
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-06-21,57
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-06-28,75
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-07-05,67
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-07-12,59
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-07-12,60
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-07-19,53
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-07-26,58
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-08-02,60
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-08-09,55
 estado,UF-PA,PA,Pará,-1.46,-48.5,2026-08-16,70
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-08-23,44
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-08-30,46
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-06,40
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-13,45
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-20,38
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-27,34
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-04,31
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-11,36
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-18,35
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-25,32
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-06-14,127
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-08-23,43
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-08-30,44
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-06,38
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-13,43
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-20,40
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-09-27,37
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-04,35
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-11,42
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-18,46
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-25,46
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-11-01,40
 estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-06-21,118
 estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-06-28,160
 estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-07-05,159
@@ -950,19 +949,19 @@ estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-08-02,151
 estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-08-09,140
 estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-08-16,157
 estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-08-23,143
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-08-30,159
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-08-30,158
 estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-09-06,143
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-09-13,146
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-09-20,120
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-09-27,146
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-04,152
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-11,149
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-18,167
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-25,136
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-06-14,257
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-09-13,147
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-09-20,121
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-09-27,149
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-04,157
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-11,154
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-18,172
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-25,146
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-11-01,134
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-06-21,186
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-06-28,238
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-07-05,211
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-07-05,212
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-07-12,199
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-07-19,174
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-07-26,203
@@ -971,15 +970,15 @@ estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-08-09,233
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-08-16,257
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-08-23,277
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-08-30,277
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-09-06,227
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-09-06,228
 estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-09-13,261
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-09-20,285
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-09-27,298
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-04,273
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-11,321
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-18,330
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-25,301
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-06-14,323
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-09-20,283
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-09-27,299
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-04,271
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-11,322
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-18,325
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-25,316
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-11-01,338
 estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-06-21,253
 estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-06-28,366
 estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-07-05,347
@@ -989,57 +988,57 @@ estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-07-26,319
 estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-08-02,315
 estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-08-09,304
 estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-08-16,285
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-08-23,257
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-08-30,268
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-06,265
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-13,268
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-20,264
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-27,217
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-04,212
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-11,209
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-18,232
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-25,221
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-06-14,634
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-08-23,256
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-08-30,264
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-06,259
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-13,262
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-20,257
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-09-27,205
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-04,200
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-11,183
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-18,209
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-25,202
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-11-01,194
 estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-06-21,374
 estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-06-28,337
 estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-07-05,288
 estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-07-12,187
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-07-19,182
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-07-26,196
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-02,192
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-07-19,183
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-07-26,197
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-02,193
 estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-09,144
 estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-16,118
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-23,61
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-30,78
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-06,67
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-13,56
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-20,68
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-27,51
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-04,46
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-11,42
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-18,37
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-23,60
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-08-30,85
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-06,66
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-13,54
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-20,73
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-09-27,61
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-04,51
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-11,43
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-18,40
 estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-25,29
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-06-14,344
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-11-01,26
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-06-21,279
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-06-28,309
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-05,258
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-12,278
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-12,282
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-19,307
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-07-26,223
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-02,262
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-09,246
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-16,242
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-23,235
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-23,234
 estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-08-30,223
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-06,171
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-13,241
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-20,294
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-27,316
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-04,266
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-11,313
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-18,272
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,237
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-06-14,74
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-06,170
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-13,239
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-20,291
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-09-27,317
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-04,265
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-11,311
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-18,285
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,254
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-01,356
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-06-21,60
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-06-28,84
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-07-05,68
@@ -1053,13 +1052,13 @@ estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-08-23,78
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-08-30,63
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-09-06,47
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-09-13,57
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-09-20,50
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-09-20,49
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-09-27,47
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-04,51
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-04,50
 estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-11,58
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-18,55
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-25,57
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-06-14,37
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-18,52
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-25,54
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-11-01,50
 estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-06-21,18
 estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-06-28,24
 estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-07-05,1
@@ -1075,31 +1074,31 @@ estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-09-06,14
 estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-09-13,9
 estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-09-20,19
 estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-09-27,27
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-04,28
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-11,25
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-18,39
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-25,23
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-06-14,27
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-04,27
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-11,23
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-18,37
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-25,32
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-11-01,24
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-06-21,16
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-06-28,24
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-07-05,10
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-07-12,18
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-07-19,19
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-07-26,24
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-07-26,25
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-08-02,19
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-08-09,60
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-08-16,45
 estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-08-23,49
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-08-30,31
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-06,32
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-13,21
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-20,29
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-27,33
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-04,21
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-11,23
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-18,26
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-25,27
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-06-14,45
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-08-30,29
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-06,29
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-13,18
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-20,26
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-09-27,29
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-04,17
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-11,17
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-18,21
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-25,22
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-11-01,23
 estado,UF-RR,RR,Roraima,2.82,-60.67,2026-06-21,30
 estado,UF-RR,RR,Roraima,2.82,-60.67,2026-06-28,36
 estado,UF-RR,RR,Roraima,2.82,-60.67,2026-07-05,35
@@ -1114,12 +1113,12 @@ estado,UF-RR,RR,Roraima,2.82,-60.67,2026-08-30,37
 estado,UF-RR,RR,Roraima,2.82,-60.67,2026-09-06,19
 estado,UF-RR,RR,Roraima,2.82,-60.67,2026-09-13,30
 estado,UF-RR,RR,Roraima,2.82,-60.67,2026-09-20,31
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-09-27,26
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-04,24
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-11,19
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-18,20
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-25,17
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-06-14,58
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-09-27,25
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-04,23
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-11,20
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-18,17
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-25,11
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-11-01,22
 estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-06-21,30
 estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-06-28,39
 estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-07-05,49
@@ -1133,33 +1132,33 @@ estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-08-23,41
 estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-08-30,26
 estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-09-06,36
 estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-09-13,43
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-09-20,38
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-09-27,34
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-04,48
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-11,75
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-18,80
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-25,54
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-06-14,1873
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-09-20,37
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-09-27,33
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-04,46
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-11,73
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-18,76
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-25,53
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-11-01,59
 estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-06-21,1565
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-06-28,1686
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-06-28,1687
 estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-07-05,1220
 estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-07-12,1264
 estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-07-19,1322
 estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-07-26,1336
 estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-02,1407
 estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-09,1268
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-16,1491
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-23,1261
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-30,1196
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-06,1137
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-13,1177
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-20,1378
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-27,1551
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-04,1488
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-11,1609
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-18,1650
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-25,1416
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-06-14,71
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-16,1496
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-23,1259
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-08-30,1193
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-06,1133
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-13,1171
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-20,1374
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-09-27,1564
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-04,1504
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-11,1645
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-18,1777
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-25,1607
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-11-01,1831
 estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-06-21,48
 estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-06-28,40
 estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-07-05,57
@@ -1172,14 +1171,14 @@ estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-08-16,74
 estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-08-23,64
 estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-08-30,68
 estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-09-06,61
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-09-13,69
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-09-13,68
 estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-09-20,61
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-09-27,68
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-04,70
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-11,47
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-18,62
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-25,57
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-06-14,407
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-09-27,67
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-04,68
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-11,52
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-18,60
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-25,55
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-11-01,64
 estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-06-21,321
 estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-06-28,269
 estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-07-05,258
@@ -1194,8 +1193,9 @@ estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-08-30,175
 estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-09-06,156
 estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-09-13,190
 estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-09-20,194
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-09-27,156
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-04,146
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-11,148
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-18,154
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-25,122
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-09-27,155
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-04,145
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-11,153
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-18,153
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-25,161
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-11-01,158
