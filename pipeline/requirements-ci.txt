@@ -5,6 +5,6 @@
 # e usa estas FAIXAS (não pins exatos), para o pip encontrar um conjunto TF-compatível que roda.
 # O gate de contrato dos dados (test_unit -k "schema or geojson or meta") valida a SAÍDA após o
 # treino, então uma eventual diferença de minor de pandas/numpy é barrada antes de qualquer commit.
-tensorflow-cpu~=2.18.0
+tensorflow-cpu~=2.22.0rc1
 numpy>=1.26,<2.2
 pandas>=2.2,<2.4
