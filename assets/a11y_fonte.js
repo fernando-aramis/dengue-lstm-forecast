@@ -14,4 +14,13 @@ document.addEventListener('keydown', function (e) {
   e.preventDefault();
   prox.focus();
   prox.click();
+  // A troca de fonte reconstrói o conteúdo (o foco cairia no body): devolve o foco à opção marcada.
+  [150, 500, 1200].forEach(function (ms) {
+    setTimeout(function () {
+      if (document.activeElement && document.activeElement.closest &&
+          document.activeElement.closest('.fonte-opt')) { return; }
+      var marcada = document.querySelector('.fonte-opt[aria-checked="true"]');
+      if (marcada) { marcada.focus(); }
+    }, ms);
+  });
 });

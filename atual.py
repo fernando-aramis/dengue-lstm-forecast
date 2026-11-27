@@ -8,7 +8,8 @@ Regras de segurança/robustez (ver plano 21 §5.2):
   worker, de forma preguiçosa (`iniciar()`), ou por `post_worker_init` em `gunicorn.conf.py`.
 - URL base fixa na allowlist; `DADOS_ATUAIS_URL` só vale se o host estiver nela. HTTP em loopback só
   com `DADOS_ATUAIS_TESTE=1`. Sem redirecionamentos. Timeout 5 s; teto de 2 MB por arquivo.
-- `latest.json` aponta o run imutável; os arquivos têm o SHA-256 conferido (evita mistura de execuções).
+- `latest.json` aponta o run imutável; os arquivos têm o SHA-256 conferido (evita mistura de execuções;
+  é consistência, não autenticidade: o hash vem da mesma origem — a confiança é no repositório + TLS).
 - Fetcher injetável: testes não fazem rede real.
 
 Estados: carregando | disponivel | defasado | indisponivel (com motivo curto).
@@ -31,6 +32,7 @@ import dados
 
 BASE_PADRAO = "https://raw.githubusercontent.com/fernando-aramis/dengue-lstm-forecast/data/"
 HOSTS_PERMITIDOS = {"raw.githubusercontent.com"}
+PREFIXO_PERMITIDO = "/fernando-aramis/dengue-lstm-forecast/"   # só este repositório, não qualquer um do host
 LIMITE_BYTES = 2 * 1024 * 1024
 TIMEOUT_S = 5
 BACKOFF_S = (0, 15, 60, 300)
@@ -65,7 +67,7 @@ def url_base():
         return BASE_PADRAO
     p = urllib.parse.urlsplit(cru)
     teste = os.environ.get("DADOS_ATUAIS_TESTE") == "1"
-    if p.scheme == "https" and p.hostname in HOSTS_PERMITIDOS:
+    if p.scheme == "https" and p.hostname in HOSTS_PERMITIDOS and p.path.startswith(PREFIXO_PERMITIDO):
         pass
     elif teste and p.scheme == "http" and p.hostname in ("127.0.0.1", "localhost", "::1"):
         pass
@@ -209,19 +211,22 @@ class Atual:
         if not habilitado():
             return True
         try:
-            res, self._etag = buscar(url_base(), self._fetch, self._etag)
+            res, novo_etag = buscar(url_base(), self._fetch, self._etag)
             if res is None:           # 304: nada mudou
+                self._etag = novo_etag
                 with self._lock:
                     if self._c is None:
                         self._estado, self._motivo = INDISPONIVEL, "sem dados"
                 return True
             prev, hist, meta, run = res
             c = montar(prev, hist, meta, self._original)
-        except ErroAtual as e:
+        except Exception as e:     # noqa: BLE001 — nada pode matar a thread; só ErroAtual tem motivo exibível
+            motivo = str(e) if isinstance(e, ErroAtual) else "erro inesperado"
             with self._lock:
                 if self._c is None:           # mantém o último bom, se houver
-                    self._estado, self._motivo = INDISPONIVEL, str(e)
+                    self._estado, self._motivo = INDISPONIVEL, motivo
             return False
+        self._etag = novo_etag     # só após validar: um run rejeitado é reavaliado no próximo ciclo
         with self._lock:
             self._c, self._run, self._estado, self._motivo = c, run, DISPONIVEL, None
             self._coletado = meta.get("coletado_em")

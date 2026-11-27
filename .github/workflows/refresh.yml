@@ -112,10 +112,12 @@ jobs:
           git add -A
           if git diff --cached --quiet; then echo "sem mudanças — nada a publicar"; exit 0; fi
           git commit -m "chore(dados): SE${RUN%%-*}"
+          ok=0
           for i in 1 2 3; do
-            git push origin HEAD:data && break
-            git pull --rebase origin data
+            if git push origin HEAD:data; then ok=1; break; fi
+            git pull --rebase origin data || true
           done
+          [ "$ok" = 1 ] || { echo "::error::push na branch data falhou após 3 tentativas"; exit 1; }
 
       - name: Ping do monitor (dead man's switch, opcional)
         if: steps.probe.outputs.treinar == 'true' && success()

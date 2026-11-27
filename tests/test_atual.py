@@ -152,6 +152,24 @@ def test_etag_enviado_e_304_preserva_estado():
     assert log[0][1] is None
 
 
+def test_run_rejeitado_nao_envenena_o_etag():
+    log = []
+    ruim = _site(prev=_bruto("previsoes.csv")[:100])        # hash confere, CSV inválido
+    a = atual.Atual(fetcher=_fetcher(ruim, log), hoje=dados.ORIGINAL.data_prev_h1)
+    assert a.tentar() is False and a._etag is None
+    a._fetch = _fetcher(_site(), log)
+    assert a.tentar() is True and a.estado()["estado"] == atual.DISPONIVEL
+    assert log[-4][1] is None      # a 2ª tentativa reenviou latest.json sem If-None-Match
+
+
+def test_excecao_inesperada_vira_falha_e_nao_mata_o_laco(monkeypatch):
+    a = _mk(_site())
+    monkeypatch.setattr(atual, "montar", lambda *x: (_ for _ in ()).throw(KeyError("x")))
+    assert a.tentar() is False
+    e = a.estado()
+    assert e["estado"] == atual.INDISPONIVEL and e["motivo"] == "erro inesperado"
+
+
 def test_kill_switch(monkeypatch):
     monkeypatch.setenv("DADOS_ATUAIS", "0")
     chamadas = []
@@ -165,7 +183,8 @@ def test_kill_switch(monkeypatch):
     ("http://raw.githubusercontent.com/x/", True),       # http externo
     ("file:///etc/passwd", True),
     ("http://127.0.0.1:9/", True),                        # loopback sem DADOS_ATUAIS_TESTE
-    ("https://raw.githubusercontent.com/o/r/data/", False),
+    ("https://raw.githubusercontent.com/o/r/data/", True),       # outro repositório do mesmo host
+    ("https://raw.githubusercontent.com/fernando-aramis/dengue-lstm-forecast/teste/", False),
 ])
 def test_allowlist_de_url(monkeypatch, url, esperado_padrao):
     monkeypatch.setenv("DADOS_ATUAIS_URL", url)

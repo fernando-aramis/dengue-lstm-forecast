@@ -47,7 +47,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 
 # gunicorn serve o objeto `server` do app.py (Flask por baixo do Dash).
 # --max-requests recicla workers periodicamente (mitiga vazamento de memória/estado).
-# Shell-form com exec p/ expandir $PORT (host injeta) e $WEB_CONCURRENCY (workers; 1 no free tier).
+# Shell-form com exec p/ expandir $PORT (host injeta) e $WEB_CONCURRENCY (workers; default 1: estado "atual" é por worker).
 # exec => gunicorn vira PID 1 e recebe os sinais corretamente.
-CMD exec gunicorn --bind "0.0.0.0:${PORT:-7860}" --workers "${WEB_CONCURRENCY:-2}" \
+CMD exec gunicorn --bind "0.0.0.0:${PORT:-7860}" --workers "${WEB_CONCURRENCY:-1}" \
     --timeout 60 --graceful-timeout 30 --max-requests 1000 --max-requests-jitter 100 app:server
