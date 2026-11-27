@@ -140,9 +140,9 @@ e o app não muda.
 
 ## CI/CD e deploy
 
-**GitHub Flow** com três workflows (`.github/workflows/`): `ci` (unit em Python 3.11/3.14 + E2E),
+**GitHub Flow** com quatro workflows (`.github/workflows/`): `ci` (unit em Python 3.11/3.14 + E2E),
 `security` (pip-audit · bandit · hadolint · Trivy · **gitleaks no histórico**) e `refresh`
-(pipeline semanal com **gate de contrato** antes de commitar). Actions **SHA-pinned**; Dependabot
+(pipeline semanal com **gate de contrato** antes de commitar) e `main-health` (vigia 2×/semana: abre issue se a `main` ficar vermelha). Actions **SHA-pinned**; Dependabot
 mantém os updates. Os dados publicados são gerados **apenas pelo CI** (Python 3.12 + TensorFlow 2.18, `pipeline/requirements-ci.txt`); o ambiente local (Python 3.14 + TF rc) serve só para teste. O deploy é no **Render** (Docker, free tier) via `render.yaml` — **auto-deploy no
 push em `main`** (não há workflow de deploy: o Render observa o repositório).
 
