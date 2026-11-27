@@ -27,3 +27,24 @@ Observações: medido uma vez (sem média); a variação de tempo de boot entre 
 | Memória do container, ocioso (3 execuções) | 184–200 MiB | 186–212 MiB |
 
 Mudanças (lock e base intactos): `tests/` de pandas/numpy removidos no `RUN` do pip; `docs/` e docs de apoio no `.dockerignore`; `COPY --chown` no lugar de `chown -R`; `pip`/`setuptools`/`wheel` desinstalados no runtime (upgrade, instalação do lock e limpeza num único `RUN`).
+
+## Baseline Lighthouse (Q.5, 2026-11-27)
+
+Lighthouse 13.6.0 contra o container local (clone limpo da `main`), Chromium do Playwright (1255), uma execução por perfil (sem média; o TBT oscila entre execuções).
+
+| Perfil | Desempenho | Acessibilidade | Boas práticas | SEO | FCP | LCP | TBT | CLS | Speed Index |
+|---|---|---|---|---|---|---|---|---|---|
+| Mobile (padrão, 4× CPU, 4G lento) | **67** | **100** | **96** | **83** | 1,5 s | 1,5 s | 6.470 ms | 0 | 4,4 s |
+| Desktop (`--preset=desktop`) | **68** | **100** | **96** | **83** | 0,4 s | 0,4 s | 1.190 ms | 0,003 | 1,8 s |
+
+Reprovações: SEO `meta-description` e `robots-txt` (alvo das tarefas 1.13/1.14); Boas práticas `errors-in-console`. O desempenho é dominado pelo TBT (JS do Dash/Plotly no carregamento).
+
+Comando (o `chrome-launcher` do Lighthouse confunde o WSL com Windows; por isso o Chromium é iniciado à parte e passado por `--port`):
+
+```bash
+docker build -q -t dengue-lh . && docker run -d --name dengue-lh -p 17861:7860 dengue-lh   # esperar /health 200
+C=~/.cache/ms-playwright/chromium-1255/chrome-linux64/chrome
+$C --headless=new --no-sandbox --remote-debugging-port=9333 --user-data-dir=$(mktemp -d) about:blank &
+cd /tmp && npx --yes lighthouse@13.6.0 http://localhost:17861/ [--preset=desktop] --port=9333 \
+  --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=lh.json
+```
