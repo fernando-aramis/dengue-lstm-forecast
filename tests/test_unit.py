@@ -15,7 +15,9 @@ import pandas as pd
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 WEBAPP = os.path.dirname(AQUI)
-DATA = os.path.join(WEBAPP, "data")
+DATA = os.path.join(WEBAPP, "data")                # repositório (geojson não é saída do pipeline)
+# Saída do pipeline sob teste (gate do refresh): previsoes/historico/_meta usam DATA_DIR.
+DATA_SAIDA = os.path.abspath(os.environ.get("DATA_DIR") or DATA)
 for p in (WEBAPP, os.path.join(WEBAPP, "pipeline")):
     if p not in sys.path:
         sys.path.insert(0, p)
@@ -123,7 +125,7 @@ def test_css_usa_tokens_AAA():
 
 # ---------------------------------------------------------------- contrato dos dados
 def test_schema_previsoes():
-    df = pd.read_csv(os.path.join(DATA, "previsoes.csv"))
+    df = pd.read_csv(os.path.join(DATA_SAIDA, "previsoes.csv"))
     cols = {"nivel_geo", "geo_id", "uf", "nome", "lat", "lon", "data_origem", "h",
             "data_prev", "prev", "inf", "sup", "nivel_alerta"}
     assert cols.issubset(df.columns)
@@ -135,7 +137,7 @@ def test_schema_previsoes():
 
 
 def test_schema_historico():
-    df = pd.read_csv(os.path.join(DATA, "historico.csv"))
+    df = pd.read_csv(os.path.join(DATA_SAIDA, "historico.csv"))
     assert {"nivel_geo", "geo_id", "uf", "nome", "lat", "lon", "data", "casos"}.issubset(df.columns)
     assert (df["casos"] >= 0).all()
 
@@ -150,7 +152,7 @@ def test_contrato_estavel():
     altera o JSON na MESMA PR (revisão consciente)."""
     for nome in ("previsoes", "historico"):
         esperado = json.load(open(os.path.join(AQUI, "contrato", nome + ".json"), encoding="utf-8"))
-        df = pd.read_csv(os.path.join(DATA, nome + ".csv"))
+        df = pd.read_csv(os.path.join(DATA_SAIDA, nome + ".csv"))
         obtido = [{"nome": c, "dtype": _dtype_contrato(t)} for c, t in df.dtypes.items()]
         assert obtido == esperado["colunas"], f"contrato de {nome}.csv mudou"
 
@@ -218,7 +220,7 @@ def test_geojson_simplificado_leve():
 
 
 def test_meta_proveniencia():
-    mp = os.path.join(DATA, "_meta.json")
+    mp = os.path.join(DATA_SAIDA, "_meta.json")
     assert os.path.exists(mp), "o pipeline deve gravar data/_meta.json"
     m = json.load(open(mp, encoding="utf-8"))
     for k in ("coletado_em", "se_origem", "modelo", "n_cidades", "n_falhas"):
