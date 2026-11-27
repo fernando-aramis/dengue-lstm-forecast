@@ -1,17 +1,16 @@
-# Refresh das previsões — roda o pipeline, VALIDA o contrato e commita os CSVs atualizados em main.
-# O push em main então dispara o redeploy no Render (autoDeploy do render.yaml) — não há workflow
-# de deploy: o Render observa o repositório e republica sozinho.
+# Refresh das previsões — probe barato → treino → gate de contrato → publicação na branch `data`.
 #
-# Toolchain: usa pipeline/requirements-ci.txt (Python 3.12 + TF estável), NÃO os pins de dev
-# (requirements.txt mira Python 3.14 + RC do TF, sem wheel no runner). Ver 16-diagnostico-cicd.
+# NENHUM commit em `main`: os dados vivem na branch `data` (runs imutáveis + ponteiro `latest.json`
+# por último) e o app os busca em segundo plano (atual.py). Logo, não há redeploy a cada refresh.
+# O app original (CSVs em `data/` de main) continua sendo o fallback.
 #
-# ⚠️ Treinar 33 cidades × 500 épocas em CPU (runner 2 vCPU) é lento. Para a execução agendada,
-# considere MODO_RAPIDO/CIDADES_GEO ou mover o treino para Colab/GPU/self-hosted (ver relatório).
+# Toolchain: pipeline/requirements-ci.txt (Python 3.12 + TF estável) — canônico para os dados publicados.
 name: Refresh das previsões
 
 on:
   schedule:
-    - cron: "0 9 * * 1"      # toda segunda, 09:00 UTC (após fechar a semana epidemiológica)
+    - cron: "0 9 * * 1"      # segunda 09:00 UTC (após fechar a semana epidemiológica)
+    - cron: "0 9 * * 4"      # quinta: nova tentativa/atualização tardia (o probe pula se nada mudou)
   workflow_dispatch:
     inputs:
       modo_rapido:
@@ -22,11 +21,15 @@ on:
         description: "Geocodes separados por vírgula (vazio = todas)"
         type: string
         default: ""
+      forcar:
+        description: "Treinar mesmo que o probe diga que nada mudou"
+        type: boolean
+        default: false
 
 permissions:
-  contents: write           # commita os CSVs atualizados
+  contents: read
 
-# Serial: um dispatch manual nunca corre junto do cron (evita corrida no git push).
+# Serial: um dispatch manual nunca corre junto do cron (evita corrida no push da branch data).
 concurrency:
   group: refresh
   cancel-in-progress: false
@@ -34,7 +37,12 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 120      # teto de segurança; se o treino completo exceder, use MODO_RAPIDO/GPU
+    timeout-minutes: 45       # treino completo medido ≈ 15 min; margem p/ instalação do TF e rede lenta
+    permissions:
+      contents: write         # push na branch `data` (nunca em main)
+      issues: write           # alerta de falha
+    env:
+      DATA_OUT: ${{ github.workspace }}/_saida
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -42,33 +50,88 @@ jobs:
           python-version: "3.12"           # TF exige <= 3.12 (ver requirements-ci.txt)
           cache: pip
           cache-dependency-path: pipeline/requirements-ci.txt
-      - run: pip install -r pipeline/requirements-ci.txt
 
-      - name: Rodar o pipeline (InfoDengue -> LSTM -> CSVs)
+      - name: Branch `data` em um worktree (cria órfã no 1º run)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+            git fetch --depth=1 origin data
+            git worktree add -B data _data FETCH_HEAD
+            echo "BOOTSTRAP=0" >> "$GITHUB_ENV"
+          else
+            git worktree add --orphan -b data _data
+            echo "BOOTSTRAP=1" >> "$GITHUB_ENV"
+          fi
+
+      - name: Probe — a SE mais recente do InfoDengue é nova?
+        id: probe
         working-directory: pipeline
         env:
+          FORCAR: ${{ inputs.forcar && '1' || '' }}
+        run: |
+          pip install "$(grep -E '^pandas==' requirements-ci.txt)" "$(grep -E '^numpy==' requirements-ci.txt)"
+          if [ -n "$FORCAR" ] || [ "$BOOTSTRAP" = "1" ]; then
+            echo "treinar=true" >> "$GITHUB_OUTPUT"; echo "probe: forçado/bootstrap"
+          else
+            python probe.py ../_data/latest.json
+          fi
+
+      - name: Instalar dependências do pipeline
+        if: steps.probe.outputs.treinar == 'true'
+        run: pip install -r pipeline/requirements-ci.txt
+
+      - name: Rodar o pipeline (InfoDengue -> LSTM -> CSVs)
+        if: steps.probe.outputs.treinar == 'true'
+        working-directory: pipeline
+        env:
+          DATA_DIR: ${{ env.DATA_OUT }}
           MODO_RAPIDO: ${{ inputs.modo_rapido && '1' || '' }}
           CIDADES_GEO: ${{ inputs.cidades_geo }}
         run: python gerar_previsoes_reais.py
 
-      - name: Gate — validar contrato dos dados ANTES de commitar
-        # Se o pipeline gerou CSV vazio/malformado (ex.: API fora do ar), estes testes falham e o
-        # job aborta aqui — nada é commitado em main, e o app no ar continua com os dados bons.
-        # Só testes de contrato de DADOS (pandas/json puro) — não importam o app (dash/plotly não
-        # está instalado neste job).
+      - name: Gate — validar contrato dos dados ANTES de publicar
+        # Só testes de contrato de DADOS (pandas/json puro) sobre a SAÍDA (DATA_DIR): se o pipeline
+        # gerou CSV vazio/malformado, o job aborta aqui e a branch `data` segue com o último bom.
+        if: steps.probe.outputs.treinar == 'true'
+        env:
+          DATA_DIR: ${{ env.DATA_OUT }}
         run: |
-          pip install pytest
+          pip install "$(grep -E '^pytest==' tests/requirements.txt)"
           pytest tests/test_unit.py -q -k "schema or geojson or meta_proveniencia or contrato_estavel"
 
-      - name: Commitar dados atualizados
+      - name: Publicar na branch `data` (run imutável + latest.json por último)
+        if: steps.probe.outputs.treinar == 'true'
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/previsoes.csv data/historico.csv data/eda.json data/_meta.json data/snapshots/
-          if git diff --cached --quiet; then
-            echo "sem mudancas nos dados — nada a commitar"; exit 0
+          if [ "$BOOTSTRAP" = "1" ]; then
+            # semeia com os snapshots históricos de main (preserva o histórico p/ a Fase 3)
+            mkdir -p _data/snapshots && cp -n data/snapshots/*.csv _data/snapshots/ 2>/dev/null || true
           fi
-          # sem [skip ci]: o push em main deve disparar o autoDeploy do Render (publica os dados novos)
-          git commit -m "chore(dados): refresh das previsoes"
-          git pull --rebase --autostash origin main   # evita rejeição se main avançou
-          git push
+          RUN=$(python pipeline/publicar_run.py "$DATA_OUT" _data "$GITHUB_SHA")
+          cd _data
+          git add -A
+          if git diff --cached --quiet; then echo "sem mudanças — nada a publicar"; exit 0; fi
+          git commit -m "chore(dados): SE${RUN%%-*}"
+          for i in 1 2 3; do
+            git push origin HEAD:data && break
+            git pull --rebase origin data
+          done
+
+      - name: Ping do monitor (dead man's switch, opcional)
+        if: steps.probe.outputs.treinar == 'true' && success()
+        env:
+          HC_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          if [ -n "$HC_URL" ]; then curl -fsS -m 10 --retry 3 "$HC_URL" >/dev/null || echo "::warning::ping falhou"; fi
+
+      - name: Alerta — abre/atualiza issue em caso de falha
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          T="Refresh das previsões falhou"
+          n=$(gh issue list --state open --search "\"$T\" in:title" --json number,title \
+              --jq "map(select(.title==\"$T\"))[0].number // empty")
+          if [ -n "$n" ]; then gh issue comment "$n" --body "Nova falha: $RUN_URL"
+          else gh issue create --title "$T" --body "O refresh falhou: $RUN_URL. O app segue com o último dataset válido."; fi
