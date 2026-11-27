@@ -50,7 +50,10 @@ jobs:
             tests/requirements.txt
       - run: pip install -r requirements.txt -r tests/requirements.txt
       # unit = tudo que não abre navegador (contratos, formato, i18n/validações, estado sem cobertura)
-      - run: pytest tests/test_unit.py tests/test_formato.py tests/test_i18n_validacoes.py tests/test_sem_cobertura.py -q
+      - run: pip install "$(grep -E '^pytest-cov==' requirements-dev.txt)"
+      # Cobertura medida SÓ no unit (E2E roda o servidor em subprocesso, fora do número). Módulos do
+      # serving em pyproject.toml. Piso = medido (84,35% em 2026-11-27) − 2 pontos; só sobe.
+      - run: pytest tests/test_unit.py tests/test_formato.py tests/test_i18n_validacoes.py tests/test_sem_cobertura.py -q --cov --cov-report=term-missing --cov-fail-under=82
 
   e2e:
     runs-on: ubuntu-latest
