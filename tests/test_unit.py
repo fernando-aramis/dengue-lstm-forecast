@@ -333,8 +333,9 @@ def test_cabecalhos_seguranca():
 
 # ---------------------------------------------------------------- UI nova (F3–F5)
 def test_semana_epi():
-    import dados
     from datetime import date
+
+    import dados
     casos = {date(2026, 10, 25): (2026, 43), date(2026, 11, 1): (2026, 44),
              date(2026, 11, 22): (2026, 47), date(2026, 1, 4): (2026, 1),
              date(2026, 1, 1): (2025, 53), date(2024, 12, 29): (2025, 1)}
@@ -356,14 +357,15 @@ def test_fmt_int_por_idioma():
 
 
 def test_horizontes_4_itens():
-    import figuras, dados
+    import dados
+    import figuras
     out = figuras.horizontes(dados.GEO0, "pt")
     assert len(out[0].children) == 4, f"esperava 4 horizontes, veio {len(out[0].children)}"
 
 
 def test_tabela_ranking():
-    import layout
     import dados
+    import layout
     table = layout.tabela_ranking("pt", n=8).children[0]
     assert type(table.children[0]).__name__ == "Caption", "Caption deve ser o 1º filho da tabela"
     assert len(table.children[2].children) == 8, "n=8 deve limitar a 8 linhas"
@@ -377,6 +379,7 @@ def test_tabela_ranking():
 
 def test_referencias_doi():
     import re
+
     import conteudo
     slugs = [r["slug"] for r in conteudo.REFERENCIAS]
     for r in conteudo.REFERENCIAS:
@@ -491,10 +494,11 @@ def test_tema_mapa_espelha_contorno_dos_estados():
 
 def test_popular_cidades_ao_trocar_idioma_nao_reverte_a_cidade():
     """Trocar idioma só traduz os rótulos; o value (cidade escolhida) não pode voltar para 'UF-xx'."""
-    import app as A
-    import dados as D
     from dash._callback_context import context_value
     from dash._utils import AttributeDict
+
+    import app as A
+    import dados as D
     uf = next(u for u, l in D.cidades_por_uf.items() if l)
 
     def chama(trigger):
@@ -548,7 +552,9 @@ def test_paleta_cvd_nao_piora_e_valores_documentados():
     """dados.py documenta o pior par (ΔE76, Machado 2009, sev. 1,0). Trava os números e a direção:
     a paleta CVD nunca pode ser pior que a padrão (antes o comentário afirmava 59,3 — não reproduzível)."""
     import itertools
+
     import numpy as np
+
     import dados
     mach = {"deuter": [[.367322, .860646, -.227968], [.280085, .672501, .047413], [-.011820, .042940, .968881]],
             "prot": [[.152286, 1.052583, -.204868], [.114503, .786281, .099216], [-.003882, -.048116, 1.051998]]}
@@ -567,8 +573,8 @@ def test_paleta_cvd_nao_piora_e_valores_documentados():
 def test_bolhas_tem_anel_com_espessura_por_nivel_e_contraste():
     """Cor não é canal único (1.4.1) e a bolha precisa de contorno ≥3:1 (1.4.11): camada de anel sob cada nível,
     espessura crescente e hoverinfo=skip (o clique/hover continua só na bolha)."""
-    import figuras
     import dados
+    import figuras
     fig = figuras.figura_mapa()
     aneis = [i for i, t in enumerate(fig.data) if str(t.name or "").startswith("anel-")]
     assert aneis == figuras.indices_anel() and aneis

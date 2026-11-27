@@ -15,9 +15,8 @@ import os
 import time
 import urllib.request
 
-import pandas as pd
-
 import _log
+import pandas as pd
 
 BASE = "https://info.dengue.mat.br/api/alertcity"
 COLUNAS_MIN = {"date", "epiweek", "casos", "casos_est"}   # contrato mínimo esperado da API

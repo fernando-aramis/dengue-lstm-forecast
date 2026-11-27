@@ -44,6 +44,7 @@ BREAKPOINTS = [
 @pytest.fixture(scope="module")
 def servidor():
     from werkzeug.serving import make_server
+
     import app as A
     srv = make_server("127.0.0.1", PORT, A.server, threaded=True)
     t = threading.Thread(target=srv.serve_forever, daemon=True)

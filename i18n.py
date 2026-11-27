@@ -528,4 +528,4 @@ def nivel(lang, chave_pt):
 
 
 # Formatação centralizada em formato.py; re-exportada aqui para `from i18n import fmt_int`.
-from formato import fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo  # noqa: E402,F401
+from formato import fmt_data, fmt_dec, fmt_int, fmt_intervalo, fmt_pct  # noqa: E402,F401

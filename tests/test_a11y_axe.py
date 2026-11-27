@@ -11,7 +11,6 @@ axe-core (vendorizado em tests/vendor/, MPL-2.0 — sem CDN) com as regras AAA, 
 import os
 
 import pytest
-
 from test_e2e import URL, pagina, servidor  # noqa: F401  (fixtures)
 
 AXE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vendor", "axe.min.js")

@@ -4,11 +4,11 @@ import json
 import re
 
 import pytest
+from dash._utils import to_json
 
 import app as A
-from dash._utils import to_json
 import i18n
-from layout import serve_layout, _contexto_inicial
+from layout import _contexto_inicial, serve_layout
 
 LANGS = ("pt", "en", "es")
 NOVAS = ("cartao_resumo_aria_semcob", "detalhe_sem_serie", "se_abrev", "figura_pref", "tabela_pref",
