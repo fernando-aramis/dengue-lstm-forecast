@@ -1,0 +1,18 @@
+# Contexto do projeto (webapp) — atualizado em 2026-11-21
+
+Resumo para retomar o trabalho sem reexplorar o código. Detalhes: memória automática do projeto e `project-report/temp/HANDOFF-ui-refino.md`.
+
+## Estado
+- Refino de UI/UX em 8 fases concluído na branch `fix/a11y-ui-remediation`; PR #11 aberto (aguarda 1º CI e merge). Não abrir novo PR sem OK explícito.
+- North Star: "O Periódico Vivo". Refino, não redesign (identidade verde-terrosa, casca JBCS, AAA, trilíngue).
+
+## Gate de qualidade
+`pytest tests/ -q` verde + axe 0 nos dois temas (wcag2aaa; esperar ~1 s após trocar o tema). App sem hot-reload (porta 8050); CSS é relido, `.py` só ao reiniciar.
+
+## Armadilhas
+- `font-weight:600` em classe mono carrega o Mono 500 e o teste dos 3 woff2 trava.
+- Dash não aceita `translate=` em `html.*`: usar `className="notranslate"`.
+- `pkill -f "python app.py"` mata o shell (exit 144): rode sozinho e suba o app em outra chamada.
+
+## Decisões fixas
+- KPIs: faixa plana, sem sombra; terracota só no excepcional. Mono só no cabeçalho corrido.
