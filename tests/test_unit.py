@@ -208,6 +208,12 @@ def test_meta_proveniencia():
     m = json.load(open(mp, encoding="utf-8"))
     for k in ("coletado_em", "se_origem", "modelo", "n_cidades", "n_falhas"):
         assert k in m, f"_meta.json sem a chave {k}"
+    if m.get("versao", 1) >= 2:                       # proveniência v2 (v1 continua aceito)
+        for k in ("versoes", "duracao_treino_s", "campo_casos", "ey_start", "janela", "horizonte",
+                  "seed", "epocas_max", "paciencia", "epocas_por_cidade"):
+            assert k in m, f"_meta.json v2 sem a chave {k}"
+        assert {"python", "tensorflow", "keras", "numpy", "pandas"} <= set(m["versoes"])
+        assert len(m["epocas_por_cidade"]) == m["n_cidades"]
 
 
 def test_modulos_refatorados_importam():

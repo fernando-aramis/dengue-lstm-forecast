@@ -17,6 +17,9 @@ Env opcionais:
 """
 import json
 import os
+import platform
+import subprocess
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
@@ -64,6 +67,29 @@ def _lista_cidades():
     return cids
 
 
+def _commit():
+    """SHA do código que gerou os dados (GITHUB_SHA no CI, git local senão); None se indisponível."""
+    sha = os.environ.get("GITHUB_SHA")
+    if sha:
+        return sha
+    try:
+        return subprocess.run(["git", "rev-parse", "HEAD"], cwd=AQUI, capture_output=True,
+                              text=True, timeout=5, check=True).stdout.strip() or None
+    except Exception:                                    # noqa: BLE001  (sem git: tolerado)
+        return None
+
+
+def _versoes():
+    v = {"python": platform.python_version(), "numpy": np.__version__, "pandas": pd.__version__}
+    try:                                                 # proveniência nunca derruba a gravação dos CSVs
+        import keras
+        import tensorflow as tf
+        v.update(tensorflow=tf.__version__, keras=keras.__version__)
+    except Exception:                                    # noqa: BLE001
+        pass
+    return v
+
+
 def processar_cidade(nome, uf, geocode, lat, lon, pop_aprox):
     df = infodengue.buscar_cidade(geocode, ey_start=EY_START)
     resumo = preparacao.eda(df)
@@ -84,7 +110,7 @@ def processar_cidade(nome, uf, geocode, lat, lon, pop_aprox):
                           p["h"], pd.Timestamp(p["data_prev"]).date().isoformat(),
                           round(p["prev"]), round(p["inf"]), round(p["sup"]),
                           nivel_alerta(p["prev"], pop)])
-    return hist_rows, prev_rows, pop, resumo
+    return hist_rows, prev_rows, pop, resumo, {"epocas": meta["epocas"], "campo_casos": params["campo_casos"]}
 
 
 def agregar_estados(por_uf, hist_rows, prev_rows):
@@ -121,6 +147,8 @@ def main():
     print(f"Processando {len(cidades)} cidade(s) · EY_START={EY_START} · "
           f"{'rápido' if RAPIDO else 'completo'}")
     hist_rows, prev_rows, por_uf, edas, falhas = [], [], {}, {}, []
+    epocas_cidade, campos = {}, set()
+    t0 = time.perf_counter()
 
     # WS9: coleta (I/O) em PARALELO → popula o cache do infodengue; o treino (TF) segue SEQUENCIAL.
     # Com o cache, as chamadas de buscar_cidade dentro do loop viram cache-hit (não rebatem na API).
@@ -139,7 +167,9 @@ def main():
 
     for i, (nome, uf, geocode, lat, lon, pop_aprox) in enumerate(cidades, 1):
         try:
-            hr, pr, pop, resumo = processar_cidade(nome, uf, geocode, lat, lon, pop_aprox)
+            hr, pr, pop, resumo, extra = processar_cidade(nome, uf, geocode, lat, lon, pop_aprox)
+            epocas_cidade[str(geocode)] = extra["epocas"]
+            campos.add(extra["campo_casos"])
             hist_rows += hr
             prev_rows += pr
             por_uf.setdefault(uf, []).append({"lat": lat, "lon": lon, "pop": pop, "hist": hr, "prev": pr})
@@ -174,7 +204,15 @@ def main():
     meta = {"coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "se_origem": origem, "modelo": "LSTM A univariada (conformal 90%)",
             "modo": "rápido" if RAPIDO else "completo",
-            "n_cidades": len(edas), "n_falhas": len(falhas), "versao": 1}
+            "n_cidades": len(edas), "n_falhas": len(falhas), "versao": 2,
+            "versoes": _versoes(), "duracao_treino_s": round(time.perf_counter() - t0, 1),
+            "campo_casos": campos.pop() if len(campos) == 1 else sorted(campos),
+            "ey_start": EY_START, "janela": modelo.JANELA, "horizonte": modelo.HORIZONTE,
+            "seed": modelo.SEED, "epocas_max": EPOCAS, "paciencia": PACIENCIA,
+            "epocas_por_cidade": epocas_cidade}
+    commit = _commit()
+    if commit:
+        meta["commit"] = commit
     with open(os.path.join(DATA, "_meta.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 
