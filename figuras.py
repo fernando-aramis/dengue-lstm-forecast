@@ -11,13 +11,9 @@ from dados import (
     CORES_NIVEL,
     CORES_NIVEL_CVD,
     GEOJSON_UF,
-    NAO_COBERTAS,
     ORDEM_NIVEL,
-    hist,
-    mapa_cid,
-    mapa_uf,
+    ORIGINAL,
     nome_uf,
-    prev,
     semana_epi,
 )
 from formato import plotly_hoverformat_data, plotly_separators
@@ -52,9 +48,10 @@ PLOT = {
 ESPESSURA_ANEL = {"Verde": 1, "Amarelo": 2, "Laranja": 3, "Vermelho": 4}   # px por lado (canal além da cor)
 
 
-def indices_anel():
+def indices_anel(c=ORIGINAL):
     """Índices (em fig.data) das camadas de anel — o Patch de tema precisa recolori-las."""
-    base = (1 if NAO_COBERTAS else 0) + 1            # [sem cobertura?] + choropleth
+    mapa_cid, nao_cobertas = c.mapa_cid, c.nao_cobertas
+    base = (1 if nao_cobertas else 0) + 1            # [sem cobertura?] + choropleth
     idx = []
     for nv in ORDEM_NIVEL:
         if (mapa_cid["nivel_alerta"] == nv).any():
@@ -67,9 +64,10 @@ def tema(t):
     return PLOT["dark"] if t == "dark" else PLOT["light"]
 
 
-def centro_zoom(uf_sel=None):
+def centro_zoom(uf_sel=None, c=ORIGINAL):
     """Centro/zoom do mapa: Brasil inteiro (default) ou enquadrando uma UF selecionada.
     Usado por figura_mapa (rebuild) e pelo callback de zoom via Patch (sem reenviar o geojson)."""
+    mapa_cid = c.mapa_cid
     if uf_sel and uf_sel != "BR":
         d = mapa_cid[mapa_cid["uf"] == uf_sel]
         if len(d):
@@ -78,19 +76,20 @@ def centro_zoom(uf_sel=None):
 
 
 # ---------------------------------------------------------------- mapa
-def figura_mapa(uf_sel=None, lang="pt", tema_nome="light", cvd=False):
+def figura_mapa(uf_sel=None, lang="pt", tema_nome="light", cvd=False, c=ORIGINAL):
+    mapa_cid, mapa_uf, nao_cobertas = c.mapa_cid, c.mapa_uf, c.nao_cobertas
     p = tema(tema_nome)
     cores = CORES_NIVEL_CVD if cvd else CORES_NIVEL   # paleta p/ daltonismo (opt-in)
     fig = go.Figure()
 
     # camada 0: estados SEM cidade monitorada (fallback) — neutro, apenas contexto
-    if NAO_COBERTAS:
+    if nao_cobertas:
         fig.add_trace(go.Choroplethmap(
-            geojson=GEOJSON_UF, locations=NAO_COBERTAS, z=[0] * len(NAO_COBERTAS),
+            geojson=GEOJSON_UF, locations=nao_cobertas, z=[0] * len(nao_cobertas),
             featureidkey="properties.sigla",
             colorscale=[[0, p["naocob"]], [1, p["naocob"]]], showscale=False,
             marker=dict(opacity=0.62, line=dict(width=p["maplinew"], color=p["mapline"])),
-            customdata=[[nome_uf[u]] for u in NAO_COBERTAS],
+            customdata=[[nome_uf[u]] for u in nao_cobertas],
             hovertemplate="<b>%{customdata[0]}</b><br>" + tr(lang, "sem_cobertura") + "<extra></extra>",
             name=tr(lang, "sem_cobertura"),
         ))
@@ -130,7 +129,7 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light", cvd=False):
             text=txt, hovertemplate="%{text}<extra></extra>",
         ))
 
-    centro, zoom = centro_zoom(uf_sel)
+    centro, zoom = centro_zoom(uf_sel, c)
     # legenda de níveis vive FORA do canvas (faixa HTML em layout.py) — não colide com a atribuição
     # do mapa (que antes cobria o nível "Vermelho") e é melhor para leitor de tela.
     fig.update_layout(
@@ -145,15 +144,17 @@ def figura_mapa(uf_sel=None, lang="pt", tema_nome="light", cvd=False):
 
 
 # ---------------------------------------------------------------- detalhe
-def sem_serie(geo_id):
+def sem_serie(geo_id, c=ORIGINAL):
     """True quando não há NADA para desenhar/anunciar (estado sem cidade monitorada).
     Hoje inalcançável com os dados reais (27/27 UFs cobertas), mas o smoke do pipeline com 1
     cidade (CIDADES_GEO=…) e os dados de exemplo o ativam — ver tests/test_sem_cobertura.py."""
+    prev, hist = c.prev, c.hist
     return (prev["geo_id"] == geo_id).sum() == 0 and (hist["geo_id"] == geo_id).sum() == 0
 
 
-def comparacao_valida(geo_id, comp):
+def comparacao_valida(geo_id, comp, c=ORIGINAL):
     """Cidade de comparação efetiva: só município vs. município diferente e existente; senão None."""
+    prev = c.prev
     if not (isinstance(comp, str) and isinstance(geo_id, str)) or comp == geo_id:
         return None
     if geo_id.startswith("UF-") or comp.startswith("UF-"):
@@ -161,13 +162,14 @@ def comparacao_valida(geo_id, comp):
     return comp if (comp in set(prev["geo_id"]) and geo_id in set(prev["geo_id"])) else None
 
 
-def figura_detalhe(geo_id, lang="pt", tema_nome="light", comp=None):
+def figura_detalhe(geo_id, lang="pt", tema_nome="light", comp=None, c=ORIGINAL):
+    prev, hist = c.prev, c.hist
     p = tema(tema_nome)
     h = hist[hist["geo_id"] == geo_id].sort_values("data")
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
     sep = plotly_separators(lang)
     fig = go.Figure()
-    if sem_serie(geo_id):          # estado vazio: mensagem no lugar do gráfico (mantém a altura reservada)
+    if sem_serie(geo_id, c):          # estado vazio: mensagem no lugar do gráfico (mantém a altura reservada)
         fig.add_annotation(xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
                            text=tr(lang, "detalhe_sem_serie"), align="center",
                            font=dict(family="Inter, sans-serif", size=14, color=p["ink"]))
@@ -175,7 +177,7 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light", comp=None):
                           paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                           xaxis=dict(visible=False), yaxis=dict(visible=False))
         return fig
-    comp = comparacao_valida(geo_id, comp)
+    comp = comparacao_valida(geo_id, comp, c)
     pref = f"{pv['nome'].iloc[0]} · " if (comp and len(pv)) else ""
     if len(pv):
         xb = list(pv["data_prev"]) + list(pv["data_prev"][::-1])
@@ -234,8 +236,9 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light", comp=None):
     return fig
 
 
-def tabela_comparacao(geo_id, comp, lang="pt"):
+def tabela_comparacao(geo_id, comp, lang="pt", c=ORIGINAL):
     """Alternativa textual do gráfico comparativo: t+1…t+4 das duas cidades (valor + IC de 90%)."""
+    prev = c.prev
     linhas = []
     for g in (geo_id, comp):
         pv = prev[prev["geo_id"] == g].sort_values("h")
@@ -250,8 +253,9 @@ def tabela_comparacao(geo_id, comp, lang="pt"):
                         html.Caption(tr(lang, "cmp_tab_cap")), html.Thead(cab), html.Tbody(linhas)]))
 
 
-def horizontes(geo_id, lang="pt", comp=None):
+def horizontes(geo_id, lang="pt", comp=None, c=ORIGINAL):
     """Lista t+1…t+4 (valor + IC) + frase do alargamento da faixa. Vai abaixo do gráfico de detalhe."""
+    prev = c.prev
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
     if pv.empty:
         return []
@@ -270,11 +274,12 @@ def horizontes(geo_id, lang="pt", comp=None):
             html.P(tr(lang, "horiz_nota", a=fmt_int(m1, lang), b=fmt_int(m4, lang)),
                    className="horiz-nota aux"),
             html.P(tr(lang, "gloss_linha"), className="horiz-nota aux"),
-            *([tabela_comparacao(geo_id, comp, lang), html.P(tr(lang, "cmp_hint"), className="horiz-nota aux")]
-              if comparacao_valida(geo_id, comp) else [])]
+            *([tabela_comparacao(geo_id, comp, lang, c), html.P(tr(lang, "cmp_hint"), className="horiz-nota aux")]
+              if comparacao_valida(geo_id, comp, c) else [])]
 
 
-def cartao_info(geo_id, lang="pt"):
+def cartao_info(geo_id, lang="pt", c=ORIGINAL):
+    prev = c.prev
     p1 = prev[(prev["geo_id"] == geo_id) & (prev["h"] == 1)]
     if p1.empty:
         if isinstance(geo_id, str) and geo_id.startswith("UF-"):   # estado sem cobertura
@@ -308,8 +313,9 @@ def cartao_info(geo_id, lang="pt"):
     return cartao
 
 
-def resumo_cartao(geo_id, lang="pt", comp=None):
+def resumo_cartao(geo_id, lang="pt", comp=None, c=ORIGINAL):
     """Resumo curto do cartão para anúncio em aria-live (ao trocar de cidade)."""
+    prev = c.prev
     p1 = prev[(prev["geo_id"] == geo_id) & (prev["h"] == 1)]
     if p1.empty:
         if isinstance(geo_id, str) and geo_id.startswith("UF-"):   # estado sem cidade monitorada:
@@ -319,7 +325,7 @@ def resumo_cartao(geo_id, lang="pt", comp=None):
     r = p1.iloc[0]
     txt = tr(lang, "cartao_resumo_aria", nome=r["nome"],
              v=fmt_int(r["prev"], lang), nivel=nivel_tr(lang, r["nivel_alerta"]))
-    comp = comparacao_valida(geo_id, comp)
+    comp = comparacao_valida(geo_id, comp, c)
     if comp:
         c1 = prev[(prev["geo_id"] == comp) & (prev["h"] == 1)].iloc[0]
         txt += " " + tr(lang, "cartao_resumo_cmp_aria", nome=c1["nome"], v=fmt_int(c1["prev"], lang),

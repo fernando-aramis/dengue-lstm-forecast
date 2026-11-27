@@ -11,7 +11,7 @@ import flask
 from dash import dcc, html
 
 from conteudo import BIBTEX, ESTUDO, LINKS, ORCID, ORCID_URL, REFERENCIAS, TAB_RES, abnt
-from dados import DATA_ORIGEM, DATA_PREV_H1, GEO0, RESUMO, SE_H1, SE_ORIGEM, UFS, cidades_por_uf, mapa_cid, nome_uf
+from dados import ORIGINAL, UFS, nome_uf
 from figuras import ORDEM_NIVEL, cartao_info, figura_detalhe, figura_mapa, horizontes
 from formato import plotly_locale
 from i18n import IDIOMAS, fmt_data, fmt_dec, fmt_int, fmt_intervalo, fmt_pct, resolver, tr
@@ -28,8 +28,9 @@ def stat(big, lbl, tom=None):
         html.Div(corpo, className="big"), html.Div(lbl, className="lbl")])
 
 
-def situacao(lang):
+def situacao(lang, c=ORIGINAL):
     """Cartão 'Resumo da situação' do hero: total t+1 + barra empilhada + lista por nível."""
+    SE_H1, DATA_PREV_H1, RESUMO = c.se_h1, c.data_prev_h1, c.resumo
     _, se = SE_H1
     ini, fim = DATA_PREV_H1, DATA_PREV_H1 + timedelta(days=6)
     por, n = RESUMO["por_nivel"], RESUMO["n_cidades"]
@@ -75,30 +76,30 @@ def opcoes_uf(lang):
             + [{"label": nome_uf.get(uf, uf), "value": uf} for uf in UFS])
 
 
-def opcoes_cidade_br():
+def opcoes_cidade_br(c=ORIGINAL):
     """Todas as cidades (visão BR) — já no layout para o value=GEO0 resolver no 1º render
     (o dropdown do Dash descarta um value que não esteja nas opções iniciais)."""
-    todas = sorted((n, g) for lst in cidades_por_uf.values() for n, g in lst)
+    todas = sorted((n, g) for lst in c.cidades_por_uf.values() for n, g in lst)
     return [{"label": n, "value": g} for n, g in todas]
 
 
-_GEOS_CIDADE = set(mapa_cid["geo_id"].astype(str))
 _UFS = set(UFS)
 
 
-def _sel_inicial(sel, lang):
+def _sel_inicial(sel, lang, c=ORIGINAL):
     """A15 — resolve a seleção vinda da URL (validada) → (geo p/ renderizar, uf, opções, valor).
     Cidade "UF-XX" abre no escopo estadual; cidade normal abre direto; inválida cai no GEO0."""
+    geos_cidade = set(c.mapa_cid["geo_id"].astype(str))
     if isinstance(sel, str) and sel.startswith("UF-") and sel[3:] in _UFS:
         uf = sel[3:]
         rot = f"◼ {nome_uf.get(uf, uf)} ({tr(lang, 'escopo_estado').lower()})"
         opts = [{"label": rot, "value": sel}] + [{"label": n, "value": g}
-                                                 for n, g in cidades_por_uf.get(uf, [])]
+                                                 for n, g in c.cidades_por_uf.get(uf, [])]
         return sel, uf, opts, sel
     s = str(sel) if sel is not None else ""
-    if s in _GEOS_CIDADE:
-        return s, "BR", opcoes_cidade_br(), s
-    return GEO0, "BR", opcoes_cidade_br(), GEO0
+    if s in geos_cidade:
+        return s, "BR", opcoes_cidade_br(c), s
+    return c.geo0, "BR", opcoes_cidade_br(c), c.geo0
 
 
 _NOMES_PROPRIOS = re.compile(r"\b(InfoDengue|Mosqlimate|SINAN|IBGE|UTFPR|LSTM|JBCS|Zenodo|GitHub|Colab|Anthropic|Claude)\b")
@@ -117,7 +118,8 @@ def rico(texto):
     return [p for p in partes if p != ""]
 
 
-def _aviso(lang):
+def _aviso(lang, c=ORIGINAL):
+    SE_ORIGEM, DATA_ORIGEM = c.se_origem, c.data_origem
     origem_se = f"{tr(lang, 'se_abrev', se=SE_ORIGEM[1])}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
     full = tr(lang, "aviso", origem=origem_se)
     strong = tr(lang, "aviso_strong")
@@ -221,8 +223,9 @@ def legenda_niveis(lang):
                     children=[html.Span(tr(lang, "legend_title"), className="leg-label"), *itens])
 
 
-def legenda_serie(lang):
+def legenda_serie(lang, c=ORIGINAL):
     """Legenda do gráfico de detalhe em HTML (fora do canvas) — Observado/Previsto/Intervalo/Origem."""
+    SE_ORIGEM = c.se_origem
     _, se = SE_ORIGEM
     def item(cls, texto):
         return html.Span([html.Span(className=f"serie-sw {cls}"), texto], className="serie-item")
@@ -233,11 +236,12 @@ def legenda_serie(lang):
                   children=[html.Span(className="serie-sw cmp"), html.Span(id="legenda-cmp-nome")])])
 
 
-def tabela_ranking(lang, n=None):
+def tabela_ranking(lang, n=None, c=ORIGINAL):
     """Tabela 1 — previsões de TODAS as cidades monitoradas, da maior para a menor (alternativa textual
     acessível ao mapa). `n` limita as linhas (testes); o padrão é a lista completa, numa região rolável."""
+    SE_H1 = c.se_h1
     _, se = SE_H1
-    top = mapa_cid.sort_values("prev", ascending=False)
+    top = c.mapa_cid.sort_values("prev", ascending=False)
     if n is not None:
         top = top.head(n)
     linhas = []
@@ -445,9 +449,11 @@ def artigo(lang):
         sumario(lang), coluna, materiais(lang)])
 
 
-def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
-    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang)
-    cmp = cmp if (isinstance(cmp, str) and cmp in _GEOS_CIDADE) else None   # A15 — seleção inicial da URL
+def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIGINAL):
+    SE_ORIGEM, DATA_ORIGEM = c.se_origem, c.data_origem
+    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang, c)
+    geos_cidade = set(c.mapa_cid["geo_id"].astype(str))
+    cmp = cmp if (isinstance(cmp, str) and cmp in geos_cidade) else None   # A15 — seleção inicial da URL
     return [
         # hero (capa dos slides: fundo verde full-bleed + resumo da situação)
         html.Header(className="hero", children=[
@@ -459,7 +465,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
                              html.Span(tr(lang, "h1_acento"), className="acento")]),
                     html.P(rico(tr(lang, "lede")), className="lede"),
                 ]),
-                situacao(lang),
+                situacao(lang, c),
                 html.Div(className="hero-foot", children=[
                     html.Div(className="hero-autor", children=[
                         html.Strong("Fernando Aramis Colque"),
@@ -515,35 +521,35 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
                                                        clearable=False, labels=_labels_dd(lang))])])]),
                         html.Div(id="mapa-fallback", className="mapa-fallback", hidden=True,
                                  role="status", children=html.P(tr(lang, "mapa_sem_webgl"))),
-                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang, tema_nome=tema, cvd=cvd),
+                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang, tema_nome=tema, cvd=cvd, c=c),
                                   config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
                         legenda_niveis(lang),
                         html.Div(tr(lang, "map_hint"), className="map-hint")]),
                     html.Div(className="panel panel-detalhe", children=[
-                        html.Div(id="cartao", className="cartao", children=cartao_info(geo, lang)),
+                        html.Div(id="cartao", className="cartao", children=cartao_info(geo, lang, c=c)),
                         # anúncio para leitor de tela quando a cidade muda (NEW-1)
                         html.Div(id="cartao-status", className="sr-only",
                                  **{"role": "status", "aria-live": "polite", "aria-atomic": "true"}),
                         html.Div(className="comparar", children=[
                             html.Label(tr(lang, "lbl_comparar"), htmlFor="dd-comparar"),
                             dcc.Dropdown(id="dd-comparar", placeholder=tr(lang, "ph_comparar"),
-                                         options=opcoes_cidade_br(), value=cmp, clearable=True,
+                                         options=opcoes_cidade_br(c), value=cmp, clearable=True,
                                          disabled=geo.startswith("UF-"), labels=_labels_dd(lang))]),
-                        legenda_serie(lang),
+                        legenda_serie(lang, c),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
-                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema, comp=cmp),
+                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema, comp=cmp, c=c),
                                   # locale INLINE: meses/dias no idioma da UI (o Plotly do Dash não traz
                                   # locales e a CSP proíbe CDN). O Graph é recriado ao trocar de idioma.
                                   config={"displayModeBar": False, "responsive": True,
                                           "locale": lang, "locales": {lang: plotly_locale(lang)}}),
-                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp))]),
+                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp, c))]),
                 ]),
                 html.Figcaption([html.Strong(tr(lang, "figura_pref", n=1)),
                                  tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
             ]),
             html.Div(className="painel-extra", children=[
-                html.Div(className="avisos avisos--fonte", children=[_aviso(lang)]),
-                tabela_ranking(lang),
+                html.Div(className="avisos avisos--fonte", children=[_aviso(lang, c)]),
+                tabela_ranking(lang, c=c),
                 html.Div(className="como-ler", children=[
                     html.H3(tr(lang, "como_ler_t"), className="como-ler-t"),
                     html.Ol([html.Li(tr(lang, "como_ler_1")), html.Li(tr(lang, "como_ler_2")),
