@@ -1,241 +1,241 @@
 nivel_geo,geo_id,uf,nome,lat,lon,data_origem,h,data_prev,prev,inf,sup,nivel_alerta
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-25,1,2026-11-01,101,71,143,Laranja
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-25,2,2026-11-08,102,68,154,Laranja
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-25,3,2026-11-15,100,68,147,Laranja
-municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-10-25,4,2026-11-22,97,65,145,Laranja
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-25,1,2026-11-01,76,52,109,Amarelo
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-25,2,2026-11-08,78,54,112,Amarelo
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-25,3,2026-11-15,73,49,109,Amarelo
-municipio,2704302,AL,Maceió,-9.67,-35.74,2026-10-25,4,2026-11-22,69,48,99,Amarelo
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-25,1,2026-11-01,50,32,77,Laranja
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-25,2,2026-11-08,49,30,78,Laranja
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-25,3,2026-11-15,46,27,79,Amarelo
-municipio,1600303,AP,Macapá,0.03,-51.07,2026-10-25,4,2026-11-22,47,25,86,Amarelo
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-25,1,2026-11-01,67,46,97,Amarelo
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-25,2,2026-11-08,67,46,98,Amarelo
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-25,3,2026-11-15,67,46,97,Amarelo
-municipio,1302603,AM,Manaus,-3.12,-60.02,2026-10-25,4,2026-11-22,64,43,95,Amarelo
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-25,1,2026-11-01,155,116,206,Amarelo
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-25,2,2026-11-08,151,97,233,Amarelo
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-25,3,2026-11-15,148,82,268,Amarelo
-municipio,2927408,BA,Salvador,-12.97,-38.51,2026-10-25,4,2026-11-22,143,65,315,Amarelo
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-25,1,2026-11-01,95,66,135,Amarelo
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-25,2,2026-11-08,97,62,153,Amarelo
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-25,3,2026-11-15,95,50,178,Amarelo
-municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-10-25,4,2026-11-22,96,45,204,Amarelo
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-25,1,2026-11-01,289,235,356,Amarelo
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-25,2,2026-11-08,286,228,359,Amarelo
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-25,3,2026-11-15,294,221,393,Laranja
-municipio,5300108,DF,Brasília,-15.79,-47.88,2026-10-25,4,2026-11-22,305,218,426,Laranja
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-25,1,2026-11-01,82,63,107,Laranja
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-25,2,2026-11-08,80,62,105,Laranja
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-25,3,2026-11-15,77,59,101,Laranja
-municipio,3205309,ES,Vitória,-20.32,-40.34,2026-10-25,4,2026-11-22,79,60,103,Laranja
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-25,1,2026-11-01,635,532,758,Vermelho
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-25,2,2026-11-08,654,498,858,Vermelho
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-25,3,2026-11-15,660,472,921,Vermelho
-municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-10-25,4,2026-11-22,682,481,967,Vermelho
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-25,1,2026-11-01,99,64,152,Amarelo
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-25,2,2026-11-08,93,57,150,Amarelo
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-25,3,2026-11-15,82,41,161,Amarelo
-municipio,2111300,MA,São Luís,-2.53,-44.3,2026-10-25,4,2026-11-22,85,40,183,Amarelo
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-25,1,2026-11-01,15,8,27,Verde
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-25,2,2026-11-08,15,7,31,Verde
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-25,3,2026-11-15,15,6,37,Verde
-municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-10-25,4,2026-11-22,15,5,41,Verde
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-25,1,2026-11-01,38,22,65,Amarelo
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-25,2,2026-11-08,41,24,69,Amarelo
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-25,3,2026-11-15,46,23,90,Amarelo
-municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-10-25,4,2026-11-22,52,25,103,Amarelo
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-25,1,2026-11-01,528,433,645,Laranja
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-25,2,2026-11-08,576,425,779,Laranja
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-25,3,2026-11-15,620,434,885,Laranja
-municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-10-25,4,2026-11-22,673,453,1000,Laranja
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-25,1,2026-11-01,35,23,53,Amarelo
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-25,2,2026-11-08,35,22,56,Amarelo
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-25,3,2026-11-15,33,22,49,Verde
-municipio,1501402,PA,Belém,-1.46,-48.5,2026-10-25,4,2026-11-22,34,21,54,Verde
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-25,1,2026-11-01,147,113,191,Laranja
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-25,2,2026-11-08,143,105,193,Laranja
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-25,3,2026-11-15,140,96,205,Laranja
-municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-10-25,4,2026-11-22,133,86,204,Laranja
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-25,1,2026-11-01,31,18,52,Verde
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-25,2,2026-11-08,32,19,54,Verde
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-25,3,2026-11-15,33,17,65,Verde
-municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-10-25,4,2026-11-22,34,18,65,Verde
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-25,1,2026-11-01,218,150,316,Laranja
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-25,2,2026-11-08,207,124,345,Laranja
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-25,3,2026-11-15,209,131,333,Laranja
-municipio,2611606,PE,Recife,-8.05,-34.88,2026-10-25,4,2026-11-22,202,129,318,Laranja
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-25,1,2026-11-01,41,26,66,Amarelo
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-25,2,2026-11-08,38,21,70,Amarelo
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-25,3,2026-11-15,36,17,75,Amarelo
-municipio,2211001,PI,Teresina,-5.09,-42.8,2026-10-25,4,2026-11-22,35,14,85,Amarelo
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,1,2026-11-01,289,205,407,Amarelo
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,2,2026-11-08,274,173,434,Amarelo
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,3,2026-11-15,279,174,446,Amarelo
-municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,4,2026-11-22,286,173,473,Amarelo
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-25,1,2026-11-01,59,42,82,Amarelo
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-25,2,2026-11-08,60,41,86,Amarelo
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-25,3,2026-11-15,64,42,97,Amarelo
-municipio,2408102,RN,Natal,-5.79,-35.21,2026-10-25,4,2026-11-22,67,38,119,Amarelo
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-25,1,2026-11-01,25,13,46,Verde
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-25,2,2026-11-08,26,11,62,Verde
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-25,3,2026-11-15,29,9,88,Verde
-municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-10-25,4,2026-11-22,30,4,177,Verde
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-25,1,2026-11-01,25,10,60,Amarelo
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-25,2,2026-11-08,26,10,62,Amarelo
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-25,3,2026-11-15,26,10,62,Amarelo
-municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-10-25,4,2026-11-22,25,10,61,Amarelo
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-25,1,2026-11-01,19,13,29,Amarelo
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-25,2,2026-11-08,19,11,30,Amarelo
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-25,3,2026-11-15,19,12,29,Amarelo
-municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-10-25,4,2026-11-22,19,11,31,Amarelo
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-25,1,2026-11-01,68,48,96,Laranja
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-25,2,2026-11-08,71,48,105,Laranja
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-25,3,2026-11-15,73,43,122,Laranja
-municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-10-25,4,2026-11-22,70,44,111,Laranja
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-25,1,2026-11-01,1197,993,1443,Amarelo
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-25,2,2026-11-08,1235,971,1570,Laranja
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-25,3,2026-11-15,1197,869,1650,Amarelo
-municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-10-25,4,2026-11-22,1160,774,1737,Amarelo
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-25,1,2026-11-01,56,41,77,Amarelo
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-25,2,2026-11-08,57,36,88,Amarelo
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-25,3,2026-11-15,55,36,84,Amarelo
-municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-10-25,4,2026-11-22,54,37,80,Amarelo
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-25,1,2026-11-01,132,98,178,Vermelho
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-25,2,2026-11-08,126,84,188,Vermelho
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-25,3,2026-11-15,118,66,209,Vermelho
-municipio,1721000,TO,Palmas,-10.18,-48.33,2026-10-25,4,2026-11-22,113,59,219,Vermelho
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-25,1,2026-11-01,244,193,308,Laranja
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-25,2,2026-11-08,254,182,353,Laranja
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-25,3,2026-11-15,263,181,384,Laranja
-municipio,3509502,SP,Campinas,-22.91,-47.06,2026-10-25,4,2026-11-22,275,183,412,Laranja
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-25,1,2026-11-01,53,35,80,Amarelo
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-25,2,2026-11-08,56,35,89,Amarelo
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-25,3,2026-11-15,60,35,100,Amarelo
-municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-10-25,4,2026-11-22,64,36,113,Amarelo
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-25,1,2026-11-01,199,155,256,Vermelho
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-25,2,2026-11-08,206,152,279,Vermelho
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-25,3,2026-11-15,218,152,311,Vermelho
-municipio,4113700,PR,Londrina,-23.31,-51.16,2026-10-25,4,2026-11-22,224,150,333,Vermelho
-municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-25,1,2026-11-01,72,54,96,Laranja
-municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-25,2,2026-11-08,73,51,104,Laranja
-municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-25,3,2026-11-15,73,46,116,Laranja
-municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-10-25,4,2026-11-22,73,43,124,Laranja
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-25,1,2026-11-01,85,55,131,Laranja
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-25,2,2026-11-08,81,47,138,Laranja
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-25,3,2026-11-15,81,47,139,Laranja
-municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-10-25,4,2026-11-22,83,46,149,Laranja
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-25,1,2026-11-01,66,52,84,Amarelo
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-25,2,2026-11-08,65,47,90,Amarelo
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-25,3,2026-11-15,65,44,94,Amarelo
-municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-10-25,4,2026-11-22,64,41,101,Amarelo
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-25,1,2026-11-01,101,71,143,Laranja
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-25,2,2026-11-08,102,68,154,Laranja
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-25,3,2026-11-15,100,68,147,Laranja
-estado,UF-AC,AC,Acre,-9.97,-67.81,2026-10-25,4,2026-11-22,97,65,145,Laranja
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-25,1,2026-11-01,76,52,109,Amarelo
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-25,2,2026-11-08,78,54,112,Amarelo
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-25,3,2026-11-15,73,49,109,Amarelo
-estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-10-25,4,2026-11-22,69,48,99,Amarelo
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-25,1,2026-11-01,50,32,77,Laranja
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-25,2,2026-11-08,49,30,78,Laranja
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-25,3,2026-11-15,46,27,79,Amarelo
-estado,UF-AP,AP,Amapá,0.03,-51.07,2026-10-25,4,2026-11-22,47,25,86,Amarelo
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-25,1,2026-11-01,67,46,97,Amarelo
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-25,2,2026-11-08,67,46,98,Amarelo
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-25,3,2026-11-15,67,46,97,Amarelo
-estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-10-25,4,2026-11-22,64,43,95,Amarelo
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-25,1,2026-11-01,240,171,337,Amarelo
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-25,2,2026-11-08,232,144,371,Amarelo
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-25,3,2026-11-15,229,129,407,Amarelo
-estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-10-25,4,2026-11-22,226,111,464,Amarelo
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-25,1,2026-11-01,95,66,135,Amarelo
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-25,2,2026-11-08,97,62,153,Amarelo
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-25,3,2026-11-15,95,50,178,Amarelo
-estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-10-25,4,2026-11-22,96,45,204,Amarelo
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-25,1,2026-11-01,289,235,356,Amarelo
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-25,2,2026-11-08,286,228,359,Amarelo
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-25,3,2026-11-15,294,221,393,Laranja
-estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-10-25,4,2026-11-22,305,218,426,Laranja
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-25,1,2026-11-01,82,63,107,Laranja
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-25,2,2026-11-08,80,62,105,Laranja
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-25,3,2026-11-15,77,59,101,Laranja
-estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-10-25,4,2026-11-22,79,60,103,Laranja
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-25,1,2026-11-01,635,532,758,Vermelho
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-25,2,2026-11-08,654,498,858,Vermelho
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-25,3,2026-11-15,660,472,921,Vermelho
-estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-10-25,4,2026-11-22,682,481,967,Vermelho
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-25,1,2026-11-01,99,64,152,Amarelo
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-25,2,2026-11-08,93,57,150,Amarelo
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-25,3,2026-11-15,82,41,161,Amarelo
-estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-10-25,4,2026-11-22,85,40,183,Amarelo
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-25,1,2026-11-01,15,8,27,Verde
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-25,2,2026-11-08,15,7,31,Verde
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-25,3,2026-11-15,15,6,37,Verde
-estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-10-25,4,2026-11-22,15,5,41,Verde
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-25,1,2026-11-01,38,22,65,Amarelo
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-25,2,2026-11-08,41,24,69,Amarelo
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-25,3,2026-11-15,46,23,90,Amarelo
-estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-10-25,4,2026-11-22,52,25,103,Amarelo
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-25,1,2026-11-01,594,485,729,Laranja
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-25,2,2026-11-08,641,472,869,Laranja
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-25,3,2026-11-15,685,478,979,Laranja
-estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-10-25,4,2026-11-22,737,494,1101,Laranja
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-25,1,2026-11-01,35,23,53,Amarelo
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-25,2,2026-11-08,35,22,56,Amarelo
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-25,3,2026-11-15,33,22,49,Verde
-estado,UF-PA,PA,Pará,-1.46,-48.5,2026-10-25,4,2026-11-22,34,21,54,Verde
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-25,1,2026-11-01,147,113,191,Laranja
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-25,2,2026-11-08,143,105,193,Laranja
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-25,3,2026-11-15,140,96,205,Laranja
-estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-10-25,4,2026-11-22,133,86,204,Laranja
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-25,1,2026-11-01,302,227,404,Laranja
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-25,2,2026-11-08,311,222,437,Laranja
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-25,3,2026-11-15,324,215,492,Laranja
-estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-10-25,4,2026-11-22,331,211,522,Laranja
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-25,1,2026-11-01,218,150,316,Laranja
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-25,2,2026-11-08,207,124,345,Laranja
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-25,3,2026-11-15,209,131,333,Laranja
-estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-10-25,4,2026-11-22,202,129,318,Laranja
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-25,1,2026-11-01,41,26,66,Amarelo
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-25,2,2026-11-08,38,21,70,Amarelo
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-25,3,2026-11-15,36,17,75,Amarelo
-estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-10-25,4,2026-11-22,35,14,85,Amarelo
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,1,2026-11-01,289,205,407,Amarelo
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,2,2026-11-08,274,173,434,Amarelo
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,3,2026-11-15,279,174,446,Amarelo
-estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-10-25,4,2026-11-22,286,173,473,Amarelo
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-25,1,2026-11-01,59,42,82,Amarelo
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-25,2,2026-11-08,60,41,86,Amarelo
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-25,3,2026-11-15,64,42,97,Amarelo
-estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-10-25,4,2026-11-22,67,38,119,Amarelo
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-25,1,2026-11-01,25,13,46,Verde
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-25,2,2026-11-08,26,11,62,Verde
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-25,3,2026-11-15,29,9,88,Verde
-estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-10-25,4,2026-11-22,30,4,177,Verde
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-25,1,2026-11-01,25,10,60,Amarelo
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-25,2,2026-11-08,26,10,62,Amarelo
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-25,3,2026-11-15,26,10,62,Amarelo
-estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-10-25,4,2026-11-22,25,10,61,Amarelo
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-25,1,2026-11-01,19,13,29,Amarelo
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-25,2,2026-11-08,19,11,30,Amarelo
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-25,3,2026-11-15,19,12,29,Amarelo
-estado,UF-RR,RR,Roraima,2.82,-60.67,2026-10-25,4,2026-11-22,19,11,31,Amarelo
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-25,1,2026-11-01,68,48,96,Laranja
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-25,2,2026-11-08,71,48,105,Laranja
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-25,3,2026-11-15,73,43,122,Laranja
-estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-10-25,4,2026-11-22,70,44,111,Laranja
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-25,1,2026-11-01,1494,1221,1831,Laranja
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-25,2,2026-11-08,1545,1188,2012,Laranja
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-25,3,2026-11-15,1520,1085,2134,Laranja
-estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-10-25,4,2026-11-22,1499,993,2262,Laranja
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-25,1,2026-11-01,56,41,77,Amarelo
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-25,2,2026-11-08,57,36,88,Amarelo
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-25,3,2026-11-15,55,36,84,Amarelo
-estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-10-25,4,2026-11-22,54,37,80,Amarelo
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-25,1,2026-11-01,132,98,178,Vermelho
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-25,2,2026-11-08,126,84,188,Vermelho
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-25,3,2026-11-15,118,66,209,Vermelho
-estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-10-25,4,2026-11-22,113,59,219,Vermelho
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-11-15,1,2026-11-22,104,75,144,Laranja
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-11-15,2,2026-11-29,93,62,139,Laranja
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-11-15,3,2026-12-06,92,59,143,Laranja
+municipio,1200401,AC,Rio Branco,-9.97,-67.81,2026-11-15,4,2026-12-13,90,55,146,Laranja
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-11-15,1,2026-11-22,65,45,93,Amarelo
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-11-15,2,2026-11-29,54,35,82,Amarelo
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-11-15,3,2026-12-06,61,41,90,Amarelo
+municipio,2704302,AL,Maceió,-9.67,-35.74,2026-11-15,4,2026-12-13,61,41,90,Amarelo
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-11-15,1,2026-11-22,38,25,58,Amarelo
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-11-15,2,2026-11-29,36,22,59,Amarelo
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-11-15,3,2026-12-06,36,20,64,Amarelo
+municipio,1600303,AP,Macapá,0.03,-51.07,2026-11-15,4,2026-12-13,36,20,62,Amarelo
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-11-15,1,2026-11-22,61,44,85,Amarelo
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-11-15,2,2026-11-29,60,42,86,Amarelo
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-11-15,3,2026-12-06,59,40,87,Amarelo
+municipio,1302603,AM,Manaus,-3.12,-60.02,2026-11-15,4,2026-12-13,56,37,84,Amarelo
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-11-15,1,2026-11-22,117,87,158,Amarelo
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-11-15,2,2026-11-29,112,72,173,Amarelo
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-11-15,3,2026-12-06,110,59,202,Amarelo
+municipio,2927408,BA,Salvador,-12.97,-38.51,2026-11-15,4,2026-12-13,107,49,231,Amarelo
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-11-15,1,2026-11-22,64,44,92,Verde
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-11-15,2,2026-11-29,64,38,106,Verde
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-11-15,3,2026-12-06,64,36,116,Verde
+municipio,2304400,CE,Fortaleza,-3.73,-38.52,2026-11-15,4,2026-12-13,65,32,132,Amarelo
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-11-15,1,2026-11-22,333,258,429,Laranja
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-11-15,2,2026-11-29,319,242,422,Laranja
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-11-15,3,2026-12-06,339,252,456,Laranja
+municipio,5300108,DF,Brasília,-15.79,-47.88,2026-11-15,4,2026-12-13,347,264,455,Laranja
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-11-15,1,2026-11-22,73,55,98,Laranja
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-11-15,2,2026-11-29,66,51,85,Laranja
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-11-15,3,2026-12-06,65,48,87,Laranja
+municipio,3205309,ES,Vitória,-20.32,-40.34,2026-11-15,4,2026-12-13,61,44,85,Laranja
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-11-15,1,2026-11-22,1022,860,1215,Vermelho
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-11-15,2,2026-11-29,1042,817,1328,Vermelho
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-11-15,3,2026-12-06,1056,765,1457,Vermelho
+municipio,5208707,GO,Goiânia,-16.69,-49.26,2026-11-15,4,2026-12-13,1088,783,1511,Vermelho
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-11-15,1,2026-11-22,28,19,41,Amarelo
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-11-15,2,2026-11-29,26,16,41,Verde
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-11-15,3,2026-12-06,24,12,47,Verde
+municipio,2111300,MA,São Luís,-2.53,-44.3,2026-11-15,4,2026-12-13,23,10,52,Verde
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-11-15,1,2026-11-22,4,2,9,Verde
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-11-15,2,2026-11-29,4,2,10,Verde
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-11-15,3,2026-12-06,5,1,12,Verde
+municipio,5103403,MT,Cuiabá,-15.6,-56.1,2026-11-15,4,2026-12-13,5,1,14,Verde
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-11-15,1,2026-11-22,34,19,60,Amarelo
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-11-15,2,2026-11-29,37,22,63,Amarelo
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-11-15,3,2026-12-06,41,23,72,Amarelo
+municipio,5002704,MS,Campo Grande,-20.47,-54.62,2026-11-15,4,2026-12-13,44,22,89,Amarelo
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-11-15,1,2026-11-22,697,567,857,Laranja
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-11-15,2,2026-11-29,744,543,1019,Vermelho
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-11-15,3,2026-12-06,815,561,1184,Vermelho
+municipio,3106200,MG,Belo Horizonte,-19.92,-43.94,2026-11-15,4,2026-12-13,871,558,1361,Vermelho
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-11-15,1,2026-11-22,40,27,59,Amarelo
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-11-15,2,2026-11-29,39,25,58,Amarelo
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-11-15,3,2026-12-06,37,26,54,Amarelo
+municipio,1501402,PA,Belém,-1.46,-48.5,2026-11-15,4,2026-12-13,37,23,60,Amarelo
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-11-15,1,2026-11-22,119,91,155,Laranja
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-11-15,2,2026-11-29,113,82,157,Laranja
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-11-15,3,2026-12-06,108,71,164,Laranja
+municipio,2507507,PB,João Pessoa,-7.12,-34.86,2026-11-15,4,2026-12-13,105,63,172,Laranja
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-11-15,1,2026-11-22,19,12,29,Verde
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-11-15,2,2026-11-29,18,10,30,Verde
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-11-15,3,2026-12-06,18,8,36,Verde
+municipio,4106902,PR,Curitiba,-25.43,-49.27,2026-11-15,4,2026-12-13,17,8,37,Verde
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-11-15,1,2026-11-22,169,115,247,Laranja
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-11-15,2,2026-11-29,170,122,236,Laranja
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-11-15,3,2026-12-06,171,113,260,Laranja
+municipio,2611606,PE,Recife,-8.05,-34.88,2026-11-15,4,2026-12-13,161,104,250,Laranja
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-11-15,1,2026-11-22,27,20,36,Amarelo
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-11-15,2,2026-11-29,26,17,40,Amarelo
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-11-15,3,2026-12-06,25,14,43,Amarelo
+municipio,2211001,PI,Teresina,-5.09,-42.8,2026-11-15,4,2026-12-13,24,12,49,Amarelo
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,1,2026-11-22,441,329,593,Amarelo
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,2,2026-11-29,446,278,713,Amarelo
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,3,2026-12-06,449,282,715,Amarelo
+municipio,3304557,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,4,2026-12-13,473,281,796,Amarelo
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-11-15,1,2026-11-22,43,31,61,Amarelo
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-11-15,2,2026-11-29,43,31,61,Amarelo
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-11-15,3,2026-12-06,46,31,69,Amarelo
+municipio,2408102,RN,Natal,-5.79,-35.21,2026-11-15,4,2026-12-13,47,29,77,Amarelo
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-11-15,1,2026-11-22,5,2,11,Verde
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-11-15,2,2026-11-29,5,2,11,Verde
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-11-15,3,2026-12-06,4,0,30,Verde
+municipio,4314902,RS,Porto Alegre,-30.03,-51.23,2026-11-15,4,2026-12-13,4,0,31,Verde
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-11-15,1,2026-11-22,22,9,50,Amarelo
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-11-15,2,2026-11-29,20,7,51,Amarelo
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-11-15,3,2026-12-06,20,7,51,Amarelo
+municipio,1100205,RO,Porto Velho,-8.76,-63.9,2026-11-15,4,2026-12-13,19,7,50,Amarelo
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-11-15,1,2026-11-22,22,15,32,Amarelo
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-11-15,2,2026-11-29,22,13,35,Amarelo
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-11-15,3,2026-12-06,21,12,35,Amarelo
+municipio,1400100,RR,Boa Vista,2.82,-60.67,2026-11-15,4,2026-12-13,22,12,37,Amarelo
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-11-15,1,2026-11-22,55,36,82,Amarelo
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-11-15,2,2026-11-29,59,37,94,Laranja
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-11-15,3,2026-12-06,55,35,86,Amarelo
+municipio,4205407,SC,Florianópolis,-27.59,-48.55,2026-11-15,4,2026-12-13,56,35,90,Amarelo
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-11-15,1,2026-11-22,1262,1027,1551,Laranja
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-11-15,2,2026-11-29,1221,921,1619,Laranja
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-11-15,3,2026-12-06,1177,843,1644,Amarelo
+municipio,3550308,SP,São Paulo,-23.55,-46.63,2026-11-15,4,2026-12-13,1110,740,1663,Amarelo
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-11-15,1,2026-11-22,50,36,68,Amarelo
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-11-15,2,2026-11-29,49,33,73,Amarelo
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-11-15,3,2026-12-06,47,31,71,Amarelo
+municipio,2800308,SE,Aracaju,-10.95,-37.07,2026-11-15,4,2026-12-13,46,30,70,Amarelo
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-11-15,1,2026-11-22,121,91,162,Vermelho
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-11-15,2,2026-11-29,119,78,181,Vermelho
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-11-15,3,2026-12-06,116,68,198,Vermelho
+municipio,1721000,TO,Palmas,-10.18,-48.33,2026-11-15,4,2026-12-13,112,61,206,Vermelho
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-11-15,1,2026-11-22,238,190,299,Laranja
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-11-15,2,2026-11-29,246,178,340,Laranja
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-11-15,3,2026-12-06,250,174,358,Laranja
+municipio,3509502,SP,Campinas,-22.91,-47.06,2026-11-15,4,2026-12-13,252,170,373,Laranja
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-11-15,1,2026-11-22,45,28,72,Amarelo
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-11-15,2,2026-11-29,47,29,76,Amarelo
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-11-15,3,2026-12-06,48,29,79,Amarelo
+municipio,3518800,SP,Guarulhos,-23.46,-46.53,2026-11-15,4,2026-12-13,49,29,82,Amarelo
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-11-15,1,2026-11-22,266,210,336,Vermelho
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-11-15,2,2026-11-29,274,199,375,Vermelho
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-11-15,3,2026-12-06,281,197,400,Vermelho
+municipio,4113700,PR,Londrina,-23.31,-51.16,2026-11-15,4,2026-12-13,292,192,444,Vermelho
+municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-11-15,1,2026-11-22,119,90,157,Vermelho
+municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-11-15,2,2026-11-29,117,81,169,Vermelho
+municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-11-15,3,2026-12-06,122,75,197,Vermelho
+municipio,4108304,PR,Foz do Iguaçu,-25.54,-54.59,2026-11-15,4,2026-12-13,125,74,212,Vermelho
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-11-15,1,2026-11-22,65,42,99,Amarelo
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-11-15,2,2026-11-29,62,36,104,Amarelo
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-11-15,3,2026-12-06,61,37,101,Amarelo
+municipio,2910800,BA,Feira de Santana,-12.27,-38.97,2026-11-15,4,2026-12-13,59,35,98,Amarelo
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-11-15,1,2026-11-22,145,108,194,Laranja
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-11-15,2,2026-11-29,142,99,203,Laranja
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-11-15,3,2026-12-06,143,95,213,Laranja
+municipio,3170206,MG,Uberlândia,-18.92,-48.28,2026-11-15,4,2026-12-13,141,97,207,Laranja
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-11-15,1,2026-11-22,104,75,144,Laranja
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-11-15,2,2026-11-29,93,62,139,Laranja
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-11-15,3,2026-12-06,92,59,143,Laranja
+estado,UF-AC,AC,Acre,-9.97,-67.81,2026-11-15,4,2026-12-13,90,55,146,Laranja
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-11-15,1,2026-11-22,65,45,93,Amarelo
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-11-15,2,2026-11-29,54,35,82,Amarelo
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-11-15,3,2026-12-06,61,41,90,Amarelo
+estado,UF-AL,AL,Alagoas,-9.67,-35.74,2026-11-15,4,2026-12-13,61,41,90,Amarelo
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-11-15,1,2026-11-22,38,25,58,Amarelo
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-11-15,2,2026-11-29,36,22,59,Amarelo
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-11-15,3,2026-12-06,36,20,64,Amarelo
+estado,UF-AP,AP,Amapá,0.03,-51.07,2026-11-15,4,2026-12-13,36,20,62,Amarelo
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-11-15,1,2026-11-22,61,44,85,Amarelo
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-11-15,2,2026-11-29,60,42,86,Amarelo
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-11-15,3,2026-12-06,59,40,87,Amarelo
+estado,UF-AM,AM,Amazonas,-3.12,-60.02,2026-11-15,4,2026-12-13,56,37,84,Amarelo
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-11-15,1,2026-11-22,182,129,257,Amarelo
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-11-15,2,2026-11-29,174,108,277,Amarelo
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-11-15,3,2026-12-06,171,96,303,Amarelo
+estado,UF-BA,BA,Bahia,-12.620000000000001,-38.739999999999995,2026-11-15,4,2026-12-13,166,84,329,Amarelo
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-11-15,1,2026-11-22,64,44,92,Verde
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-11-15,2,2026-11-29,64,38,106,Verde
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-11-15,3,2026-12-06,64,36,116,Verde
+estado,UF-CE,CE,Ceará,-3.73,-38.52,2026-11-15,4,2026-12-13,65,32,132,Amarelo
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-11-15,1,2026-11-22,333,258,429,Laranja
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-11-15,2,2026-11-29,319,242,422,Laranja
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-11-15,3,2026-12-06,339,252,456,Laranja
+estado,UF-DF,DF,Distrito Federal,-15.79,-47.88,2026-11-15,4,2026-12-13,347,264,455,Laranja
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-11-15,1,2026-11-22,73,55,98,Laranja
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-11-15,2,2026-11-29,66,51,85,Laranja
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-11-15,3,2026-12-06,65,48,87,Laranja
+estado,UF-ES,ES,Espírito Santo,-20.32,-40.34,2026-11-15,4,2026-12-13,61,44,85,Laranja
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-11-15,1,2026-11-22,1022,860,1215,Vermelho
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-11-15,2,2026-11-29,1042,817,1328,Vermelho
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-11-15,3,2026-12-06,1056,765,1457,Vermelho
+estado,UF-GO,GO,Goiás,-16.69,-49.26,2026-11-15,4,2026-12-13,1088,783,1511,Vermelho
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-11-15,1,2026-11-22,28,19,41,Amarelo
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-11-15,2,2026-11-29,26,16,41,Verde
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-11-15,3,2026-12-06,24,12,47,Verde
+estado,UF-MA,MA,Maranhão,-2.53,-44.3,2026-11-15,4,2026-12-13,23,10,52,Verde
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-11-15,1,2026-11-22,4,2,9,Verde
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-11-15,2,2026-11-29,4,2,10,Verde
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-11-15,3,2026-12-06,5,1,12,Verde
+estado,UF-MT,MT,Mato Grosso,-15.6,-56.1,2026-11-15,4,2026-12-13,5,1,14,Verde
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-11-15,1,2026-11-22,34,19,60,Amarelo
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-11-15,2,2026-11-29,37,22,63,Amarelo
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-11-15,3,2026-12-06,41,23,72,Amarelo
+estado,UF-MS,MS,Mato Grosso do Sul,-20.47,-54.62,2026-11-15,4,2026-12-13,44,22,89,Amarelo
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-11-15,1,2026-11-22,842,675,1051,Laranja
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-11-15,2,2026-11-29,886,642,1222,Laranja
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-11-15,3,2026-12-06,958,656,1397,Vermelho
+estado,UF-MG,MG,Minas Gerais,-19.42,-46.11,2026-11-15,4,2026-12-13,1012,655,1568,Vermelho
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-11-15,1,2026-11-22,40,27,59,Amarelo
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-11-15,2,2026-11-29,39,25,58,Amarelo
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-11-15,3,2026-12-06,37,26,54,Amarelo
+estado,UF-PA,PA,Pará,-1.46,-48.5,2026-11-15,4,2026-12-13,37,23,60,Amarelo
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-11-15,1,2026-11-22,119,91,155,Laranja
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-11-15,2,2026-11-29,113,82,157,Laranja
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-11-15,3,2026-12-06,108,71,164,Laranja
+estado,UF-PB,PB,Paraíba,-7.12,-34.86,2026-11-15,4,2026-12-13,105,63,172,Laranja
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-11-15,1,2026-11-22,404,312,522,Laranja
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-11-15,2,2026-11-29,409,290,574,Laranja
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-11-15,3,2026-12-06,421,280,633,Laranja
+estado,UF-PR,PR,Paraná,-24.76,-51.67333333333334,2026-11-15,4,2026-12-13,434,274,693,Laranja
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-11-15,1,2026-11-22,169,115,247,Laranja
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-11-15,2,2026-11-29,170,122,236,Laranja
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-11-15,3,2026-12-06,171,113,260,Laranja
+estado,UF-PE,PE,Pernambuco,-8.05,-34.88,2026-11-15,4,2026-12-13,161,104,250,Laranja
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-11-15,1,2026-11-22,27,20,36,Amarelo
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-11-15,2,2026-11-29,26,17,40,Amarelo
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-11-15,3,2026-12-06,25,14,43,Amarelo
+estado,UF-PI,PI,Piauí,-5.09,-42.8,2026-11-15,4,2026-12-13,24,12,49,Amarelo
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,1,2026-11-22,441,329,593,Amarelo
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,2,2026-11-29,446,278,713,Amarelo
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,3,2026-12-06,449,282,715,Amarelo
+estado,UF-RJ,RJ,Rio de Janeiro,-22.91,-43.17,2026-11-15,4,2026-12-13,473,281,796,Amarelo
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-11-15,1,2026-11-22,43,31,61,Amarelo
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-11-15,2,2026-11-29,43,31,61,Amarelo
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-11-15,3,2026-12-06,46,31,69,Amarelo
+estado,UF-RN,RN,Rio Grande do Norte,-5.79,-35.21,2026-11-15,4,2026-12-13,47,29,77,Amarelo
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-11-15,1,2026-11-22,5,2,11,Verde
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-11-15,2,2026-11-29,5,2,11,Verde
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-11-15,3,2026-12-06,4,0,30,Verde
+estado,UF-RS,RS,Rio Grande do Sul,-30.03,-51.23,2026-11-15,4,2026-12-13,4,0,31,Verde
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-11-15,1,2026-11-22,22,9,50,Amarelo
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-11-15,2,2026-11-29,20,7,51,Amarelo
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-11-15,3,2026-12-06,20,7,51,Amarelo
+estado,UF-RO,RO,Rondônia,-8.76,-63.9,2026-11-15,4,2026-12-13,19,7,50,Amarelo
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-11-15,1,2026-11-22,22,15,32,Amarelo
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-11-15,2,2026-11-29,22,13,35,Amarelo
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-11-15,3,2026-12-06,21,12,35,Amarelo
+estado,UF-RR,RR,Roraima,2.82,-60.67,2026-11-15,4,2026-12-13,22,12,37,Amarelo
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-11-15,1,2026-11-22,55,36,82,Amarelo
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-11-15,2,2026-11-29,59,37,94,Laranja
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-11-15,3,2026-12-06,55,35,86,Amarelo
+estado,UF-SC,SC,Santa Catarina,-27.59,-48.55,2026-11-15,4,2026-12-13,56,35,90,Amarelo
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-11-15,1,2026-11-22,1545,1245,1922,Laranja
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-11-15,2,2026-11-29,1514,1128,2035,Laranja
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-11-15,3,2026-12-06,1475,1046,2081,Amarelo
+estado,UF-SP,SP,São Paulo,-23.30666666666667,-46.74,2026-11-15,4,2026-12-13,1411,939,2118,Amarelo
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-11-15,1,2026-11-22,50,36,68,Amarelo
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-11-15,2,2026-11-29,49,33,73,Amarelo
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-11-15,3,2026-12-06,47,31,71,Amarelo
+estado,UF-SE,SE,Sergipe,-10.95,-37.07,2026-11-15,4,2026-12-13,46,30,70,Amarelo
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-11-15,1,2026-11-22,121,91,162,Vermelho
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-11-15,2,2026-11-29,119,78,181,Vermelho
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-11-15,3,2026-12-06,116,68,198,Vermelho
+estado,UF-TO,TO,Tocantins,-10.18,-48.33,2026-11-15,4,2026-12-13,112,61,206,Vermelho
