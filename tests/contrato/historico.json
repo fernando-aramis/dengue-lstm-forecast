@@ -1,0 +1,36 @@
+{
+  "colunas": [
+    {
+      "nome": "nivel_geo",
+      "dtype": "texto"
+    },
+    {
+      "nome": "geo_id",
+      "dtype": "texto"
+    },
+    {
+      "nome": "uf",
+      "dtype": "texto"
+    },
+    {
+      "nome": "nome",
+      "dtype": "texto"
+    },
+    {
+      "nome": "lat",
+      "dtype": "float64"
+    },
+    {
+      "nome": "lon",
+      "dtype": "float64"
+    },
+    {
+      "nome": "data",
+      "dtype": "texto"
+    },
+    {
+      "nome": "casos",
+      "dtype": "int64"
+    }
+  ]
+}

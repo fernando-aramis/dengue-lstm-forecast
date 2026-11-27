@@ -58,7 +58,7 @@ jobs:
         # está instalado neste job).
         run: |
           pip install pytest
-          pytest tests/test_unit.py -q -k "schema or geojson or meta_proveniencia"
+          pytest tests/test_unit.py -q -k "schema or geojson or meta_proveniencia or contrato_estavel"
 
       - name: Commitar dados atualizados
         run: |
