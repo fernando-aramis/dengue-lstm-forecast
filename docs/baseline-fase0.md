@@ -15,3 +15,15 @@ Ambiente: WSL2, Docker 29.10.0, build do `Dockerfile` do repositório (sem cache
 | JS+CSS iniciais (gzip, soma dos `src`/`href` de `/`) | **315.486 B** | para cada URL em `idx.html`: `curl -s -H 'Accept-Encoding: gzip' -o /dev/null -w '%{size_download}' localhost:17860$url` |
 
 Observações: medido uma vez (sem média); a variação de tempo de boot entre execuções é da ordem de ±0,5 s.
+
+## Correção do baseline da imagem e efeito do Q.7 (2026-11-27)
+
+**O baseline de 905 MB estava inflado pela árvore local:** `docs/ui/shots/` e outras pastas de screenshots estão no `.gitignore`, mas existem em disco e entravam no contexto do `docker build` local. Em **clone limpo** (`git clone` em diretório temporário, como o CI e o Render), a imagem da `main` (d3b7480) tem **652 MB**. Comparações de tamanho devem usar clone limpo.
+
+| Métrica (clone limpo) | Antes (main) | Depois (`chore/imagem-enxuta`) |
+|---|---|---|
+| Tamanho (`docker image ls`) | 652 MB | **513 MB (−21%)** |
+| Tempo até `/health` 200 (3 execuções) | 1,85–1,98 s | 1,81–2,90 s (ruído do WSL2; sem piora sistemática) |
+| Memória do container, ocioso (3 execuções) | 184–200 MiB | 186–212 MiB |
+
+Mudanças (lock e base intactos): `tests/` de pandas/numpy removidos no `RUN` do pip; `docs/` e docs de apoio no `.dockerignore`; `COPY --chown` no lugar de `chown -R`; `pip`/`setuptools`/`wheel` desinstalados no runtime (upgrade, instalação do lock e limpeza num único `RUN`).

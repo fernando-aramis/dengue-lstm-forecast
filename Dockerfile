@@ -17,20 +17,24 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN useradd --create-home --uid 10001 appuser
 WORKDIR /app
 
-# tooling de build atualizado (corrige CVEs de pip/setuptools: CVE-2024-6345, CVE-2025-47273, etc.)
-# e remoção dos wheels empacotados do ensurepip (pip/setuptools antigos, só usados por `python -m venv`,
-# que o container de serving nunca faz) — fecha os CVEs residuais e reduz superfície de ataque.
+# Um único RUN (menos camadas, sem duplicar arquivos entre elas):
+#  1) pip/setuptools atualizados só para instalar (corrige CVE-2024-6345, CVE-2025-47273, etc.);
+#  2) instala do LOCK com verificação de HASH (supply-chain hardening). O lock é gerado de
+#     requirements.txt via: uv pip compile requirements.txt --generate-hashes --python-version 3.11 \
+#       --no-header -o requirements.lock   (regerar sempre que requirements.txt mudar);
+#  3) remove o que o serving não usa: suítes de teste embutidas nos wheels do pandas/numpy,
+#     e pip/setuptools/wheel (ferramentas de build) + wheels do ensurepip (só `python -m venv`) —
+#     reduz tamanho e superfície de ataque. Mantém os __pycache__ (cold start).
+COPY requirements.lock .
 RUN pip install --no-cache-dir --upgrade "pip>=26.2" "setuptools>=78.1.1" \
+    && pip install --no-cache-dir --require-hashes -r requirements.lock \
+    && find /usr/local/lib/python3.11/site-packages/pandas /usr/local/lib/python3.11/site-packages/numpy \
+         -type d \( -name tests -o -name test \) -prune -exec rm -rf {} + \
+    && pip uninstall -y pip setuptools wheel \
     && rm -rf /usr/local/lib/python*/ensurepip/_bundled
 
-# Instala do LOCK com verificação de HASH (supply-chain hardening). O lock é gerado de
-# requirements.txt via: uv pip compile requirements.txt --generate-hashes --python-version 3.11 \
-#   --no-header -o requirements.lock   (regerar sempre que requirements.txt mudar).
-COPY requirements.lock .
-RUN pip install --no-cache-dir --require-hashes -r requirements.lock
-
-COPY . .
-RUN chown -R appuser:appuser /app
+# --chown no COPY: evita o `chown -R` numa camada nova (que duplicaria o /app inteiro).
+COPY --chown=10001:10001 . .
 # UID numérico (hardening: permite runAsNonRoot ser verificado pelo runtime/orquestrador)
 USER 10001
 
