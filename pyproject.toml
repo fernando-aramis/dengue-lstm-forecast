@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [".venv", "tests/vendor", "docs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+# Dívida existente, ainda não corrigida: reativar uma a uma em PRs próprias (ampliar o conjunto depois).
+ignore = ["E501", "E741", "E731", "E702", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F811"]  # fixtures do pytest importadas e reutilizadas como argumento
+"app.py" = ["F401"]   # reexporta nomes de dados/figuras/layout que os testes acessam como app.X

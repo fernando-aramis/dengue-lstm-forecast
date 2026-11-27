@@ -7,10 +7,22 @@ import numpy as np
 import plotly.graph_objects as go
 from dash import html
 
-from i18n import tr, nivel as nivel_tr, fmt_int, fmt_data
-from formato import plotly_separators, plotly_hoverformat_data
-from dados import (GEOJSON_UF, mapa_uf, mapa_cid, nome_uf, COBERTAS, NAO_COBERTAS,
-                   prev, hist, CORES_NIVEL, CORES_NIVEL_CVD, ORDEM_NIVEL, semana_epi)
+from dados import (
+    CORES_NIVEL,
+    CORES_NIVEL_CVD,
+    GEOJSON_UF,
+    NAO_COBERTAS,
+    ORDEM_NIVEL,
+    hist,
+    mapa_cid,
+    mapa_uf,
+    nome_uf,
+    prev,
+    semana_epi,
+)
+from formato import plotly_hoverformat_data, plotly_separators
+from i18n import fmt_data, fmt_int, tr
+from i18n import nivel as nivel_tr
 
 # paletas de GRÁFICO por tema (coerentes com o CSS claro/escuro)
 PLOT = {

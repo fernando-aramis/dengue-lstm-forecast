@@ -4,19 +4,18 @@ Layout da página: blocos editoriais, barra de controles (idioma/tema) e montage
 (`construir_conteudo` + `serve_layout`). Textos vêm de i18n; figuras vêm de figuras.py.
 """
 import re
-import flask
 from datetime import date, timedelta
+from urllib.parse import parse_qs, urlsplit
 
+import flask
 from dash import dcc, html
 
-from urllib.parse import urlsplit, parse_qs
-from i18n import IDIOMAS, tr, resolver, nivel as nivel_tr, fmt_int, fmt_dec, fmt_pct, fmt_data, fmt_intervalo
+from conteudo import BIBTEX, ESTUDO, LINKS, ORCID, ORCID_URL, REFERENCIAS, TAB_RES, abnt
+from dados import DATA_ORIGEM, DATA_PREV_H1, GEO0, RESUMO, SE_H1, SE_ORIGEM, UFS, cidades_por_uf, mapa_cid, nome_uf
+from figuras import ORDEM_NIVEL, cartao_info, figura_detalhe, figura_mapa, horizontes
 from formato import plotly_locale
-from dados import (UFS, nome_uf, DATA_ORIGEM, GEO0, cidades_por_uf, mapa_cid,
-                   RESUMO, SE_H1, SE_ORIGEM, DATA_PREV_H1)
-from figuras import (figura_mapa, figura_detalhe, cartao_info, horizontes,
-                     CORES_NIVEL, ORDEM_NIVEL)
-from conteudo import (TAB_RES, REFERENCIAS, BIBTEX, abnt, ORCID, ORCID_URL, LINKS, ESTUDO)
+from i18n import IDIOMAS, fmt_data, fmt_dec, fmt_int, fmt_intervalo, fmt_pct, resolver, tr
+from i18n import nivel as nivel_tr
 
 
 # ---------------------------------------------------------------- blocos reutilizáveis

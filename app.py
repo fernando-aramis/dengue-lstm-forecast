@@ -16,19 +16,46 @@ import json
 import logging
 import os
 
-from dash import Dash, dcc, html, Input, Output, State, ctx, no_update, Patch
+from dash import Dash, Input, Output, Patch, State, ctx, dcc, html, no_update
 from flask import request, send_file
 from flask_compress import Compress
 
 import conteudo
-from i18n import tr, resolver
-from dados import (prev, hist, mapa_cid, mapa_uf, nome_uf, UFS, COBERTAS, NAO_COBERTAS,
-                   cidades_por_uf, nome_por_geo, GEO0, DATA_ORIGEM, META, TETO_FATOR,
-                   GEOJSON_UF, IDX_CHOROPLETH)
-from figuras import (figura_mapa, figura_detalhe, cartao_info, resumo_cartao, horizontes,
-                     tema as _tema, PLOT, CORES_NIVEL, ORDEM_NIVEL, centro_zoom, sem_serie,
-                     indices_anel, comparacao_valida)
-from layout import construir_conteudo, serve_layout, opcoes_uf, cabecalho_corrido, nav_links
+from dados import (
+    COBERTAS,
+    DATA_ORIGEM,
+    GEO0,
+    GEOJSON_UF,
+    IDX_CHOROPLETH,
+    META,
+    NAO_COBERTAS,
+    TETO_FATOR,
+    UFS,
+    cidades_por_uf,
+    hist,
+    mapa_cid,
+    mapa_uf,
+    nome_por_geo,
+    nome_uf,
+    prev,
+)
+from figuras import (
+    CORES_NIVEL,
+    ORDEM_NIVEL,
+    PLOT,
+    cartao_info,
+    centro_zoom,
+    comparacao_valida,
+    figura_detalhe,
+    figura_mapa,
+    horizontes,
+    indices_anel,
+    resumo_cartao,
+    sem_serie,
+)
+from figuras import tema as _tema
+from i18n import resolver, tr
+from layout import cabecalho_corrido, construir_conteudo, nav_links, opcoes_uf, serve_layout
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
                     format="%(asctime)s %(levelname)s %(name)s: %(message)s")

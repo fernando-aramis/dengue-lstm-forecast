@@ -13,7 +13,7 @@ Requer shapely (ver pipeline/requirements.txt). Não entra na imagem de serving.
 import json
 import os
 
-from shapely.geometry import shape, mapping
+from shapely.geometry import mapping, shape
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(AQUI, "..", "data")
