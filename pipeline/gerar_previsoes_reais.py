@@ -23,14 +23,13 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
+import _log
+import infodengue
+import modelo
 import numpy as np
 import pandas as pd
-
-from cidades import CIDADES, UF_NOME
-import infodengue
 import preparacao
-import modelo
-import _log
+from cidades import CIDADES, UF_NOME
 
 log = _log.configurar("dengue.pipeline")
 

@@ -15,8 +15,8 @@ import time
 import unicodedata
 import urllib.request
 
-from cidades import CIDADES
 import _log
+from cidades import CIDADES
 
 log = _log.configurar("dengue.geocodes")
 IBGE = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/{}"

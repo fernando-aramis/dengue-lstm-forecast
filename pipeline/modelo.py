@@ -7,7 +7,6 @@ PRODUÇÃO: treina em toda a série e prevê as 4 semanas seguintes à última o
 Requer TensorFlow. Se não estiver instalado, use pip install tensorflow-cpu (ou rode no Colab).
 """
 import numpy as np
-
 from preparacao import para_casos
 
 JANELA, HORIZONTE = 12, 4

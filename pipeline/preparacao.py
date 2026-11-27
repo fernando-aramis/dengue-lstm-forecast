@@ -17,7 +17,6 @@ Diferença de fonte: a alertcity não traz precipitação; o modelo de produçã
 (só casos), que foi o melhor no estudo — logo isso não afeta o modelo, só limita a EDA de clima.
 """
 import numpy as np
-import pandas as pd
 
 PERIODO_SAZONAL = 52.18
 N_PRELIMINAR = 3          # semanas finais marcadas como "em revisão" (atraso de notificação)

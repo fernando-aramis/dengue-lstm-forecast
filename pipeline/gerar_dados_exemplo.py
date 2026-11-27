@@ -18,7 +18,6 @@ import os
 from datetime import date, timedelta
 
 import numpy as np
-
 from cidades import CIDADES, UF_NOME
 
 AQUI = os.path.dirname(os.path.abspath(__file__))

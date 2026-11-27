@@ -8,11 +8,12 @@ import sys
 import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import figuras as F  # noqa: E402
+from test_unit import contraste  # noqa: E402
+
 import app as A  # noqa: E402
+import figuras as F  # noqa: E402
 from dados import prev  # noqa: E402
 from i18n import T  # noqa: E402
-from test_unit import contraste  # noqa: E402
 
 CWB, ARACAJU = "4106902", None
 
