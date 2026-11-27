@@ -1,4 +1,4 @@
-# CI — roda os testes a cada PR/push em main (GitHub Flow). INERTE até o projeto ir para o GitHub.
+# CI — roda os testes a cada PR/push em main (GitHub Flow).
 # Pressupõe que a raiz do repositório é a pasta webapp/. Se o repo for a pasta-mãe
 # (dengue-curitiba/), mova este .github/ para lá e prefixe os passos com
 # `working-directory: webapp` (e ajuste cache-dependency-path).
