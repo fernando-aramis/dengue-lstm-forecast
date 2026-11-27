@@ -6,6 +6,9 @@ Resumo para retomar o trabalho sem reexplorar o código. Detalhes: memória auto
 - Refino de UI/UX em 8 fases concluído na branch `fix/a11y-ui-remediation`; PR #11 aberto (aguarda 1º CI e merge). Não abrir novo PR sem OK explícito.
 - North Star: "O Periódico Vivo". Refino, não redesign (identidade verde-terrosa, casca JBCS, AAA, trilíngue).
 
+## Toolchain dos dados
+Toolchain **canônico**: CI (Py 3.12 + TF 2.18, `pipeline/requirements-ci.txt`) gera os dados publicados. Dev local (Py 3.14 + TF rc) é só para teste/smoke; não commitar dados gerados por ele. Proveniência (`_meta.json` v2) grava as versões.
+
 ## Gate de qualidade
 `pytest tests/ -q` verde + axe 0 nos dois temas (wcag2aaa; esperar ~1 s após trocar o tema). App sem hot-reload (porta 8050); CSS é relido, `.py` só ao reiniciar.
 
