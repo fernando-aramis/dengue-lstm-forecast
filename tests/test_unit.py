@@ -592,3 +592,25 @@ def test_tema_do_mapa_recolore_os_aneis():
     ops = {tuple(o["location"]): o["params"]["value"] for o in A.tema_mapa("dark")._operations}
     for i in figuras.indices_anel():
         assert ops[("data", i, "marker", "color")] == figuras.PLOT["dark"]["ring"]
+
+
+def test_lock_sincronizado():
+    """A imagem instala do requirements.lock: todo pin de requirements.txt deve estar igual no lock.
+    (O Dependabot só edita o .txt; sem este teste um bump de PR não chegaria à imagem.)"""
+    import re
+    raiz = os.path.dirname(DATA)
+    norm = lambda n: re.sub(r"[-_.]+", "-", n).lower()
+    pins = {}
+    for ln in open(os.path.join(raiz, "requirements.txt"), encoding="utf-8"):
+        m = re.match(r"^([A-Za-z0-9_.\-]+)==([^\s#;]+)", ln.strip())
+        if m:
+            pins[norm(m.group(1))] = m.group(2)
+    lock = {}
+    for ln in open(os.path.join(raiz, "requirements.lock"), encoding="utf-8"):
+        m = re.match(r"^([A-Za-z0-9_.\-]+)==([^\s\\;]+)", ln)
+        if m:
+            lock[norm(m.group(1))] = m.group(2)
+    assert pins, "requirements.txt sem pins"
+    dif = {k: (v, lock.get(k)) for k, v in pins.items() if lock.get(k) != v}
+    assert not dif, ("requirements.lock divergente de requirements.txt (regere com "
+                     f"`uv pip compile ... --generate-hashes`): {dif}")
