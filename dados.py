@@ -161,11 +161,3 @@ def carregar(origem):
 
 
 ORIGINAL = carregar(DATA)      # fail-fast no import, como antes
-
-# Aliases de módulo (temporários — removidos em 1.12): apontam para o ORIGINAL.
-prev, hist = ORIGINAL.prev, ORIGINAL.hist
-mapa_cid, mapa_uf = ORIGINAL.mapa_cid, ORIGINAL.mapa_uf
-cidades_por_uf, nome_por_geo = ORIGINAL.cidades_por_uf, ORIGINAL.nome_por_geo
-COBERTAS, NAO_COBERTAS, IDX_CHOROPLETH = ORIGINAL.cobertas, ORIGINAL.nao_cobertas, ORIGINAL.idx_choropleth
-GEO0, DATA_ORIGEM, META = ORIGINAL.geo0, ORIGINAL.data_origem, ORIGINAL.meta
-SE_ORIGEM, DATA_PREV_H1, SE_H1, RESUMO = ORIGINAL.se_origem, ORIGINAL.data_prev_h1, ORIGINAL.se_h1, ORIGINAL.resumo

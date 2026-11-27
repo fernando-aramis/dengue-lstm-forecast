@@ -24,12 +24,6 @@ def test_carregar_por_dfs_equivale_ao_original():
     pd.testing.assert_frame_equal(c.mapa_cid, o.mapa_cid)
 
 
-def test_aliases_do_modulo_apontam_para_o_original():
-    o = dados.ORIGINAL
-    assert dados.prev is o.prev and dados.GEO0 == o.geo0 and dados.SE_ORIGEM == o.se_origem
-    assert dados.RESUMO is o.resumo and dados.IDX_CHOROPLETH == o.idx_choropleth
-
-
 def test_conjunto_e_imutavel():
     with pytest.raises(dataclasses.FrozenInstanceError):
         dados.ORIGINAL.geo0 = "x"

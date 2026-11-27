@@ -23,23 +23,11 @@ from flask_compress import Compress
 import atual
 import conteudo
 from dados import (
-    COBERTAS,
-    DATA_ORIGEM,
-    GEO0,
     GEOJSON_UF,
-    IDX_CHOROPLETH,
-    META,
-    NAO_COBERTAS,
     ORIGINAL,
     TETO_FATOR,
     UFS,
-    cidades_por_uf,
-    hist,
-    mapa_cid,
-    mapa_uf,
-    nome_por_geo,
     nome_uf,
-    prev,
 )
 from figuras import (
     CORES_NIVEL,
@@ -252,8 +240,8 @@ def _citation_cff():
 
 
 app.layout = serve_layout
-log.info("app pronto · %d cidades · origem %s%s", len(mapa_cid), DATA_ORIGEM,
-         f" · coletado {META.get('coletado_em')}" if META.get("coletado_em") else "")
+log.info("app pronto · %d cidades · origem %s%s", len(ORIGINAL.mapa_cid), ORIGINAL.data_origem,
+         f" · coletado {ORIGINAL.meta.get('coletado_em')}" if ORIGINAL.meta.get("coletado_em") else "")
 
 
 # ---------------------------------------------------------------- idioma
@@ -615,14 +603,15 @@ app.clientside_callback(
 @app.callback(Output("sel", "data", allow_duplicate=True),
               Output("dd-uf", "value", allow_duplicate=True),
               Output("dd-cidade", "value", allow_duplicate=True),
-              Input("url-cidade", "data"), prevent_initial_call=True)
-def aplica_url_cidade(raw):
+              Input("url-cidade", "data"), State("fonte", "data"), prevent_initial_call=True)
+def aplica_url_cidade(raw, fonte="original"):
     """A15 — aplica ?cidade= vindo da URL. Valor forjado/inexistente → seleção inicial segura (GEO0),
     nunca um dropdown vazio nem a string da URL ecoada de volta."""
     if not raw:
         return no_update, no_update, no_update
-    if not _geo_valido(raw):
-        return GEO0, no_update, no_update          # dropdowns já estão em GEO0; só normaliza sel/URL
+    c = obter(fonte)
+    if not _geo_valido(raw, c):
+        return c.geo0, no_update, no_update          # dropdowns já estão em GEO0; só normaliza sel/URL
     if raw.startswith("UF-"):
         return raw, raw[3:], raw
     return raw, no_update, raw

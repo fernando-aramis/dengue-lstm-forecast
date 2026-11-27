@@ -26,8 +26,8 @@ import sys, json
 sys.path.insert(0, ".")
 import app as A, dados as D, figuras as F
 out = {}
-out["nao_cobertas"] = len(D.NAO_COBERTAS)
-out["idx"] = D.IDX_CHOROPLETH
+out["nao_cobertas"] = len(D.ORIGINAL.nao_cobertas)
+out["idx"] = D.ORIGINAL.idx_choropleth
 fig = F.figura_mapa()
 out["traces"] = [t.type for t in fig.data]
 out["t0_hover"] = fig.data[0].hovertemplate
@@ -111,5 +111,5 @@ def test_dados_reais_nao_ativam_o_estado():
             sys.path.insert(0, p)
     import app as A
     import dados as D
-    assert D.NAO_COBERTAS == [] and D.IDX_CHOROPLETH == 0
-    assert A.atualizar(D.GEO0, "pt", "light", None)[4] is False
+    assert D.ORIGINAL.nao_cobertas == [] and D.ORIGINAL.idx_choropleth == 0
+    assert A.atualizar(D.ORIGINAL.geo0, "pt", "light", None)[4] is False
