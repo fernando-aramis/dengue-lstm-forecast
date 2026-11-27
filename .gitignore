@@ -25,3 +25,4 @@ docs/ui/shots/fase5/
 # Claude Code (pessoal)
 .claude/settings.local.json
 CLAUDE.local.md
+.coverage

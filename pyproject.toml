@@ -11,3 +11,8 @@ ignore = ["E501", "E741", "E731", "E702", "B905"]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["F811"]  # fixtures do pytest importadas e reutilizadas como argumento
 "app.py" = ["F401"]   # reexporta nomes de dados/figuras/layout que os testes acessam como app.X
+
+[tool.coverage.run]
+branch = true
+# módulos do serving apenas (sem pipeline/ com TF, sem tests/)
+source = ["app", "conteudo", "dados", "figuras", "formato", "i18n", "layout"]
