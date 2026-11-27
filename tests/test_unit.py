@@ -208,6 +208,12 @@ def test_meta_proveniencia():
     m = json.load(open(mp, encoding="utf-8"))
     for k in ("coletado_em", "se_origem", "modelo", "n_cidades", "n_falhas"):
         assert k in m, f"_meta.json sem a chave {k}"
+    if m.get("versao", 1) >= 2:                       # proveniência v2 (v1 continua aceito)
+        for k in ("versoes", "duracao_treino_s", "campo_casos", "ey_start", "janela", "horizonte",
+                  "seed", "epocas_max", "paciencia", "epocas_por_cidade"):
+            assert k in m, f"_meta.json v2 sem a chave {k}"
+        assert {"python", "tensorflow", "keras", "numpy", "pandas"} <= set(m["versoes"])
+        assert len(m["epocas_por_cidade"]) == m["n_cidades"]
 
 
 def test_modulos_refatorados_importam():
@@ -357,9 +363,16 @@ def test_horizontes_4_itens():
 
 def test_tabela_ranking():
     import layout
+    import dados
     table = layout.tabela_ranking("pt", n=8).children[0]
     assert type(table.children[0]).__name__ == "Caption", "Caption deve ser o 1º filho da tabela"
-    assert len(table.children[2].children) == 8, "Tabela 1 deveria ter 8 linhas"
+    assert len(table.children[2].children) == 8, "n=8 deve limitar a 8 linhas"
+    # padrão: lista COMPLETA, da maior para a menor previsão
+    completa = layout.tabela_ranking("pt").children[0]
+    linhas = completa.children[2].children
+    assert len(linhas) == len(dados.mapa_cid), "Tabela 1 deve listar todas as cidades monitoradas"
+    prevs = [int(l.children[1].children.replace(".", "").replace("\xa0", "")) for l in linhas]
+    assert prevs == sorted(prevs, reverse=True), "Tabela 1 deve vir ordenada da maior para a menor"
 
 
 def test_referencias_doi():
@@ -579,3 +592,29 @@ def test_tema_do_mapa_recolore_os_aneis():
     ops = {tuple(o["location"]): o["params"]["value"] for o in A.tema_mapa("dark")._operations}
     for i in figuras.indices_anel():
         assert ops[("data", i, "marker", "color")] == figuras.PLOT["dark"]["ring"]
+
+
+def test_lock_sincronizado():
+    """A imagem instala do requirements.lock: todo pin de requirements.txt deve estar igual no lock.
+    (O Dependabot só edita o .txt; sem este teste um bump de PR não chegaria à imagem.)"""
+    import re
+    raiz = os.path.dirname(DATA)
+    norm = lambda n: re.sub(r"[-_.]+", "-", n).lower()
+    pins = {}
+    for ln in open(os.path.join(raiz, "requirements.txt"), encoding="utf-8"):
+        m = re.match(r"^([A-Za-z0-9_.\-]+)==([^\s#;]+)", ln.strip())
+        if m:
+            pins[norm(m.group(1))] = m.group(2)
+        else:
+            assert not ln.strip() or ln.lstrip().startswith("#"), f"requirements.txt: use pin exato (==): {ln!r}"
+    lock = {}
+    for ln in open(os.path.join(raiz, "requirements.lock"), encoding="utf-8"):
+        m = re.match(r"^([A-Za-z0-9_.\-]+)==([^\s\\;]+)", ln)
+        if m:
+            lock[norm(m.group(1))] = m.group(2)
+    assert pins, "requirements.txt sem pins"
+    assert open(os.path.join(raiz, "requirements.lock"), encoding="utf-8").read().count("--hash=sha256:") >= len(pins), \
+        "requirements.lock sem hashes (gere com --generate-hashes)"
+    dif = {k: (v, lock.get(k)) for k, v in pins.items() if lock.get(k) != v}
+    assert not dif, ("requirements.lock divergente de requirements.txt (regere com "
+                     f"`uv pip compile ... --generate-hashes`): {dif}")

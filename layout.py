@@ -234,10 +234,13 @@ def legenda_serie(lang):
                   children=[html.Span(className="serie-sw cmp"), html.Span(id="legenda-cmp-nome")])])
 
 
-def tabela_ranking(lang, n=8):
-    """Tabela 1 — maiores previsões (alternativa textual acessível ao mapa)."""
+def tabela_ranking(lang, n=None):
+    """Tabela 1 — previsões de TODAS as cidades monitoradas, da maior para a menor (alternativa textual
+    acessível ao mapa). `n` limita as linhas (testes); o padrão é a lista completa, numa região rolável."""
     _, se = SE_H1
-    top = mapa_cid.sort_values("prev", ascending=False).head(n)
+    top = mapa_cid.sort_values("prev", ascending=False)
+    if n is not None:
+        top = top.head(n)
     linhas = []
     for _, r in top.iterrows():
         nv = r["nivel_alerta"]
@@ -248,10 +251,11 @@ def tabela_ranking(lang, n=8):
             html.Td(fmt_int(r["sup"], lang), className="tabular"),
             html.Td(html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
                                nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}"))]))
-    return html.Div(className="tbl-wrap", tabIndex=0,
-                    **{"role": "region", "aria-label": tr(lang, "tab1_caption", se=se)},
+    return html.Div(className="tbl-wrap tbl-rank-wrap", tabIndex=0,
+                    **{"role": "region", "aria-label": tr(lang, "tab1_caption", se=se, n=len(top))},
                     children=[html.Table(className="res tab-rank", children=[
-        html.Caption([html.Strong(tr(lang, "tabela_pref", n=1)), tr(lang, "tab1_caption", se=se)]),
+        html.Caption([html.Strong(tr(lang, "tabela_pref", n=1)),
+                      tr(lang, "tab1_caption", se=se, n=len(top))]),
         html.Thead(html.Tr([html.Th(tr(lang, "tab1_cidade")), html.Th(tr(lang, "tab1_prev")),
                             html.Th(tr(lang, "tab1_inf")), html.Th(tr(lang, "tab1_sup")),
                             html.Th(tr(lang, "tab1_nivel"))])),

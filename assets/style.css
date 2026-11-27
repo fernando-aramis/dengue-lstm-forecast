@@ -262,6 +262,11 @@ section { margin-top: 34px; }
 
 /* gráficos preenchem o painel -> mapa e detalhe acompanham a mesma altura */
 .graph-mapa { flex: 1 1 auto; min-height: 340px; }
+/* Coluna única (<980px): mesmo defeito do gráfico de detalhe — o Plotly resolvia `height:100%` num pai sem
+   altura definida, caía no padrão de 450px e o canvas (≈110px a mais que o slot de 340px) cobria a legenda
+   e a nota do mapa. Altura definida aqui (!important: dcc.Graph injeta style="height:100%" inline);
+   em 2 colunas o grid a fornece. */
+@media (max-width: 979.98px) { .graph-mapa { height: clamp(340px, 95vw, 480px) !important; } }
 /* A5 — fallback quando o WebGL falha (ocupa a área do mapa; cor do aviso) */
 .mapa-fallback[hidden] { display: none; }   /* sem isto o display:flex abaixo anulava o atributo hidden:
    a mensagem "WebGL bloqueado" aparecia SEMPRE, mesmo com o mapa funcionando */
@@ -343,7 +348,26 @@ section { margin-top: 34px; }
 
 /* ---------------------------------------------------------------- results table */
 .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch;
-  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  border: 1px solid var(--border); border-radius: var(--radius); background-color: var(--surface-raised);
+  /* affordance de rolagem horizontal: sombra só nas bordas que ainda têm conteúdo escondido */
+  background-image:
+    linear-gradient(to right, var(--surface-raised) 30%, transparent),
+    linear-gradient(to left, var(--surface-raised) 30%, transparent),
+    linear-gradient(to right, rgb(0 0 0 / .16), transparent),
+    linear-gradient(to left, rgb(0 0 0 / .16), transparent);
+  background-position: left center, right center, left center, right center;
+  background-size: 28px 100%, 28px 100%, 12px 100%, 12px 100%;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll; }
+/* Tabela 1 completa (todas as cidades): região rolável na vertical, cabeçalho fixo — a altura não depende
+   do nº de cidades e nada muda de lugar ao rolar ou focar. */
+.tbl-wrap.tbl-rank-wrap { max-height: 30rem; overflow-y: auto; overscroll-behavior: contain; }
+.tbl-rank-wrap table.res { min-width: 0; }
+.tbl-rank-wrap table.res th, .tbl-rank-wrap table.res td { padding: 8px 9px; }
+.tbl-rank-wrap table.res thead th { position: sticky; top: 0; z-index: 1; box-shadow: 0 1px 0 var(--border); }
+.tbl-rank-wrap table.res caption { position: static; }
+.tbl-rank-wrap table.res tbody tr:last-child td { border-bottom: none; }
+.tbl-rank-wrap table.res tbody tr:hover td { background: var(--surface-sunken); }
 table.res { border-collapse: collapse; width: 100%; font-size: .88rem; min-width: 480px; }
 table.res th, table.res td { padding: 9px 14px; text-align: right; border-bottom: 1px solid var(--border); }
 table.res th:first-child, table.res td:first-child { text-align: left; }
@@ -646,7 +670,13 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .como-ler li { margin-bottom: 8px; font-size: .9rem; }
 
 @media (min-width: 980px) {
-  .painel-extra { grid-template-columns: 1fr 420px; align-items: start; }
+  .painel-extra { grid-template-columns: minmax(0, 1fr) 480px; align-items: start; }
+  /* a Tabela 1 (alta) ocupa as 2 linhas da coluna direita; aviso e "Como ler" empilham à esquerda,
+     sem o vão que a tabela abria entre eles */
+  .painel-extra { grid-template-rows: auto 1fr; }   /* a altura extra da tabela vai p/ a linha 2, não abre vão */
+  .painel-extra > .tbl-rank-wrap { grid-column: 2; grid-row: 1 / span 2; }
+  .painel-extra > .avisos { grid-column: 1; grid-row: 1; }
+  .painel-extra > .como-ler { grid-column: 1; grid-row: 2; }
 }
 
 /* ==================================================== F5 — artigo JBCS */

@@ -18,6 +18,10 @@ updates:
       interval: weekly
     commit-message:
       prefix: deps
+    groups:
+      serving:                        # minor/patch num PR só; majors (ex.: gunicorn) ficam em PRs individuais
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: pip
     directory: /pipeline              # pipeline (requirements*.txt)
@@ -25,6 +29,9 @@ updates:
       interval: weekly
     commit-message:
       prefix: deps(pipeline)
+    ignore:                           # (só version updates; alertas de segurança seguem abrindo PR) toolchain canônico (Py 3.12 + TF 2.18) só muda manualmente (tarefa 0.8)
+      - dependency-name: tensorflow-cpu
+      - dependency-name: numpy
 
   - package-ecosystem: pip
     directory: /tests                 # testes (requirements.txt)
