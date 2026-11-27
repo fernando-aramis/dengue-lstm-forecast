@@ -1,0 +1,3 @@
+# Ferramentas de desenvolvimento (não entram na imagem; hash não exigido)
+ruff==0.17.6
+pytest-cov==7.1.0

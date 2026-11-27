@@ -26,3 +26,8 @@ DESIGN.md
 PRODUCT.md
 graphify-out/
 .impeccable/
+
+# ferramentas de dev/lint (Q.8/Q.9)
+pyproject.toml
+requirements-dev.txt
+.coverage
