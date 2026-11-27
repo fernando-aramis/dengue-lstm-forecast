@@ -21,3 +21,7 @@ docs/ui/shots/a16/
 docs/ui/shots/after-fase3/
 docs/ui/shots/after-fase4/
 docs/ui/shots/fase5/
+
+# Claude Code (pessoal)
+.claude/settings.local.json
+CLAUDE.local.md
