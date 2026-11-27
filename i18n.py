@@ -180,6 +180,15 @@ T = {
     "fonte_m_anterior": {"pt": "mais antigos que o original", "en": "older than the original",
                          "es": "más antiguos que el original"},
     "fonte_m_invalido": {"pt": "dados inválidos", "en": "invalid data", "es": "datos inválidos"},
+    "og_alt": {"pt": "Painel de previsão semanal de dengue no Brasil: mapa por cidade com nível de alerta e série temporal",
+               "en": "Weekly dengue forecast dashboard for Brazil: city map with alert level and time series",
+               "es": "Panel de pronóstico semanal de dengue en Brasil: mapa por ciudad con nivel de alerta y serie temporal"},
+    "meta_desc": {"pt": "Previsão semanal de casos de dengue no Brasil, de 1 a 4 semanas à frente e com intervalo de 90%, "
+                        "para capitais e principais cidades. Modelo LSTM com dados do InfoDengue (UTFPR).",
+                  "en": "Weekly dengue case forecasts for Brazil, 1 to 4 weeks ahead with a 90% interval, for state "
+                        "capitals and major cities. LSTM model with InfoDengue data (UTFPR).",
+                  "es": "Pronóstico semanal de casos de dengue en Brasil, de 1 a 4 semanas con intervalo del 90%, para "
+                        "capitales y principales ciudades. Modelo LSTM con datos de InfoDengue (UTFPR)."},
     "fig1_caption": {"pt": "Previsão de casos prováveis de dengue para t+1 a t+4 semanas (origem: "
                            "SE {se}/{ano}) com intervalo de 90% (conformal: calibrado nos erros passados do próprio modelo). Fonte: InfoDengue/SINAN; "
                            "malha estadual IBGE; elaboração própria. Nível simplificado: não é o alerta oficial.",

@@ -17,7 +17,7 @@ import logging
 import os
 
 from dash import Dash, Input, Output, Patch, State, ctx, dcc, html, no_update
-from flask import request, send_file
+from flask import Response, request, send_file
 from flask_compress import Compress
 
 import atual
@@ -77,8 +77,23 @@ app = Dash(__name__, title="Previsão de dengue no Brasil com LSTM",
                       {"name": "DC.creator", "content": "Colque, Fernando Aramis"},
                       {"name": "DC.date", "content": "2026-10-21"},
                       {"name": "DC.language", "content": "pt"},
+                      # SEO (1.13): description, Open Graph completo e Twitter card. O HTML inicial é igual nos
+                      # 3 idiomas (idioma resolvido no cliente): metatags em PT e SEM hreflang.
+                      {"name": "description", "content": tr("pt", "meta_desc")},
                       {"property": "og:type", "content": "article"},
-                      {"property": "og:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]}])
+                      {"property": "og:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"property": "og:description", "content": tr("pt", "meta_desc")},
+                      {"property": "og:url", "content": conteudo.PUBLIC_URL + "/"},
+                      {"property": "og:image", "content": conteudo.PUBLIC_URL + "/assets/og.png"},
+                      {"property": "og:image:width", "content": "1200"},
+                      {"property": "og:image:height", "content": "630"},
+                      {"property": "og:image:alt", "content": tr("pt", "og_alt")},
+                      {"property": "og:locale", "content": "pt_BR"},
+                      {"property": "og:site_name", "content": "Previsão de dengue no Brasil"},
+                      {"name": "twitter:card", "content": "summary_large_image"},
+                      {"name": "twitter:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"name": "twitter:description", "content": tr("pt", "meta_desc")},
+                      {"name": "twitter:image", "content": conteudo.PUBLIC_URL + "/assets/og.png"}])
 # Fontes auto-hospedadas em assets/fonts/ (self-host, WS2/F1): o Dash carrega assets/fonts.css
 # automaticamente; sem dependência do Google Fonts (ver CSP: font-src 'self', style-src sem o Google).
 server = app.server
@@ -88,7 +103,7 @@ Compress(server)   # gzip/brotli nas respostas (corta o payload do geojson/JS)
 app.index_string = """<!DOCTYPE html>
 <html lang="pt">
 <head>
-  {%metas%}<meta name="theme-color" content="#1C2620"><title>{%title%}</title>{%favicon%}
+  {%metas%}<link rel="canonical" href="__CANONICAL__"><meta name="theme-color" content="#1C2620"><title>{%title%}</title>{%favicon%}
   <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
   {%css%}
@@ -121,9 +136,11 @@ _JSONLD = json.dumps({
     "author": {"@type": "Person", "name": "Fernando Aramis Colque",
                **({"identifier": conteudo.ORCID_URL} if conteudo.ORCID else {})},
     "inLanguage": "pt", "datePublished": "2026-10-21", "url": conteudo.PUBLIC_URL + "/",
+    **({"dateModified": ORIGINAL.meta["coletado_em"][:10]} if str(ORIGINAL.meta.get("coletado_em", ""))[:4].isdigit() else {}),
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "publisher": {"@type": "Organization", "name": "Universidade Tecnológica Federal do Paraná"},
 }, ensure_ascii=False)
+app.index_string = app.index_string.replace("__CANONICAL__", conteudo.PUBLIC_URL + "/")
 app.index_string = app.index_string.replace(
     "__TITULOS__", json.dumps({_l: tr(_l, "doc_title") for _l in ("pt", "en", "es")}, ensure_ascii=False))
 app.index_string = app.index_string.replace(
@@ -230,6 +247,22 @@ def obter(fonte):
 def _health():
     """Liveness barato p/ o HEALTHCHECK do container — testa o processo, não re-renderiza a página."""
     return "ok", 200
+
+
+@server.route("/robots.txt")
+def _robots():
+    """Permite tudo e aponta o sitemap (1.14). Cache público de 1 h; herda os cabeçalhos de segurança."""
+    corpo = f"User-agent: *\nAllow: /\n\nSitemap: {conteudo.PUBLIC_URL}/sitemap.xml\n"
+    return Response(corpo, mimetype="text/plain", headers={"Cache-Control": "public, max-age=3600"})
+
+
+@server.route("/sitemap.xml")
+def _sitemap():
+    """Apenas '/', coerente com o canonical único (1.14)."""
+    corpo = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+             f"  <url><loc>{conteudo.PUBLIC_URL}/</loc></url>\n</urlset>\n")
+    return Response(corpo, mimetype="application/xml", headers={"Cache-Control": "public, max-age=3600"})
 
 
 @server.route("/CITATION.cff")
