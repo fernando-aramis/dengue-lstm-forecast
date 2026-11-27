@@ -357,9 +357,16 @@ def test_horizontes_4_itens():
 
 def test_tabela_ranking():
     import layout
+    import dados
     table = layout.tabela_ranking("pt", n=8).children[0]
     assert type(table.children[0]).__name__ == "Caption", "Caption deve ser o 1º filho da tabela"
-    assert len(table.children[2].children) == 8, "Tabela 1 deveria ter 8 linhas"
+    assert len(table.children[2].children) == 8, "n=8 deve limitar a 8 linhas"
+    # padrão: lista COMPLETA, da maior para a menor previsão
+    completa = layout.tabela_ranking("pt").children[0]
+    linhas = completa.children[2].children
+    assert len(linhas) == len(dados.mapa_cid), "Tabela 1 deve listar todas as cidades monitoradas"
+    prevs = [int(l.children[1].children.replace(".", "").replace("\xa0", "")) for l in linhas]
+    assert prevs == sorted(prevs, reverse=True), "Tabela 1 deve vir ordenada da maior para a menor"
 
 
 def test_referencias_doi():

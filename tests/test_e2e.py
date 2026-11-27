@@ -235,7 +235,9 @@ def test_nav_ancoras(pagina):
 def test_recencia_se(pagina):
     pagina.goto(URL)
     pagina.wait_for_selector(".recencia", timeout=40000)
-    assert "SE 43" in pagina.inner_text(".recencia"), "selo de recência deve mostrar a SE da origem"
+    import dados
+    se = dados.SE_ORIGEM[1]                          # derivado dos dados: não quebra a cada retreino
+    assert f"SE {se}" in pagina.inner_text(".recencia"), "selo de recência deve mostrar a SE da origem"
 
 
 def test_artigo_lang_pt(pagina):
@@ -723,7 +725,8 @@ def test_comparar_cidades_fluxo_completo(pagina):
     assert "Comparação:" in pagina.inner_text("#legenda-cmp")
     assert "Comparando com" in pagina.inner_text("#cartao-status")
     pagina.click("#lang-en")                                  # idioma reconstrói o conteúdo: comparação fica
-    pagina.wait_for_timeout(2500)
+    pagina.wait_for_function(                                 # espera por condição (não por tempo fixo)
+        "()=>document.querySelector('#legenda-cmp')?.innerText.includes('Comparison:')", timeout=15000)
     assert "Comparison:" in pagina.inner_text("#legenda-cmp")
     assert pagina.locator(".tabela-cmp").count() == 1
     pagina.click("#dd-comparar .dash-dropdown-clear")
@@ -767,3 +770,69 @@ def test_estado_de_carregamento_visivel_e_trilingue(pagina):
         pagina.evaluate("document.querySelectorAll('[data-dash-is-loading]').forEach(e => e.removeAttribute('data-dash-is-loading'))")
         pagina.wait_for_timeout(500)
         assert pagina.evaluate("getComputedStyle(document.querySelector('.panel-detalhe'), '::after').content") in ('""', "none", "normal")
+
+
+# ---------------------------------------------------------------- regressões do relatório de UI (2026-11)
+@pytest.mark.parametrize("largura", [320, 390, 820])
+def test_mapa_nao_cobre_a_legenda_em_coluna_unica(pagina, largura):
+    """O canvas do mapa (Plotly) caía no padrão de 450px num slot de 340px e cobria legenda e nota."""
+    pagina.set_viewport_size({"width": largura, "height": 900})
+    pagina.goto(URL)
+    pagina.wait_for_selector("#mapa .js-plotly-plot", timeout=40000)
+    pagina.wait_for_timeout(1500)
+    r = pagina.evaluate("""()=>{const m=document.querySelector('#mapa'), pl=m.querySelector('.js-plotly-plot'),
+        lg=document.querySelector('.map-legend');
+        return {slot:m.getBoundingClientRect().bottom, canvas:pl.getBoundingClientRect().bottom,
+                legenda:lg.getBoundingClientRect().top}}""")
+    assert r["canvas"] <= r["slot"] + 1, f"canvas do mapa transborda o slot em {largura}px: {r}"
+    assert r["slot"] <= r["legenda"] + 1, f"mapa cobre a legenda em {largura}px: {r}"
+
+
+def test_tabela1_completa_cabe_sem_cortar_colunas_no_desktop(pagina):
+    for largura in (1200, 1440):
+        pagina.set_viewport_size({"width": largura, "height": 900})
+        pagina.goto(URL)
+        pagina.wait_for_selector(".tab-rank tbody tr", timeout=40000)
+        r = pagina.evaluate("""()=>{const w=document.querySelector('.tbl-rank-wrap');
+            return {sw:w.scrollWidth, cw:w.clientWidth, h:w.getBoundingClientRect().height,
+                    linhas:document.querySelectorAll('.tab-rank tbody tr').length,
+                    ult:[...document.querySelectorAll('.tab-rank tbody tr:first-child td')].map(
+                        td=>td.getBoundingClientRect().right).pop()}}""")
+        import dados
+        assert r["linhas"] == len(dados.mapa_cid), f"Tabela 1 deveria ter todas as cidades: {r}"
+        assert r["sw"] <= r["cw"] + 1, f"coluna(s) da Tabela 1 cortada(s) em {largura}px: {r}"
+        assert r["h"] <= 520, f"altura da Tabela 1 deve ser limitada (rolagem interna): {r}"
+
+
+def test_tabela1_cabecalho_fixo_ao_rolar(pagina):
+    pagina.set_viewport_size({"width": 1200, "height": 900})
+    pagina.goto(URL)
+    pagina.wait_for_selector(".tab-rank tbody tr", timeout=40000)
+    r = pagina.evaluate("""()=>{const w=document.querySelector('.tbl-rank-wrap'), th=w.querySelector('thead th');
+        const pg=window.scrollY; w.scrollTop=w.scrollHeight;
+        return {pos:getComputedStyle(th).position, wt:w.getBoundingClientRect().top,
+                tht:th.getBoundingClientRect().top, rolou:w.scrollTop>0, pg:Math.abs(window.scrollY-pg)}}""")
+    assert r["pos"] == "sticky" and r["rolou"], r
+    assert abs(r["tht"] - r["wt"]) <= 3, f"cabeçalho saiu do topo da região rolável: {r}"
+    assert r["pg"] == 0, "rolar a tabela não pode rolar a página"
+
+
+@pytest.mark.parametrize("largura", [320, 390, 768, 980, 1200, 1440])
+def test_irmaos_do_painel_nao_se_sobrepoem(pagina, largura):
+    """Guarda-chuva (A5): filhos diretos dos painéis do mapa e do detalhe empilham sem sobrepor caixas.
+    O teste de overflow da página não pegava canvas que transbordava o próprio slot."""
+    pagina.set_viewport_size({"width": largura, "height": 900})
+    pagina.goto(URL)
+    pagina.wait_for_selector("#mapa .js-plotly-plot", timeout=40000)
+    pagina.wait_for_selector("#detalhe .js-plotly-plot", timeout=40000)
+    pagina.wait_for_timeout(1500)
+    bad = pagina.evaluate("""()=>{const out=[];
+      for(const p of document.querySelectorAll('.panel-mapa,.panel-detalhe')){
+        const k=[...p.children].filter(e=>{const r=e.getBoundingClientRect();
+          return r.height>0&&getComputedStyle(e).position!=='absolute'&&!e.classList.contains('sr-only')});
+        for(let i=1;i<k.length;i++){
+          const a=k[i-1].getBoundingClientRect(), b=k[i].getBoundingClientRect();
+          if(a.bottom>b.top+1) out.push(p.className.split(' ')[1]+': '+(k[i-1].id||k[i-1].className)+
+            ' ↧'+Math.round(a.bottom)+' > '+(k[i].id||k[i].className)+' ↥'+Math.round(b.top));}}
+      return out}""")
+    assert not bad, f"filhos do painel se sobrepõem em {largura}px: {bad}"
