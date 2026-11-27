@@ -20,3 +20,9 @@ CLAUDE.md
 render.yaml
 .trivyignore
 .dockerignore
+# enxugar a imagem: docs de apoio e artefatos de dev que o serving não lê
+docs/
+DESIGN.md
+PRODUCT.md
+graphify-out/
+.impeccable/
