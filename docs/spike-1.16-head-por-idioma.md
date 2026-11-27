@@ -10,5 +10,5 @@ varia por `Referer`/`Accept-Language` e por isso não é cacheável de forma com
 com URLs distintas; `?lang=` na mesma URL canônica gera conteúdo diferente sob o mesmo canonical (duplicidade).
 Para valer a pena seria preciso rotas por idioma (`/en/`, `/es/`), o que muda sitemap, canonical e links.
 
-**Decisão: não adotar agora.** Mantém-se `<head>` em PT + `og:locale:alternate`/título trocado no cliente.
+**Decisão: não adotar agora.** Mantém-se `<head>` em PT (`og:locale` pt_BR) e título trocado no cliente.
 Reavaliar se houver demanda de tráfego orgânico em EN/ES (rotas por idioma, não `?lang=`).
