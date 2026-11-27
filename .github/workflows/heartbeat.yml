@@ -1,0 +1,51 @@
+# Heartbeat mensal (plano 21, 1.4a): evita que o GitHub desative os agendamentos (refresh, security)
+# por inatividade (~60 dias). Grava `.github/heartbeat` em `main` e `heartbeat` em `data` (se existir).
+# `[skip render]` na mensagem: o Render não faz deploy por este commit. Commits feitos com GITHUB_TOKEN
+# não disparam outros workflows. Se a `main` ganhar ruleset (Q.2), permitir o bypass do github-actions.
+name: Heartbeat
+on:
+  schedule:
+    - cron: "17 6 1 * *"      # dia 1 de cada mês, 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: heartbeat
+  cancel-in-progress: false
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Heartbeat em main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          date -u +%Y-%m-%dT%H:%M:%SZ > .github/heartbeat
+          git add .github/heartbeat
+          git commit -m "chore: heartbeat mensal [skip render]"
+          for i in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            git pull --rebase origin main
+          done
+          echo "::error::push do heartbeat em main falhou"; exit 1
+      - name: Heartbeat em data (se a branch existir)
+        run: |
+          git ls-remote --exit-code --heads origin data >/dev/null 2>&1 || { echo "branch data ainda não existe"; exit 0; }
+          git fetch --depth=1 origin data
+          git worktree add -B data _data FETCH_HEAD
+          cd _data
+          date -u +%Y-%m-%dT%H:%M:%SZ > heartbeat
+          git add heartbeat
+          git commit -m "chore: heartbeat mensal"
+          for i in 1 2 3; do
+            git push origin HEAD:data && exit 0
+            git pull --rebase origin data
+          done
+          echo "::error::push do heartbeat em data falhou"; exit 1
