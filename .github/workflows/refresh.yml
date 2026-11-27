@@ -1,6 +1,6 @@
 # Refresh das previsões — roda o pipeline, VALIDA o contrato e commita os CSVs atualizados em main.
 # O push em main então dispara o redeploy no Render (autoDeploy do render.yaml) — não há workflow
-# de deploy: o Render observa o repositório e republica sozinho. INERTE até o projeto ir ao GitHub.
+# de deploy: o Render observa o repositório e republica sozinho.
 #
 # Toolchain: usa pipeline/requirements-ci.txt (Python 3.12 + TF estável), NÃO os pins de dev
 # (requirements.txt mira Python 3.14 + RC do TF, sem wheel no runner). Ver 16-diagnostico-cicd.

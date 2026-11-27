@@ -1,5 +1,5 @@
 # Segurança — scan contínuo de CVEs + SAST + lint do Dockerfile + scan da imagem.
-# INERTE até o projeto ir para o GitHub. Pressupõe que a raiz do repositório é a pasta webapp/.
+# Pressupõe que a raiz do repositório é a pasta webapp/.
 #
 # GATE: os jobs FALHAM em CVE HIGH/CRITICAL com correção disponível e em achados de SAST (MEDIUM+),
 # bloqueando o merge até resolver. CVEs sem correção (will_not_fix) são ignorados (--ignore-unfixed).
