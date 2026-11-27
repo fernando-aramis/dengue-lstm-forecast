@@ -605,12 +605,16 @@ def test_lock_sincronizado():
         m = re.match(r"^([A-Za-z0-9_.\-]+)==([^\s#;]+)", ln.strip())
         if m:
             pins[norm(m.group(1))] = m.group(2)
+        else:
+            assert not ln.strip() or ln.lstrip().startswith("#"), f"requirements.txt: use pin exato (==): {ln!r}"
     lock = {}
     for ln in open(os.path.join(raiz, "requirements.lock"), encoding="utf-8"):
         m = re.match(r"^([A-Za-z0-9_.\-]+)==([^\s\\;]+)", ln)
         if m:
             lock[norm(m.group(1))] = m.group(2)
     assert pins, "requirements.txt sem pins"
+    assert open(os.path.join(raiz, "requirements.lock"), encoding="utf-8").read().count("--hash=sha256:") >= len(pins), \
+        "requirements.lock sem hashes (gere com --generate-hashes)"
     dif = {k: (v, lock.get(k)) for k, v in pins.items() if lock.get(k) != v}
     assert not dif, ("requirements.lock divergente de requirements.txt (regere com "
                      f"`uv pip compile ... --generate-hashes`): {dif}")
