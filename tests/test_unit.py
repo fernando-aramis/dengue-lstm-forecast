@@ -140,6 +140,21 @@ def test_schema_historico():
     assert (df["casos"] >= 0).all()
 
 
+def _dtype_contrato(t):
+    # pandas 2 usa object e pandas 3 usa str para texto: ambos viram "texto"
+    return "texto" if str(t) in ("object", "str", "string") else str(t)
+
+
+def test_contrato_estavel():
+    """Colunas, ordem e dtypes dos CSVs == tests/contrato/*.json. Mudança deliberada de contrato
+    altera o JSON na MESMA PR (revisão consciente)."""
+    for nome in ("previsoes", "historico"):
+        esperado = json.load(open(os.path.join(AQUI, "contrato", nome + ".json"), encoding="utf-8"))
+        df = pd.read_csv(os.path.join(DATA, nome + ".csv"))
+        obtido = [{"nome": c, "dtype": _dtype_contrato(t)} for c, t in df.dtypes.items()]
+        assert obtido == esperado["colunas"], f"contrato de {nome}.csv mudou"
+
+
 def test_geojson_27_ufs():
     g = json.load(open(os.path.join(DATA, "br_uf.geojson"), encoding="utf-8"))
     sig = {f["properties"]["sigla"] for f in g["features"]}

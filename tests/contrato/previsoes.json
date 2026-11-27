@@ -1,0 +1,56 @@
+{
+  "colunas": [
+    {
+      "nome": "nivel_geo",
+      "dtype": "texto"
+    },
+    {
+      "nome": "geo_id",
+      "dtype": "texto"
+    },
+    {
+      "nome": "uf",
+      "dtype": "texto"
+    },
+    {
+      "nome": "nome",
+      "dtype": "texto"
+    },
+    {
+      "nome": "lat",
+      "dtype": "float64"
+    },
+    {
+      "nome": "lon",
+      "dtype": "float64"
+    },
+    {
+      "nome": "data_origem",
+      "dtype": "texto"
+    },
+    {
+      "nome": "h",
+      "dtype": "int64"
+    },
+    {
+      "nome": "data_prev",
+      "dtype": "texto"
+    },
+    {
+      "nome": "prev",
+      "dtype": "int64"
+    },
+    {
+      "nome": "inf",
+      "dtype": "int64"
+    },
+    {
+      "nome": "sup",
+      "dtype": "int64"
+    },
+    {
+      "nome": "nivel_alerta",
+      "dtype": "texto"
+    }
+  ]
+}
