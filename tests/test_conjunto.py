@@ -55,3 +55,13 @@ def test_validar_rejeita(mutar, trecho):
     p, h = mutar(*_dfs())
     with pytest.raises(RuntimeError, match=trecho):
         dados.validar(p, h)
+
+
+def test_obter_cai_no_original_sem_atual_e_valida_geo(monkeypatch):
+    import app as A
+    import atual
+    monkeypatch.setattr(atual, "_GLOBAL", atual.Atual(fetcher=lambda *a, **k: (_ for _ in ()).throw(atual.ErroAtual("x"))))
+    assert A.obter("atual") is dados.ORIGINAL                # atual indisponível → original
+    assert A.obter("qualquer-coisa") is dados.ORIGINAL       # valor forjado → original
+    assert A._geo_valido(dados.ORIGINAL.geo0) and not A._geo_valido("999")
+    assert A._geo_valido("UF-PR") and not A._geo_valido("UF-ZZ") and not A._geo_valido(["x"])

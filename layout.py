@@ -10,12 +10,74 @@ from urllib.parse import parse_qs, urlsplit
 import flask
 from dash import dcc, html
 
+import atual
 from conteudo import BIBTEX, ESTUDO, LINKS, ORCID, ORCID_URL, REFERENCIAS, TAB_RES, abnt
 from dados import ORIGINAL, UFS, nome_uf
 from figuras import ORDEM_NIVEL, cartao_info, figura_detalhe, figura_mapa, horizontes
 from formato import plotly_locale
 from i18n import IDIOMAS, fmt_data, fmt_dec, fmt_int, fmt_intervalo, fmt_pct, resolver, tr
 from i18n import nivel as nivel_tr
+
+
+# ---------------------------------------------------------------- fonte dos dados: original × atual (1.10)
+def _se_txt(lang, se):
+    return f"{tr(lang, 'se_abrev', se=se[1])}/{se[0]}"
+
+
+_MOTIVOS = (("desligado", "fonte_m_desligado"), ("rede", "fonte_m_rede"), ("HTTP", "fonte_m_http"),
+            ("anterior", "fonte_m_anterior"))
+
+
+def _motivo(lang, m):
+    for pref, chave in _MOTIVOS:
+        if m and m.startswith(pref):
+            return tr(lang, chave)
+    return tr(lang, "fonte_m_invalido")
+
+
+def status_fonte(lang, est, c=ORIGINAL):
+    """Texto da linha de status (role=status) a partir do estado do atual.py."""
+    e = est["estado"]
+    if e == atual.CARREGANDO:
+        return tr(lang, "fonte_st_carregando")
+    if e in (atual.DISPONIVEL, atual.DEFASADO):
+        try:
+            coletado = fmt_data(date.fromisoformat(str(est["coletado_em"])[:10]), lang, "ano")
+        except (TypeError, ValueError):
+            coletado = "—"
+        chave = "fonte_st_disponivel" if e == atual.DISPONIVEL else "fonte_st_defasado"
+        return tr(lang, chave, se=_se_txt(lang, est["se_origem"]), data=coletado)
+    return tr(lang, "fonte_st_indisponivel", motivo=_motivo(lang, est["motivo"]), se=_se_txt(lang, c.se_origem))
+
+
+def atributos_fonte(est, fonte):
+    """aria-checked/tabindex/aria-disabled dos dois botões (roving tabindex do radiogroup)."""
+    ok = est["estado"] in (atual.DISPONIVEL, atual.DEFASADO)
+    atual_on = fonte == "atual" and ok
+    return {
+        "original": {"aria-checked": "false" if atual_on else "true", "tabIndex": -1 if atual_on else 0},
+        "atual": {"aria-checked": "true" if atual_on else "false", "tabIndex": 0 if atual_on else -1,
+                  "aria-disabled": "false" if ok else "true"},
+    }
+
+
+def seletor_fonte(lang, fonte="original", est=None, c=ORIGINAL):
+    """Controle segmentado (radiogroup) Original/Atual + linha de status. Rótulos levam a SE de cada fonte."""
+    est = est or atual.global_atual().estado()
+    a = atributos_fonte(est, fonte)
+    rot_atual = tr(lang, "fonte_atual")
+    if est["se_origem"] and est["estado"] in (atual.DISPONIVEL, atual.DEFASADO):
+        rot_atual += f" · {_se_txt(lang, est['se_origem'])}"
+    return html.Div(className="fonte", children=[
+        html.Span(tr(lang, "fonte_grupo"), id="fonte-rotulo", className="fonte-rotulo"),
+        html.Div(className="fonte-grupo", role="radiogroup", **{"aria-labelledby": "fonte-rotulo"}, children=[
+            html.Button(f"{tr(lang, 'fonte_original')} · {_se_txt(lang, c.se_origem)}", id="fonte-original",
+                        className="fonte-opt", n_clicks=0, role="radio", type="button", **a["original"]),
+            html.Button(rot_atual, id="fonte-atual", className="fonte-opt", n_clicks=0, role="radio",
+                        type="button", **{"aria-describedby": "fonte-status"}, **a["atual"])]),
+        html.P(status_fonte(lang, est, c), id="fonte-status", className="fonte-status",
+               role="status", **{"aria-live": "polite"}),
+    ])
 
 
 # ---------------------------------------------------------------- blocos reutilizáveis
@@ -28,7 +90,7 @@ def stat(big, lbl, tom=None):
         html.Div(corpo, className="big"), html.Div(lbl, className="lbl")])
 
 
-def situacao(lang, c=ORIGINAL):
+def situacao(lang, c=ORIGINAL, fonte="original"):
     """Cartão 'Resumo da situação' do hero: total t+1 + barra empilhada + lista por nível."""
     SE_H1, DATA_PREV_H1, RESUMO = c.se_h1, c.data_prev_h1, c.resumo
     _, se = SE_H1
@@ -36,10 +98,10 @@ def situacao(lang, c=ORIGINAL):
     por, n = RESUMO["por_nivel"], RESUMO["n_cidades"]
     segs, aria = [], []
     for nv in ORDEM_NIVEL:
-        c = por.get(nv, 0)
-        if c:
-            segs.append(html.Span(className=f"barra-seg {nv.lower()}", style={"flexGrow": c}))
-            aria.append(f"{c} {nivel_tr(lang, nv)}")
+        qtd = por.get(nv, 0)
+        if qtd:
+            segs.append(html.Span(className=f"barra-seg {nv.lower()}", style={"flexGrow": qtd}))
+            aria.append(f"{qtd} {nivel_tr(lang, nv)}")
     linhas = [html.Div(className="sit-linha", children=[
         html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
                    nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}"),
@@ -55,6 +117,8 @@ def situacao(lang, c=ORIGINAL):
                  **{"aria-label": tr(lang, "sit_barra_aria", n=n, lista=", ".join(aria))}),
         html.Div(linhas, className="sit-lista"),
         html.Div(tr(lang, "nota_nivel_hero"), className="sit-nota aux"),
+        *([html.Div(tr(lang, "fonte_exibindo", fonte=tr(lang, "fonte_nome_atual")), className="sit-nota aux")]
+          if fonte == "atual" else []),
     ])
 
 
@@ -449,7 +513,7 @@ def artigo(lang):
         sumario(lang), coluna, materiais(lang)])
 
 
-def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIGINAL):
+def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIGINAL, fonte="original"):
     SE_ORIGEM, DATA_ORIGEM = c.se_origem, c.data_origem
     geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang, c)
     geos_cidade = set(c.mapa_cid["geo_id"].astype(str))
@@ -465,7 +529,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIG
                              html.Span(tr(lang, "h1_acento"), className="acento")]),
                     html.P(rico(tr(lang, "lede")), className="lede"),
                 ]),
-                situacao(lang, c),
+                situacao(lang, c, fonte),
                 html.Div(className="hero-foot", children=[
                     html.Div(className="hero-autor", children=[
                         html.Strong("Fernando Aramis Colque"),
@@ -498,9 +562,11 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIG
                 html.Div(className="sec-head", children=[
                     html.H2(tr(lang, "map_h2"), id="painel-titulo")]),
                 html.Span([html.Span(className="rec-dot", **{"aria-hidden": "true"}),
-                           tr(lang, "recencia", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])],
+                           tr(lang, "recencia", se=SE_ORIGEM[1], ano=SE_ORIGEM[0]),
+                           " · " + tr(lang, "fonte_exibindo", fonte=tr(lang, f"fonte_nome_{fonte}"))],
                           className="recencia")]),
             html.P(tr(lang, "map_sub", origem=DATA_ORIGEM), className="sec-sub"),
+            seletor_fonte(lang, fonte),
             html.Figure(className="figura", children=[
                 html.Div(className="grid", children=[
                     html.Div(className="panel panel-mapa", children=[
@@ -605,10 +671,28 @@ def _contexto_inicial():
     return lang, sel
 
 
+def _fonte_inicial():
+    """`?fonte=` do Referer, validado: só 'atual' é aceito (qualquer outra coisa → 'original')."""
+    if not flask.has_request_context():
+        return "original"
+    try:
+        q = parse_qs(urlsplit(flask.request.headers.get("Referer", "")).query)
+    except ValueError:
+        return "original"
+    return "atual" if (q.get("fonte") or [""])[0] == "atual" else "original"
+
+
 def serve_layout():
     # 1º render: idioma/cidade da URL (via Referer) ou Accept-Language; o boot (callback clientside)
     # reaplica a URL e o idioma salvo em localStorage.
     lang, sel = _contexto_inicial()
+    pedida = _fonte_inicial()
+    at = atual.global_atual()
+    at.iniciar()                      # preguiçoso, idempotente, sem rede aqui (thread daemon por worker)
+    est = at.estado()
+    # `atual` só vale se já estiver carregado; senão abre no original e o poll troca quando chegar
+    fonte = "atual" if (pedida == "atual" and est["estado"] in (atual.DISPONIVEL, atual.DEFASADO)) else "original"
+    c = at.conjunto() if fonte == "atual" else ORIGINAL
     return html.Div([
         html.A(tr(lang, "skip"), href="#conteudo", className="skip-link"),
         html.Div(id="running-header", className="running-header",
@@ -623,7 +707,7 @@ def serve_layout():
                      **{"aria-label": tr(lang, "nav_label")}),
             barra_controles(lang)])]),
         html.Main(id="conteudo", children=html.Div(id="app-content",
-                                                   children=construir_conteudo(lang, sel))),
+                                                   children=construir_conteudo(lang, sel, c=c, fonte=fonte))),
         dcc.Store(id="lang", data=lang),   # memória: no boot reseta ao idioma do servidor (Accept-Language);
                                            # o idioma escolhido persiste em localStorage (ver callback de pílula)
         dcc.Store(id="theme"),
@@ -633,6 +717,10 @@ def serve_layout():
         dcc.Store(id="cmp"),   # cidade de comparação (fonte canônica; imune ao rebuild de render_content)
         # A15 — estado compartilhável na URL (?lang=&cidade=); tema/cvd/motion ficam no localStorage
         dcc.Location(id="url", refresh=False),
+        dcc.Store(id="fonte", data=fonte),                                   # 'original' | 'atual' (ativa)
+        dcc.Store(id="fonte-pedida", data="atual" if pedida == "atual" and fonte != "atual" else None),
+        dcc.Interval(id="poll-atual", interval=4000, n_intervals=0,
+                     disabled=(not atual.habilitado()) or est["estado"] in (atual.DISPONIVEL, atual.DEFASADO)),
         dcc.Store(id="url-sync"),
         dcc.Store(id="url-cidade"),   # ?cidade= CRU lido no boot; validado no servidor (aplica_url_cidade)
         dcc.Interval(id="boot", interval=80, n_intervals=0, max_intervals=1),
