@@ -11,6 +11,7 @@ import math
 import os
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -244,7 +245,7 @@ def validar_desempenho(d):
             n = src["n"]
             if not (isinstance(n, int) and not isinstance(n, bool) and n >= 0):
                 return None
-            lin = {"n": n}
+            lin: dict[str, Any] = {"n": n}
             if n > 0:
                 for k in _CAMPOS_H:
                     v = src.get(k)
