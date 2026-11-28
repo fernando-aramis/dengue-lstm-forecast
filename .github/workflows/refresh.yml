@@ -70,7 +70,7 @@ jobs:
         env:
           FORCAR: ${{ inputs.forcar && '1' || '' }}
         run: |
-          pip install "$(grep -E '^pandas==' requirements-ci.txt)" "$(grep -E '^numpy==' requirements-ci.txt)"
+          grep -E '^(pandas|numpy)' requirements-ci.txt > /tmp/req-probe.txt && pip install -r /tmp/req-probe.txt
           if [ -n "$FORCAR" ] || [ "$BOOTSTRAP" = "1" ]; then
             echo "treinar=true" >> "$GITHUB_OUTPUT"; echo "probe: forçado/bootstrap"
           else
