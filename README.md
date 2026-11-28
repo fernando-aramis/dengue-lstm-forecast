@@ -153,7 +153,7 @@ python app.py            # -> http://127.0.0.1:8050   (DASH_DEBUG=1 liga o modo 
 | `i18n.py` | Traduções PT/EN/ES da interface (detecção por `Accept-Language`, fallback EN). |
 | `assets/style.css` · `assets/fonts/` · `assets/icons/` | Design system (tokens), temas claro/escuro, responsivo e acessível (AAA); fontes auto-hospedadas; ícones SVG por máscara CSS. |
 | `DESIGN.md` · `PRODUCT.md` · `docs/ui/` · `.impeccable/` | Sistema de design, produto e exceções de acessibilidade. |
-| `docs/adr/` · `docs/operacao/` · `docs/CONTEXTO.md` | Decisões de arquitetura (ADR 0001–0004), runbook de agendamento e estado do projeto. |
+| `docs/adr/` · `docs/operacao/` · `docs/CONTEXTO.md` | Decisões de arquitetura (ADR 0001–0006), runbook de agendamento e estado do projeto. |
 | `data/previsoes.csv` · `data/historico.csv` | Previsão t+1..t+4 + banda 90% (cidade **e** estado) · casos observados. |
 | `data/_meta.json` · `data/snapshots/` | Proveniência (coleta, modelo, origem) · snapshots datados (backtesting). |
 | `data/limite_treino.csv` | (opcional) máximo de casos usado na normalização, por município. |
