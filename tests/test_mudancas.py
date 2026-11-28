@@ -6,11 +6,11 @@ import os
 import shutil
 
 import pandas as pd
+import publicar_run
 import pytest
 
 import dados
 import figuras
-import publicar_run
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(os.path.dirname(AQUI), "data")
