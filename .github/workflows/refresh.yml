@@ -55,7 +55,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+          if git ls-remote --exit-code --heads origin refs/heads/data >/dev/null 2>&1; then
             git fetch --depth=1 origin data
             git worktree add -B data _data FETCH_HEAD
             echo "BOOTSTRAP=0" >> "$GITHUB_ENV"
