@@ -48,3 +48,14 @@ $C --headless=new --no-sandbox --remote-debugging-port=9333 --user-data-dir=$(mk
 cd /tmp && npx --yes lighthouse@13.6.0 http://localhost:17861/ [--preset=desktop] --port=9333 \
   --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=lh.json
 ```
+
+## Q.6 — Cold start (2026-11-28)
+
+**Local (Docker, 5 execuções por imagem, 2 rodadas, `docker run` → `/health` 200):** imagem atual 1,67–1,72 s;
+com `python -m compileall /app` antes do `USER` 1,65–1,72 s. Ganho ≈ 0% (< 10% exigido) — **descartado**:
+o bytecode do `site-packages` já vem compilado pelo `pip`, e o do app (poucos módulos) custa milissegundos.
+`--preload` segue descartado (conflita com a thread do `atual.py`), assim como responder `/health` antes de importar.
+
+**Render real (free tier, só leitura de `/health`):** 1ª requisição após hibernação 20,05 s (TTFB); 2ª 0,63 s;
+3ª 0,25 s. O tempo de despertar é do provedor (subir o container), não do import do app; a única alavanca
+real é evitar a hibernação (plano pago ou ping externo), fora do escopo.

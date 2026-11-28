@@ -222,3 +222,39 @@ def test_iniciar_e_idempotente(monkeypatch):
     monkeypatch.setattr(atual.Atual, "_laco", lambda self: threading.Event().wait(0.3))
     a = atual.Atual(fetcher=_fetcher({}))
     assert a.iniciar() is True and a.iniciar() is False
+
+
+def _com_limite(corpo, hash_ok=True):
+    s = _site()
+    base = atual.BASE_PADRAO
+    s[f"{base}runs/{RUN}/limite_treino.csv"] = corpo
+    p = json.loads(s[base + "latest.json"])
+    p["sha256"]["limite_treino.csv"] = hashlib.sha256(corpo if hash_ok else b"x").hexdigest()
+    s[base + "latest.json"] = json.dumps(p).encode()
+    return s
+
+
+def test_limite_opcional_e_carregado_quando_o_hash_confere():
+    geo = dados.ORIGINAL.geo0
+    csv = (f"geo_id,casos_max_treino,log1p_min_treino,log1p_max_treino,n_semanas_treino,pico_serie_completa\n"
+           f"{geo},100,0,4.6,300,150\n").encode()
+    a = _mk(_com_limite(csv))
+    assert a.tentar() is True
+    assert a.conjunto().limite[geo]["pico_serie_completa"] == 150.0
+
+
+def test_limite_com_hash_divergente_desliga_so_o_recurso():
+    a = _mk(_com_limite(b"geo_id\n1\n", hash_ok=False))
+    assert a.tentar() is True and a.conjunto().limite == {}
+
+
+def test_limite_listado_mas_ausente_nao_derruba_o_run():
+    s = _com_limite(b"x")
+    del s[f"{atual.BASE_PADRAO}runs/{RUN}/limite_treino.csv"]       # o fetcher de teste levanta ErroAtual (404)
+    a = _mk(s)
+    assert a.tentar() is True and a.conjunto().limite == {}
+
+
+def test_limite_ilegivel_nao_derruba_o_run():
+    a = _mk(_com_limite(b"\xff\xfe lixo"))
+    assert a.tentar() is True and a.conjunto().limite == {}

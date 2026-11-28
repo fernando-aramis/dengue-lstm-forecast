@@ -8,7 +8,7 @@ as figuras e os callbacks consomem.
 """
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, timedelta
 
 import numpy as np
@@ -62,6 +62,9 @@ _COLS_PREV = {"nivel_geo", "geo_id", "uf", "nome", "lat", "lon",
 _COLS_HIST = {"nivel_geo", "geo_id", "uf", "nome", "lat", "lon", "data", "casos"}
 
 
+_COLS_LIMITE = {"geo_id", "casos_max_treino", "log1p_min_treino", "log1p_max_treino", "n_semanas_treino"}
+
+
 def _exigir(cond, msg):
     if not cond:
         raise RuntimeError(f"[dados] contrato inválido: {msg}")
@@ -84,6 +87,32 @@ def validar(prev, hist):
             "nenhuma linha municipio/h==1 em previsoes.csv (mapa ficaria vazio)")
 
 
+def validar_limite(lim):
+    """Valida `limite_treino.csv` (opcional; função pura; levanta RuntimeError com a causa)."""
+    _exigir(not lim.empty, "limite_treino.csv está vazio")
+    _exigir(_COLS_LIMITE.issubset(lim.columns),
+            f"colunas faltando em limite_treino.csv: {sorted(_COLS_LIMITE - set(lim.columns))}")
+    num = [c for c in _COLS_LIMITE if c != "geo_id"]      # pico_serie_completa é tolerante (NaN → sem pico)
+    _exigir(lim[num].notna().all().all() and (lim[num].select_dtypes("number").shape[1] == len(num)),
+            "limite_treino.csv: valores ausentes ou não numéricos")
+    _exigir((lim["casos_max_treino"] >= 0).all(), "limite_treino.csv: casos_max_treino negativo")
+    _exigir(not lim["geo_id"].astype(str).duplicated().any(), "limite_treino.csv: geo_id duplicado")
+
+
+def _dict_limite(lim):
+    """geo_id → {casos_max_treino, pico_serie_completa|None}; DataFrame inválido/None vira {} (recurso desligado)."""
+    if lim is None:
+        return {}
+    try:
+        validar_limite(lim)
+    except RuntimeError:
+        return {}
+    picos = pd.to_numeric(lim["pico_serie_completa"], errors="coerce") if "pico_serie_completa" in lim.columns \
+        else pd.Series([float("nan")] * len(lim), index=lim.index)
+    return {str(g): {"casos_max_treino": float(c), "pico_serie_completa": None if pd.isna(p) else float(p)}
+            for g, c, p in zip(lim["geo_id"], lim["casos_max_treino"], picos)}
+
+
 @dataclass(frozen=True, eq=False)
 class Conjunto:
     """Tudo que depende dos CSVs, imutável. O app escolhe um (original ou atual) por requisição."""
@@ -103,11 +132,13 @@ class Conjunto:
     se_h1: tuple
     resumo: dict
     meta: dict
+    limite: dict = field(default_factory=dict)   # geo_id → limite de treino (opcional; {} = desligado)
 
 
 def carregar(origem):
     """Constrói um Conjunto a partir de um diretório (com previsoes.csv, historico.csv e _meta.json
-    opcional) ou de uma tupla (prev_df, hist_df[, meta_dict]). Valida o contrato."""
+    opcional, limite_treino.csv opcional) ou de uma tupla (prev_df, hist_df[, meta_dict[, limite_df]]).
+    Valida o contrato; um limite_treino inválido é ignorado (recurso opcional desligado)."""
     if isinstance(origem, (str, os.PathLike)):
         hist = pd.read_csv(os.path.join(origem, "historico.csv"), parse_dates=["data"])
         prev = pd.read_csv(os.path.join(origem, "previsoes.csv"), parse_dates=["data_origem", "data_prev"])
@@ -117,9 +148,14 @@ def carregar(origem):
                 meta = json.load(f)
         except (OSError, ValueError):
             pass
+        try:
+            lim = pd.read_csv(os.path.join(origem, "limite_treino.csv"), dtype={"geo_id": str})
+        except (OSError, ValueError, pd.errors.ParserError):
+            lim = None
     else:
         prev, hist, *resto = origem
         meta = resto[0] if resto else {}
+        lim = resto[1] if len(resto) > 1 else None
         prev, hist = prev.copy(), hist.copy()
     if not isinstance(meta, dict):           # JSON válido porém não-objeto (ex.: []) → tolera como ausente
         meta = {}
@@ -129,7 +165,12 @@ def carregar(origem):
 
     # guarda de escala: limita sup ao pico histórico local × fator (protege CSVs já gravados e picos
     # fora da faixa de treino, em que o expm1 do intervalo pode disparar e quebrar o eixo do gráfico).
+    limite = _dict_limite(lim)
     pico = hist.groupby("geo_id")["casos"].max()
+    # 2.2b: o pico da SÉRIE COMPLETA (exportado pelo pipeline) substitui o da janela curta quando existe
+    completo = {g: v["pico_serie_completa"] for g, v in limite.items() if v["pico_serie_completa"] is not None}
+    if completo:
+        pico = pico.combine(pd.Series(completo, dtype=float), lambda a, b: max(a, b), fill_value=0)
     base = np.maximum(prev["geo_id"].map(pico).fillna(0).to_numpy(), prev["prev"].to_numpy())
     prev["sup"] = np.minimum(prev["sup"].to_numpy(), np.maximum(1.0, base) * TETO_FATOR)
     prev["sup"] = prev[["sup", "prev"]].max(axis=1)     # sup >= prev
@@ -156,8 +197,25 @@ def carregar(origem):
             "n_cidades": int(len(mapa_cid)),
             "por_nivel": {nv: int((mapa_cid["nivel_alerta"] == nv).sum()) for nv in ORDEM_NIVEL},
         },
-        meta=meta,
+        meta=meta, limite=limite,
     )
+
+
+def fora_limite(c, geo_id):
+    """2.3: o município está acima do máximo usado na normalização do modelo?
+    → None (sem aviso, sem arquivo, UF ou sem dados) | "obs" (último valor do histórico — nowcast, semana ainda em notificação — > limite) |
+      "prev" (previsão t+1 > limite) | "ambos". Estritamente maior (igual ao limite não sinaliza)."""
+    lim = (c.limite or {}).get(str(geo_id))
+    if not lim:
+        return None
+    p1 = c.mapa_cid[c.mapa_cid["geo_id"] == str(geo_id)]
+    h = c.hist[c.hist["geo_id"] == str(geo_id)]
+    if p1.empty or h.empty:
+        return None
+    teto = lim["casos_max_treino"]
+    obs = h.sort_values("data")["casos"].iloc[-1] > teto
+    prev = p1["prev"].iloc[0] > teto
+    return "ambos" if (obs and prev) else "obs" if obs else "prev" if prev else None
 
 
 ORIGINAL = carregar(DATA)      # fail-fast no import, como antes

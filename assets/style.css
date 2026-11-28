@@ -32,7 +32,7 @@
   --surface: var(--cream); --surface-raised: var(--paper); --surface-sunken: var(--cream-2);
   --text: var(--ink); --text-muted: var(--muted); --border: var(--line);
   --focus: var(--green-ink); --focus-on-dark: #F3EFE6;   /* anel sobre barra/hero/rodapé (fundos escuros nos 2 temas) */
-  --border-strong: #6E7A74; --series-prev: #2F5A42; --series-cmp: #2E6FB0;   /* linha da previsão (legenda = gráfico) */                              /* componentes de UI (1.4.11): ≥3:1 nos 2 temas */
+  --border-strong: #6E7A74; --series-prev: #2F5A42; --series-cmp: #2E6FB0; --series-naive: #414741;   /* = PLOT["light"]["naive"] */    /* linha da previsão (legenda = gráfico) */                              /* componentes de UI (1.4.11): ≥3:1 nos 2 temas */
   --level-green: var(--n-verde); --level-yellow: var(--n-amarelo);
   --level-orange: var(--n-laranja); --level-red: var(--n-vermelho);
 
@@ -56,6 +56,7 @@
   --ink: #ECEFEA; --muted: #B6BEB7; --line: #313A39;
   --green: #5FA776; --green-d: #2F5A42; --green-ink: #8FD3A4; --green-l: #274234;
   --series-cmp: #8DB8E8;   /* = PLOT["dark"]["cmp"] */
+  --series-naive: #B6BEB7;   /* = PLOT["dark"]["naive"] */
   --series-prev: #7FC894;   /* = PLOT["dark"]["prev"]: legenda acompanha a linha do gráfico (antes 2:1) */
   --terra: #E59A5E;
   --brand: #1D3227; --on-brand: #ECEFEA; --on-brand-muted: #B6BEB7; --accent-on-brand: #8FD3A4;
@@ -627,6 +628,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .glifo.laranja { background: var(--level-orange); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 .glifo.vermelho { background: var(--level-red);
   clip-path: polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%); }
+.glifo.atencao { background: transparent; border: 2px solid var(--aviso-fg); border-radius: 2px; margin-left: 6px; box-sizing: border-box; }   /* quadrado vazado: forma que nenhum nível usa (círculo, triângulo, losango, octógono) */
 .glifo.sem-dado { background: transparent; border: 1.5px dashed var(--text-muted); border-radius: 50%; }
 .pill:has(.glifo)::before { display: none; }
 
@@ -647,6 +649,9 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .serie-sw { width: 18px; flex: none; }
 .serie-sw.obs { border-top: 2px solid var(--text); }
 .serie-sw.prev { border-top: 2px dashed var(--series-prev); }
+.aviso-limite { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; padding: 8px 12px; border-radius: var(--radius-md); font-size: .84rem; }
+.aviso-limite .glifo { margin: 4px 0 0 0; }
+.serie-sw.naive { height: 2px; background: repeating-linear-gradient(90deg, var(--series-naive) 0 6px, transparent 6px 9px, var(--series-naive) 9px 11px, transparent 11px 14px); }   /* traço-ponto como no gráfico */
 .serie-sw.int { height: 10px; background: var(--info-bg); border: 1px solid var(--green-ink); border-radius: 2px; }   /* borda ≈ a do gráfico (banda sozinha: 1,3:1) */
 .serie-sw.orig { width: 0; height: 12px; border-left: 2px dotted var(--text-muted); }
 
@@ -696,17 +701,17 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
    #resumo −46px, #como-citar −48px) a 390px / ≥768px. Padrão = PT (idioma principal); EN e ES têm
    texto de outro tamanho (até ±9%) e os erros SE SOMAM acima do alvo: com os valores errados #sec-2
    pousava 55–85px fora. Refaça a medição (idiomas × larguras) se o texto do artigo mudar muito. */
-#resumo{--ci:805px} #sec-1{--ci:701px} #sec-2{--ci:1325px} #sec-3{--ci:1259px} #sec-4{--ci:707px}
+#resumo{--ci:805px} #sec-1{--ci:701px} #sec-2{--ci:1325px} #sec-3{--ci:1259px} #sec-4{--ci:1178px}
 #sec-5{--ci:344px} #declaracoes{--ci:439px} #referencias{--ci:872px} #como-citar{--ci:686px}
 @media (min-width: 768px) {
-  #resumo{--ci:443px} #sec-1{--ci:451px} #sec-2{--ci:802px} #sec-3{--ci:864px} #sec-4{--ci:370px}
+  #resumo{--ci:443px} #sec-1{--ci:451px} #sec-2{--ci:802px} #sec-3{--ci:864px} #sec-4{--ci:670px}
   #sec-5{--ci:236px} #declaracoes{--ci:401px} #referencias{--ci:540px} #como-citar{--ci:538px}
 }
 :root[lang="en"] #resumo{--ci:779px}
 :root[lang="en"] #sec-1{--ci:644px}
 :root[lang="en"] #sec-2{--ci:1258px}
 :root[lang="en"] #sec-3{--ci:1238px}
-:root[lang="en"] #sec-4{--ci:687px}
+:root[lang="en"] #sec-4{--ci:1130px}
 :root[lang="en"] #sec-5{--ci:344px}
 :root[lang="en"] #declaracoes{--ci:417px}
 :root[lang="en"] #referencias{--ci:872px}
@@ -716,7 +721,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
   :root[lang="en"] #sec-1{--ci:422px}
   :root[lang="en"] #sec-2{--ci:773px}
   :root[lang="en"] #sec-3{--ci:822px}
-  :root[lang="en"] #sec-4{--ci:390px}
+  :root[lang="en"] #sec-4{--ci:661px}
   :root[lang="en"] #sec-5{--ci:236px}
   :root[lang="en"] #declaracoes{--ci:401px}
   :root[lang="en"] #referencias{--ci:540px}
@@ -726,7 +731,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 :root[lang="es"] #sec-1{--ci:672px}
 :root[lang="es"] #sec-2{--ci:1307px}
 :root[lang="es"] #sec-3{--ci:1288px}
-:root[lang="es"] #sec-4{--ci:707px}
+:root[lang="es"] #sec-4{--ci:1206px}
 :root[lang="es"] #sec-5{--ci:373px}
 :root[lang="es"] #declaracoes{--ci:439px}
 :root[lang="es"] #referencias{--ci:872px}
@@ -736,7 +741,7 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
   :root[lang="es"] #sec-1{--ci:451px}
   :root[lang="es"] #sec-2{--ci:802px}
   :root[lang="es"] #sec-3{--ci:887px}
-  :root[lang="es"] #sec-4{--ci:370px}
+  :root[lang="es"] #sec-4{--ci:670px}
   :root[lang="es"] #sec-5{--ci:265px}
   :root[lang="es"] #declaracoes{--ci:401px}
   :root[lang="es"] #referencias{--ci:540px}

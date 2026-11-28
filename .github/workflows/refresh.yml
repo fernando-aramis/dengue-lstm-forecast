@@ -96,6 +96,7 @@ jobs:
         if: steps.probe.outputs.treinar == 'true'
         env:
           DATA_DIR: ${{ env.DATA_OUT }}
+          EXIGIR_LIMITE: "1"       # o pipeline sempre grava limite_treino.csv: ausente = falha, não skip
         run: |
           pip install "$(grep -E '^pytest==' tests/requirements.txt)"
           pytest tests/test_unit.py -q -k "schema or geojson or meta_proveniencia or contrato_estavel"

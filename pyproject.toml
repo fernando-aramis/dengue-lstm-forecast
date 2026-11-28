@@ -16,3 +16,10 @@ ignore = ["E501", "E741", "E731", "E702", "B905"]
 branch = true
 # módulos do serving apenas (sem pipeline/ com TF, sem tests/)
 source = ["app", "conteudo", "dados", "figuras", "formato", "i18n", "layout"]
+
+# Q.8b: tipos só onde o código é novo e pequeno (sem --strict global)
+[tool.mypy]
+files = ["dados.py", "atual.py"]
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = true

@@ -38,6 +38,7 @@ TIMEOUT_S = 5
 BACKOFF_S = (0, 15, 60, 300)
 RECHECAGEM_S = 6 * 3600
 ARQUIVOS = ("previsoes.csv", "historico.csv", "_meta.json")
+OPCIONAIS = ("limite_treino.csv",)      # só são buscados se o ponteiro lista o hash; ausente/divergente só desliga o recurso (o run segue)
 _RE_RUN = re.compile(r"^[0-9]{6}-[0-9a-f]{7}$")
 
 CARREGANDO, DISPONIVEL, DEFASADO, INDISPONIVEL = "carregando", "disponivel", "defasado", "indisponivel"
@@ -116,7 +117,7 @@ def _json(corpo, o_que):
 
 def buscar(base, fetcher, etag=None):
     """Lê latest.json e os arquivos do run apontado (hash conferido).
-    → (None, etag) se 304; senão ((prev_df, hist_df, meta, run), etag)."""
+    → (None, etag) se 304; senão ((prev_df, hist_df, meta, run, limite_df|None), etag)."""
     st, corpo, novo = fetcher(base + "latest.json", etag)
     if st == 304:
         return None, novo
@@ -140,20 +141,36 @@ def buscar(base, fetcher, etag=None):
         if hashlib.sha256(dados_).hexdigest() != esperado.lower():
             raise ErroAtual(f"hash de {nome} não confere")
         brutos[nome] = dados_
+    for nome in OPCIONAIS:
+        esperado = hashes.get(nome)
+        if esperado is None:
+            continue
+        try:
+            _, dados_, _ = fetcher(f"{base}runs/{run}/{nome}", None)
+        except ErroAtual:
+            dados_ = None                     # opcional: ausente/erro de rede = recurso desligado, o run segue
+        if isinstance(esperado, str) and dados_ is not None and hashlib.sha256(dados_).hexdigest() == esperado.lower():
+            brutos[nome] = dados_             # hash divergente também só desliga o recurso (afeta só o aviso)
     meta = _json(brutos["_meta.json"], "_meta.json")
     try:
         prev = pd.read_csv(io.BytesIO(brutos["previsoes.csv"]), parse_dates=["data_origem", "data_prev"])
         hist = pd.read_csv(io.BytesIO(brutos["historico.csv"]), parse_dates=["data"])
     except (ValueError, KeyError, pd.errors.ParserError):
         raise ErroAtual("CSV inválido") from None
-    return (prev, hist, meta, run), novo
+    lim = None
+    if "limite_treino.csv" in brutos:
+        try:
+            lim = pd.read_csv(io.BytesIO(brutos["limite_treino.csv"]), dtype={"geo_id": str})
+        except (ValueError, pd.errors.ParserError):
+            lim = None            # opcional: ilegível = recurso desligado, não derruba o run
+    return (prev, hist, meta, run, lim), novo
 
 
-def montar(prev, hist, meta, original):
+def montar(prev, hist, meta, original, lim=None):
     """Valida e constrói o Conjunto atual. Levanta ErroAtual com motivo curto."""
     try:
         dados.validar(prev, hist)
-        c = dados.carregar((prev, hist, meta))
+        c = dados.carregar((prev, hist, meta, lim))
     except RuntimeError as e:
         raise ErroAtual("dados inválidos: " + str(e).split(": ", 1)[-1][:80]) from None
     origem_meta = meta.get("se_origem")      # no _meta, `se_origem` é a data de origem (AAAA-MM-DD)
@@ -218,8 +235,8 @@ class Atual:
                     if self._c is None:
                         self._estado, self._motivo = INDISPONIVEL, "sem dados"
                 return True
-            prev, hist, meta, run = res
-            c = montar(prev, hist, meta, self._original)
+            prev, hist, meta, run, lim = res
+            c = montar(prev, hist, meta, self._original, lim)
         except Exception as e:     # noqa: BLE001 — nada pode matar a thread; só ErroAtual tem motivo exibível
             motivo = str(e) if isinstance(e, ErroAtual) else "erro inesperado"
             with self._lock:

@@ -5,7 +5,7 @@ Uso (no CI, com a branch `data` em um worktree):
     python publicar_run.py <DATA_DIR da saída do pipeline> <worktree da branch data> [commit_sha]
 
 Layout gerado em <worktree>:
-    runs/AAAASS-<sha7>/{previsoes.csv,historico.csv,_meta.json,eda.json}
+    runs/AAAASS-<sha7>/{previsoes.csv,historico.csv,_meta.json,eda.json[,limite_treino.csv]}
     snapshots/previsoes_AAAASS.csv
     latest.json   {run, se_origem, sha256{arquivo: hash}}   <- escrito por último (ponteiro atômico)
 
@@ -21,7 +21,7 @@ import sys
 import pandas as pd
 
 OBRIGATORIOS = ("previsoes.csv", "historico.csv", "_meta.json")
-OPCIONAIS = ("eda.json",)
+OPCIONAIS = ("eda.json", "limite_treino.csv")
 
 
 def _sha256(path):

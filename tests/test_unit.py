@@ -12,6 +12,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+import pytest
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 WEBAPP = os.path.dirname(AQUI)
@@ -124,6 +125,24 @@ def test_css_usa_tokens_AAA():
 
 
 # ---------------------------------------------------------------- contrato dos dados
+def test_schema_limite_treino():
+    """Arquivo OPCIONAL: só valida se existir na saída do pipeline (DATA_DIR)."""
+    caminho = os.path.join(DATA_SAIDA, "limite_treino.csv")
+    if not os.path.isfile(caminho):
+        if os.environ.get("EXIGIR_LIMITE") == "1":       # gate do refresh: o pipeline SEMPRE o grava
+            pytest.fail("limite_treino.csv ausente na saída do pipeline")
+        pytest.skip("limite_treino.csv ausente (opcional)")
+    import dados
+    lim = pd.read_csv(caminho, dtype={"geo_id": str})
+    dados.validar_limite(lim)
+    assert "pico_serie_completa" in lim.columns
+    assert (lim["n_semanas_treino"] >= 104).all(), "série curta: limite de treino pouco confiável"
+    assert (lim["pico_serie_completa"] >= lim["casos_max_treino"]).all()
+    prev = pd.read_csv(os.path.join(DATA_SAIDA, "previsoes.csv"), dtype={"geo_id": str})
+    muni = set(prev.loc[prev["nivel_geo"] == "municipio", "geo_id"])
+    assert muni == set(lim["geo_id"]), "limite_treino deve cobrir exatamente os municípios previstos"
+
+
 def test_schema_previsoes():
     df = pd.read_csv(os.path.join(DATA_SAIDA, "previsoes.csv"))
     cols = {"nivel_geo", "geo_id", "uf", "nome", "lat", "lon", "data_origem", "h",
