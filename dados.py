@@ -8,7 +8,7 @@ as figuras e os callbacks consomem.
 """
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, timedelta
 
 import numpy as np
@@ -132,7 +132,7 @@ class Conjunto:
     se_h1: tuple
     resumo: dict
     meta: dict
-    limite: dict = None          # geo_id → limite de treino (opcional; {} = recurso desligado)
+    limite: dict = field(default_factory=dict)   # geo_id → limite de treino (opcional; {} = desligado)
 
 
 def carregar(origem):

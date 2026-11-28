@@ -30,6 +30,9 @@ jobs:
       # só `ruff check` (sem `ruff format`); versão pinada em requirements-dev.txt
       - run: pip install "$(grep -E '^ruff==' requirements-dev.txt)"
       - run: ruff check .
+      # Q.8b: mypy só em dados.py e atual.py (config em pyproject.toml)
+      - run: pip install "$(grep -E '^mypy==' requirements-dev.txt)" "$(grep -E '^pandas-stubs==' requirements-dev.txt)"
+      - run: mypy
 
   unit:
     runs-on: ubuntu-latest
