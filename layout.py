@@ -480,6 +480,7 @@ def artigo(lang):
             finding(tr(lang, "find3_t"), tr(lang, "find3_p"), warn=True),
             finding(tr(lang, "find4_t"), tr(lang, "find4_p"))])])
     s4 = _sec(4, lang, [], "sec4_t", extra=[
+        html.P(tr(lang, "lim_met_p")),
         html.Div(className="cards", children=[
             card_etapa("01", tr(lang, "fut1_t"), tr(lang, "fut1_p")),
             card_etapa("02", tr(lang, "fut2_t"), tr(lang, "fut2_p")),

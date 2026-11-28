@@ -150,6 +150,29 @@ T_ARTIGO = {
     "sec4_t": {"pt": "Limitações e próximos passos", "en": "Limitations and next steps",
                "es": "Limitaciones y próximos pasos"},
     "sec5_t": {"pt": "Conclusão", "en": "Conclusion", "es": "Conclusión"},
+    "lim_met_p": {
+        "pt": "A linha tracejada-pontilhada \u201cIngênuo\u201d repete a última semana observada (casos estimados "
+              "com correção de atraso de notificação, a mesma série que alimenta o modelo): é o piso de "
+              "comparação honesto, e a Tabela 2 mostra que, em níveis fora da faixa de treino (E2), copiar a "
+              "última semana erra menos que o modelo. O marcador \u201cacima do limite de treino\u201d aparece quando "
+              "o nível observado ou a previsão t+1 de um município supera o máximo usado na normalização do "
+              "modelo; como esse máximo exclui as últimas 52 semanas (validação), um surto recente pode "
+              "acioná-lo por construção. Ele indica previsão menos confiável, não erro.",
+        "en": "The dash-dot \u201cNaive\u201d line repeats the last observed week (cases estimated with a "
+              "reporting-delay correction, the same series that feeds the model): it is the honest baseline, "
+              "and Table 2 shows that at levels outside the training range (E2) copying the last week errs "
+              "less than the model. The \u201cabove the training limit\u201d marker appears when a municipality\u2019s "
+              "observed level or t+1 forecast exceeds the maximum used to normalise the model; since that "
+              "maximum excludes the last 52 weeks (validation), a recent outbreak can trigger it by "
+              "construction. It signals a less reliable forecast, not an error.",
+        "es": "La línea punto-raya \u201cIngenuo\u201d repite la última semana observada (casos estimados con "
+              "corrección del retraso de notificación, la misma serie que alimenta el modelo): es la "
+              "referencia honesta, y la Tabla 2 muestra que, en niveles fuera del rango de entrenamiento (E2), "
+              "copiar la última semana se equivoca menos que el modelo. El marcador \u201cpor encima del límite "
+              "de entrenamiento\u201d aparece cuando el nivel observado o el pronóstico t+1 de un municipio supera "
+              "el máximo usado para normalizar el modelo; como ese máximo excluye las últimas 52 semanas "
+              "(validación), un brote reciente puede activarlo por construcción. Indica un pronóstico menos "
+              "fiable, no un error."},
     "sec1_eb": {"pt": "Motivação", "en": "Motivation", "es": "Motivación"},
     "sec2_eb": {"pt": "Método", "en": "Method", "es": "Método"},
     "sec3_eb": {"pt": "Resultados · E1 e E2", "en": "Results · E1 and E2", "es": "Resultados · E1 y E2"},
