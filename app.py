@@ -326,7 +326,12 @@ app.clientside_callback(
               Input("fonte-original", "n_clicks"), Input("fonte-atual", "n_clicks"),
               prevent_initial_call=True)
 def escolher_fonte(_o, _a):
-    """Cliente pede a fonte; 'atual' só é aceita se já estiver carregada (senão mantém a atual)."""
+    """Cliente pede a fonte; 'atual' só é aceita se já estiver carregada (senão mantém a atual).
+    O Dash dispara este callback quando o seletor é RECRIADO (n_clicks None, p.ex. ao trocar o idioma);
+    sem clique real não escreve `fonte` — senão cada troca de idioma refaria atualizar/revalidar e
+    zeraria a comparação momentaneamente."""
+    if not (ctx.triggered and ctx.triggered[0].get("value")):
+        return no_update
     if ctx.triggered_id == "fonte-atual":
         return "atual" if atual.global_atual().conjunto() is not None else no_update
     return "original"

@@ -726,9 +726,14 @@ def test_comparar_cidades_fluxo_completo(pagina):
     assert pagina.locator(".tabela-cmp thead th").count() == 4
     assert "Comparação:" in pagina.inner_text("#legenda-cmp")
     assert "Comparando com" in pagina.inner_text("#cartao-status")
+    # `atualizar` traduz a legenda, `render_content` a reconstrói e `atualizar` roda de novo: a condição de texto
+    # sozinha passava no estado intermediário (flake no CI). Rastreia o último instante SEM o texto e exige
+    # ~0,8 s de estabilidade depois dele.
+    pagina.evaluate("""() => { window.__ruim = performance.now();
+        setInterval(() => { const e = document.querySelector('#legenda-cmp');
+          if (!(e && e.innerText.includes('Comparison:'))) window.__ruim = performance.now(); }, 40); }""")
     pagina.click("#lang-en")                                  # idioma reconstrói o conteúdo: comparação fica
-    pagina.wait_for_function(                                 # espera por condição (não por tempo fixo)
-        "()=>document.querySelector('#legenda-cmp')?.innerText.includes('Comparison:')", timeout=15000)
+    pagina.wait_for_function("()=>performance.now() - window.__ruim > 800", timeout=15000)
     assert "Comparison:" in pagina.inner_text("#legenda-cmp")
     assert pagina.locator(".tabela-cmp").count() == 1
     pagina.click("#dd-comparar .dash-dropdown-clear")

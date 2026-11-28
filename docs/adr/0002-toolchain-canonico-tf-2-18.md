@@ -10,7 +10,10 @@ dev e CI geram previsões ligeiramente diferentes.
 ## Decisão
 1. O **dado publicado** vem sempre do toolchain do CI: `pipeline/requirements-ci.txt` (Python 3.12,
    `tensorflow-cpu~=2.18.0`, `numpy>=1.26,<2.2`, pandas por faixa). O dev local serve só para smoke.
-2. Dependabot **ignora** `tensorflow-cpu` e `numpy` no diretório `/pipeline`; a troca de versão é manual.
+2. Dependabot **ignora** `tensorflow-cpu`/`tensorflow` em **todos** os diretórios pip e `numpy` em `/pipeline`
+   (decisão arquitetural, comentada em `.github/dependabot.yml`); a troca de versão é manual. A faixa do
+   `numpy` em `requirements-ci.txt` é protegida também por teste. A **decisão de 2026-11-28 é manter o TF 2.18**
+   (o comparativo 0.8 fica adiado até haver motivo: CVE, necessidade de recurso novo).
 3. Um teste (`test_requirements_ci_numpy_compativel_com_tf`) trava a faixa do `numpy`: em 2026-11-28 um bump
    do grupo `serving` (via diretório raiz) a mudou e quebrou o primeiro refresh (PR #41).
 4. A mudança para o TF 2.21 só ocorre após o comparativo 0.8 (diferença mediana ≤ 1 caso e bandas sem

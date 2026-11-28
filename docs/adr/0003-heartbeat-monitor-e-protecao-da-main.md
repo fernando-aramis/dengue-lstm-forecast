@@ -16,9 +16,13 @@ atraso da InfoDengue) não geram alerta por si.
    `HEALTHCHECK_URL`. Justificativa do autor: o app já faz **fallback** para o original quando a atualização
    falha ou fica defasada (`atual.py`: estados `defasado`/`indisponivel`), então a falha não degrada o usuário.
    Reavaliar se o dado atual virar o padrão. Runbook: `docs/operacao/agendamento.md`.
-4. **Ruleset da `main` (Q.2): pendente de confirmação.** Quando ativado (exigir PR e checks, bloquear
-   force-push), o `github-actions[bot]` precisa de *bypass* para o heartbeat, e o commit de arquivos de dados
-   opcionais em `main` (1.4c) passa a exigir PR.
+4. **Ruleset da `main` (Q.2): ativo desde 2026-11-28 em versão reduzida** (`protecao-main`, id 28279952): bloqueia
+   **deleção** e **force-push**; administrador do repositório pode contornar. A versão completa (PR obrigatória +
+   checks) foi **recusada pela API**: em repositório pessoal o app *GitHub Actions* não pode ser *bypass actor*
+   (`Actor GitHub Actions integration must be part of the ruleset source or owner organization`), e o heartbeat
+   precisa commitar direto em `main`. Alternativas descartadas por ora: PR obrigatória com heartbeat só na `data`
+   (não é documentado se push em `data` conta como atividade) ou heartbeat com PAT do administrador (exige um
+   secret de longa duração). Reavaliar se o repositório migrar para uma organização.
 
 ## Consequências
 Agendamentos permanecem ativos sem commit semanal; a ausência do monitor externo é um risco consciente

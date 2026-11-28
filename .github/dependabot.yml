@@ -26,6 +26,9 @@ updates:
       serving:                        # minor/patch num PR só; majors (ex.: gunicorn) ficam em PRs individuais
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:                           # TF nunca por aqui (ADR 0002); numpy daqui só vale p/ o serving (requirements.txt)
+      - dependency-name: tensorflow-cpu
+      - dependency-name: tensorflow
 
   - package-ecosystem: pip
     directory: /pipeline              # pipeline (requirements*.txt)
@@ -35,8 +38,11 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: deps(pipeline)
-    ignore:                           # (só version updates; alertas de segurança seguem abrindo PR) toolchain canônico (Py 3.12 + TF 2.18) só muda manualmente (tarefa 0.8)
+    ignore:                           # (só version updates; alertas de segurança seguem abrindo PR)
+      # DECISÃO ARQUITETURAL (ADR 0002): o toolchain canônico do refresh (Py 3.12 + TF 2.18 + numpy<2.2)
+      # só muda manualmente, após o comparativo 0.8. Nunca por bump automático.
       - dependency-name: tensorflow-cpu
+      - dependency-name: tensorflow
       - dependency-name: numpy
 
   - package-ecosystem: pip
@@ -47,6 +53,9 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: deps(tests)
+    ignore:
+      - dependency-name: tensorflow-cpu
+      - dependency-name: tensorflow
 
   - package-ecosystem: docker
     directory: /
