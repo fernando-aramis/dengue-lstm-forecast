@@ -716,11 +716,13 @@ def test_comparar_cidades_fluxo_completo(pagina):
     """Comparar: série + legenda + tabela t+1…t+4 + anúncio; persiste ao trocar idioma; limpar volta ao normal;
     estado desabilita o dropdown."""
     _abre(pagina, "/?lang=pt&cidade=4106902")
+    n_erros = len(pagina.erros)       # `pagina` é do módulo: erros de testes anteriores não são deste fluxo
     traces = lambda: pagina.evaluate("document.querySelectorAll('#detalhe .scatterlayer .trace').length")  # noqa: E731
     base = traces()
     assert pagina.evaluate("document.querySelector('#legenda-cmp').hidden") is True
     assert pagina.locator(".tabela-cmp").count() == 0
     _escolhe_opcao(pagina, "#dd-comparar", 0)
+    pagina.wait_for_function("b=>document.querySelectorAll('#detalhe .scatterlayer .trace').length===b+2", arg=base, timeout=30000)
     assert traces() == base + 2
     assert pagina.locator(".tabela-cmp tbody tr").count() == 2
     assert pagina.locator(".tabela-cmp thead th").count() == 4
@@ -733,17 +735,23 @@ def test_comparar_cidades_fluxo_completo(pagina):
         setInterval(() => { const e = document.querySelector('#legenda-cmp');
           if (!(e && e.innerText.includes('Comparison:'))) window.__ruim = performance.now(); }, 40); }""")
     pagina.click("#lang-en")                                  # idioma reconstrói o conteúdo: comparação fica
-    pagina.wait_for_function("()=>performance.now() - window.__ruim > 800", timeout=15000)
+    # exige o texto PRESENTE agora além da estabilidade: sob carga de CPU o setInterval pode ficar parado >800 ms
+    # e `__ruim` ficaria velho mesmo sem o texto ter voltado
+    pagina.wait_for_function("""()=>{const e=document.querySelector('#legenda-cmp');
+        return !!e && e.innerText.includes('Comparison:') && performance.now() - window.__ruim > 800}""", timeout=30000)
     assert "Comparison:" in pagina.inner_text("#legenda-cmp")
     assert pagina.locator(".tabela-cmp").count() == 1
     pagina.click("#dd-comparar .dash-dropdown-clear")
-    pagina.wait_for_timeout(1200)
+    pagina.wait_for_function("document.querySelector('#legenda-cmp').hidden === true", timeout=30000)
+    pagina.wait_for_function("b=>document.querySelectorAll('#detalhe .scatterlayer .trace').length===b", arg=base, timeout=30000)
     assert pagina.evaluate("document.querySelector('#legenda-cmp').hidden") is True
     assert pagina.locator(".tabela-cmp").count() == 0 and traces() == base
     _escolhe_opcao(pagina, "#dd-uf", 3)                       # estado: comparar só vale entre municípios
-    assert pagina.evaluate("""[...document.querySelectorAll('#dd-comparar, #dd-comparar *')].some(
-        e => e.disabled || e.getAttribute('aria-disabled') === 'true' || e.getAttribute('data-disabled') === 'true')""")
-    assert not pagina.erros, pagina.erros[:3]
+    desabilitado = """[...document.querySelectorAll('#dd-comparar, #dd-comparar *')].some(
+        e => e.disabled || e.getAttribute('aria-disabled') === 'true' || e.getAttribute('data-disabled') === 'true')"""
+    pagina.wait_for_function("()=>" + desabilitado, timeout=30000)
+    assert pagina.evaluate(desabilitado)
+    assert not pagina.erros[n_erros:], pagina.erros[n_erros:][:3]
 
 
 def test_primeira_dobra_mostra_aviso_e_painel(pagina):

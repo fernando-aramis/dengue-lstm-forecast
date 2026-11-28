@@ -558,13 +558,15 @@ def clique_mapa(click, fonte="original"):
     return no_update, no_update
 
 
-# reconstrói a figura do mapa só quando muda o IDIOMA (traduz hover/legenda/traços) — carrega o
-# tema efetivo; tema puro é tratado por tema_mapa via Patch.
+# reconstrói a figura do mapa só quando muda o modo daltônico (`cvd`) — carrega o tema efetivo; tema puro é
+# tratado por tema_mapa via Patch. O IDIOMA NÃO é entrada: `render_content` já recria o dcc.Graph do mapa com
+# a figura no idioma novo, e uma 2ª figura completa no mesmo gráfico, enquanto o MapLibre ainda monta, gerava
+# `Source "source-…" already exists` (flake raro do E2E, visível sob carga de CPU).
 @app.callback(Output("mapa", "figure"),
-              Input("lang", "data"), Input("cvd", "data"),
-              State("dd-uf", "value"), State("theme-eff", "data"), State("fonte", "data"),
+              Input("cvd", "data"),
+              State("dd-uf", "value"), State("theme-eff", "data"), State("lang", "data"), State("fonte", "data"),
               prevent_initial_call=True)
-def remapa_idioma(lang, cvd, uf, tema, fonte="original"):
+def remapa_idioma(cvd, uf, tema, lang, fonte="original"):
     uf = uf if isinstance(uf, str) and (uf == "BR" or uf in _UFS_SET) else "BR"
     return figura_mapa(uf, resolver(lang), tema or "light", cvd=bool(cvd), c=obter(fonte))
 
