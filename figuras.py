@@ -31,13 +31,13 @@ PLOT = {
     # default (caixa semitransparente + fonte escura): no ESCURO fica texto escuro sobre fundo
     # escuro (ilegível). Fixamos fundo sólido do tema + fonte 'ink' p/ alto contraste nos dois temas.
     "light": {"ink": "#1C2620", "grid": "#E9E4D6", "axis": "#D9D4C7", "obs": "#1C2620",
-              "prev": "#2F5A42", "cmp": "#2E6FB0", "band": "rgba(47,90,66,0.16)", "naocob": "#DCD7C6", "paper": "#FBFAF5",
+              "prev": "#2F5A42", "cmp": "#2E6FB0", "naive": "#414741", "band": "rgba(47,90,66,0.16)", "naocob": "#DCD7C6", "paper": "#FBFAF5",
               "mapstyle": "carto-positron", "legbg": "rgba(251,250,245,0.92)", "legbd": "#D9D4C7",
               "mapline": "rgba(64,92,98,0.60)", "maplinew": 0.8, "ring": "#1C2620",
               "hover_bg": "#FBFAF5", "hover_bd": "#D9D4C7",
               "escala": [[0.0, "#D5E3E2"], [0.5, "#9FC2C6"], [1.0, "#3F6E78"]]},
     "dark":  {"ink": "#ECEFEA", "grid": "#2A3330", "axis": "#3A4541", "obs": "#ECEFEA",
-              "prev": "#7FC894", "cmp": "#8DB8E8", "band": "rgba(127,200,148,0.22)", "naocob": "#262D30", "paper": "#1E2428",
+              "prev": "#7FC894", "cmp": "#8DB8E8", "naive": "#B6BEB7", "band": "rgba(127,200,148,0.22)", "naocob": "#262D30", "paper": "#1E2428",
               "mapstyle": "carto-darkmatter", "legbg": "rgba(30,36,40,0.92)", "legbd": "#313A39",
               "mapline": "rgba(255,255,255,0.50)", "maplinew": 0.6, "ring": "#F3EFE6",
               "hover_bg": "#222A2D", "hover_bd": "#3A4541",
@@ -200,6 +200,12 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light", comp=None, c=ORIGINAL):
                                  line=dict(color=p["prev"], width=2.5, dash="dash"),
                                  marker=dict(size=7, color=p["paper"], line=dict(color=p["prev"], width=2)),
                                  name=pref + tr(lang, "g_previsto")))
+    if len(h) and len(pv):                     # 2.1: ingênuo = último observado repetido em t+1..t+4 (referência honesta)
+        ult = h["casos"].iloc[-1]
+        fig.add_trace(go.Scatter(x=[h["data"].iloc[-1]] + list(pv["data_prev"]), y=[ult] * (len(pv) + 1),
+                                 mode="lines", showlegend=False,
+                                 line=dict(color=p["naive"], width=1.75, dash="dashdot"),
+                                 name=pref + tr(lang, "g_ingenuo")))
     if comp:                                   # série de comparação: azul + traço pontilhado + losango (não só cor)
         hc = hist[hist["geo_id"] == comp].sort_values("data")
         pc = prev[prev["geo_id"] == comp].sort_values("h")
@@ -268,12 +274,15 @@ def horizontes(geo_id, lang="pt", comp=None, c=ORIGINAL):
                       className="horiz-t mono"),
             html.Span(fmt_int(r["prev"], lang), className="horiz-v tabular"),
             html.Span(f"{fmt_int(r['inf'], lang)}–{fmt_int(r['sup'], lang)}", className="horiz-ic mono")]))
+    hs = c.hist[c.hist["geo_id"] == geo_id].sort_values("data")
     h1, h4 = pv.iloc[0], pv.iloc[-1]
     m1, m4 = round((h1["sup"] - h1["inf"]) / 2), round((h4["sup"] - h4["inf"]) / 2)
     return [html.Ol(itens, className="horizontes"),
             html.P(tr(lang, "horiz_nota", a=fmt_int(m1, lang), b=fmt_int(m4, lang)),
                    className="horiz-nota aux"),
             html.P(tr(lang, "gloss_linha"), className="horiz-nota aux"),
+            *([html.P(tr(lang, "horiz_ingenuo", v=fmt_int(hs["casos"].iloc[-1], lang)), className="horiz-nota aux")]
+              if len(hs) else []),
             *([tabela_comparacao(geo_id, comp, lang, c), html.P(tr(lang, "cmp_hint"), className="horiz-nota aux")]
               if comparacao_valida(geo_id, comp, c) else [])]
 

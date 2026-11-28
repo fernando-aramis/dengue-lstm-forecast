@@ -75,3 +75,26 @@ def test_carregar_le_limite_do_diretorio(tmp_path):
     assert dados.carregar(str(tmp_path)).limite[o.geo0]["casos_max_treino"] == 50.0
     (tmp_path / "limite_treino.csv").write_text("lixo\n1,2\n")
     assert dados.carregar(str(tmp_path)).limite == {}
+
+
+# ---- 2.1 ingênuo -------------------------------------------------------------------------------
+def test_ingenuo_e_o_ultimo_observado_repetido():
+    import figuras
+    c = dados.ORIGINAL
+    for geo in (c.geo0, "UF-" + c.mapa_uf["uf"].iloc[0]):
+        fig = figuras.figura_detalhe(geo, c=c)
+        tr_ = [t for t in fig.data if t.name and t.name.endswith("(última semana repetida)")]
+        assert len(tr_) == 1, geo
+        h = c.hist[c.hist["geo_id"] == geo].sort_values("data")
+        pv = c.prev[c.prev["geo_id"] == geo].sort_values("h")
+        assert list(tr_[0].y) == [h["casos"].iloc[-1]] * (len(pv) + 1)
+        assert list(tr_[0].x)[1:] == list(pv["data_prev"])
+        assert tr_[0].line.dash == "dashdot"          # canal além da cor
+
+
+def test_ingenuo_contraste_grafico_3_para_1():
+    from test_unit import contraste
+    import figuras
+    for tema in ("light", "dark"):
+        p = figuras.PLOT[tema]
+        assert contraste(p["naive"], p["paper"]) >= 3.0, tema

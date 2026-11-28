@@ -295,7 +295,7 @@ def legenda_serie(lang, c=ORIGINAL):
         return html.Span([html.Span(className=f"serie-sw {cls}"), texto], className="serie-item")
     return html.Div(id="legenda-serie", className="serie-legend", children=[
         item("obs", tr(lang, "serie_obs")), item("prev", tr(lang, "serie_prev")),
-        item("int", tr(lang, "serie_int")), item("orig", tr(lang, "serie_origem", se=se)),
+        item("naive", tr(lang, "serie_naive")), item("int", tr(lang, "serie_int")), item("orig", tr(lang, "serie_origem", se=se)),
         html.Span(id="legenda-cmp", className="serie-item", hidden=True,
                   children=[html.Span(className="serie-sw cmp"), html.Span(id="legenda-cmp-nome")])])
 
