@@ -312,7 +312,7 @@ def test_url_espelha_selecao_sem_empilhar_historico(pagina):
 
 
 # ------------------------------------------------------------------ A16: movimento + content-visibility
-SECOES_ARTIGO = ["resumo", "sec-1", "sec-2", "sec-3", "sec-4", "sec-5",
+SECOES_ARTIGO = ["resumo", "sec-1", "sec-2", "sec-3", "sec-4", "sec-5", "metodologia",
                  "declaracoes", "referencias", "como-citar"]
 
 

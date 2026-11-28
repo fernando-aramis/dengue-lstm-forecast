@@ -7,6 +7,7 @@ O app não treina nem chama a API: só lê os artefatos pré-computados pelo pip
 as figuras e os callbacks consomem.
 """
 import json
+import math
 import os
 from dataclasses import dataclass, field
 from datetime import date, timedelta
@@ -133,11 +134,14 @@ class Conjunto:
     resumo: dict
     meta: dict
     limite: dict = field(default_factory=dict)   # geo_id → limite de treino (opcional; {} = desligado)
+    desempenho: object = None                     # desempenho realizado (dict validado) ou None = recurso oculto
+    anterior: object = None                       # previsão da execução anterior (DataFrame) ou None = "o que mudou" oculto
 
 
 def carregar(origem):
     """Constrói um Conjunto a partir de um diretório (com previsoes.csv, historico.csv e _meta.json
-    opcional, limite_treino.csv opcional) ou de uma tupla (prev_df, hist_df[, meta_dict[, limite_df]]).
+    opcional, limite_treino.csv e previsoes_anterior.csv opcionais) ou de uma tupla
+    (prev_df, hist_df[, meta_dict[, limite_df[, anterior_df[, desempenho_dict]]]]).
     Valida o contrato; um limite_treino inválido é ignorado (recurso opcional desligado)."""
     if isinstance(origem, (str, os.PathLike)):
         hist = pd.read_csv(os.path.join(origem, "historico.csv"), parse_dates=["data"])
@@ -152,10 +156,21 @@ def carregar(origem):
             lim = pd.read_csv(os.path.join(origem, "limite_treino.csv"), dtype={"geo_id": str})
         except (OSError, ValueError, pd.errors.ParserError):
             lim = None
+        try:
+            ant = pd.read_csv(os.path.join(origem, "previsoes_anterior.csv"), parse_dates=["data_origem", "data_prev"])
+        except (OSError, ValueError, KeyError, pd.errors.ParserError):
+            ant = None
+        try:
+            with open(os.path.join(origem, "desempenho.json"), encoding="utf-8") as f:
+                desemp = json.load(f)
+        except (OSError, ValueError):
+            desemp = None
     else:
         prev, hist, *resto = origem
         meta = resto[0] if resto else {}
         lim = resto[1] if len(resto) > 1 else None
+        ant = resto[2] if len(resto) > 2 else None
+        desemp = resto[3] if len(resto) > 3 else None
         prev, hist = prev.copy(), hist.copy()
     if not isinstance(meta, dict):           # JSON válido porém não-objeto (ex.: []) → tolera como ausente
         meta = {}
@@ -197,8 +212,95 @@ def carregar(origem):
             "n_cidades": int(len(mapa_cid)),
             "por_nivel": {nv: int((mapa_cid["nivel_alerta"] == nv).sum()) for nv in ORDEM_NIVEL},
         },
-        meta=meta, limite=limite,
+        meta=meta, limite=limite, anterior=_anterior_valida(ant, prev),
+        desempenho=validar_desempenho(desemp),
     )
+
+
+_CAMPOS_H = ("acertos", "cobertura", "wilson_inf", "wilson_sup", "largura_media", "mae_lstm", "mae_ingenuo", "skill",
+             "mae_log_lstm", "mae_log_ingenuo", "skill_log", "mae_mediano_cidade_lstm",
+             "mae_mediano_cidade_ingenuo", "skill_mediano_cidade", "n_cidades")
+
+
+def _real(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x)
+
+
+def validar_desempenho(d):
+    """Fase 3.3: valida `desempenho.json` (opcional; vem de fora, então é tratado como NÃO confiável: só
+    números finitos e datas ISO). → dict saneado {gerado_em, n_min, atraso_semanas, por_h{h: {n, ...}}, periodo}
+    ou None (recurso oculto). Nunca levanta."""
+    try:
+        if not isinstance(d, dict):
+            return None
+        crit = d["criterio"]
+        n_min, atraso = crit["n_min"], crit["atraso_semanas"]
+        if not (isinstance(n_min, int) and isinstance(atraso, int) and 1 <= n_min <= 100000 and 0 <= atraso <= 52):
+            return None
+        gerado = date.fromisoformat(str(d["gerado_em"])[:10]).isoformat()
+        por_h = {}
+        for h in ("1", "2", "3", "4"):
+            src = d["por_h"][h]
+            n = src["n"]
+            if not (isinstance(n, int) and not isinstance(n, bool) and n >= 0):
+                return None
+            lin = {"n": n}
+            if n > 0:
+                for k in _CAMPOS_H:
+                    v = src.get(k)
+                    if v is None:
+                        lin[k] = None
+                    elif _real(v):
+                        lin[k] = float(v)
+                    else:
+                        return None
+                obrig = ("acertos", "cobertura", "wilson_inf", "wilson_sup", "mae_lstm", "mae_ingenuo", "n_cidades")
+                if any(lin[k] is None for k in obrig) or not (0 <= lin["cobertura"] <= 1) or lin["acertos"] > n:
+                    return None
+            por_h[h] = lin
+        per = d.get("periodo")
+        periodo = None
+        if isinstance(per, dict):
+            periodo = {"inicio": date.fromisoformat(str(per["inicio"])[:10]).isoformat(),
+                       "fim": date.fromisoformat(str(per["fim"])[:10]).isoformat()}
+        return {"gerado_em": gerado, "n_min": n_min, "atraso_semanas": atraso, "por_h": por_h, "periodo": periodo}
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return None
+
+
+def _anterior_valida(ant, prev):
+    """P.3: a execução anterior só vale se tiver o schema, origem estritamente anterior e valores numéricos
+    completos; senão o recurso fica desligado (None). Nunca derruba o carregamento."""
+    try:
+        if ant is None or ant.empty or not _COLS_PREV.issubset(ant.columns):
+            return None
+        ant = ant.copy()
+        ant["geo_id"] = ant["geo_id"].astype(str)
+        if not ant["data_origem"].max() < prev["data_origem"].max():
+            return None
+        if not ant[["prev", "inf", "sup"]].notna().all().all():
+            return None
+        return ant
+    except (TypeError, ValueError, KeyError, AttributeError):
+        return None
+
+
+def mudancas(c, geo_id):
+    """P.3: compara a previsão atual com a da execução anterior SÓ nos alvos (data_prev) em comum.
+    → None (sem anterior/sem alvo em comum) | {"se_anterior": (ano, sem), "linhas": [{data_prev, h, antes, agora, delta}]}.
+    `h` é o horizonte da previsão ATUAL; `delta` = agora − antes (valores arredondados como exibidos)."""
+    if c.anterior is None:
+        return None
+    a = c.anterior[(c.anterior["geo_id"] == str(geo_id))]
+    p = c.prev[(c.prev["geo_id"] == str(geo_id))]
+    m = p.merge(a[["data_prev", "prev"]], on="data_prev", suffixes=("", "_ant")).sort_values("data_prev")
+    if m.empty:
+        return None
+    linhas = [{"data_prev": r["data_prev"], "h": int(r["h"]), "antes": int(round(r["prev_ant"])),
+               "agora": int(round(r["prev"]))} for _, r in m.iterrows()]
+    for l in linhas:
+        l["delta"] = l["agora"] - l["antes"]
+    return {"se_anterior": semana_epi(c.anterior["data_origem"].max().date()), "linhas": linhas}
 
 
 def fora_limite(c, geo_id):
@@ -216,6 +318,27 @@ def fora_limite(c, geo_id):
     obs = h.sort_values("data")["casos"].iloc[-1] > teto
     prev = p1["prev"].iloc[0] > teto
     return "ambos" if (obs and prev) else "obs" if obs else "prev" if prev else None
+
+
+_COLS_CSV = ["nivel_geo", "geo_id", "uf", "nome", "lat", "lon", "data_origem", "h", "data_prev",
+             "prev", "inf", "sup", "nivel_alerta"]
+
+
+def csv_cidade(c, geo_id, fonte):
+    """P.2: previsões t+1…t+4 de um geo_id como texto CSV (arquivo de máquina: ponto decimal, datas ISO,
+    sem passar por formato.py). Colunas do contrato + `fonte` e `se_origem` (AAAA-SS, da data_origem).
+    `geo_id` é validado contra o conjunto carregado (allowlist); desconhecido → None. Nunca monta caminho."""
+    geo_id = str(geo_id)
+    if geo_id not in c.nome_por_geo:
+        return None
+    d = c.prev[c.prev["geo_id"] == geo_id].sort_values("h")[_COLS_CSV].copy()
+    for col in ("data_origem", "data_prev"):
+        d[col] = d[col].dt.strftime("%Y-%m-%d")
+    for col in ("uf", "nome", "nivel_geo", "nivel_alerta"):      # injeção de fórmula em planilhas (= + - @ TAB CR)
+        d[col] = d[col].astype(str).map(lambda v: "'" + v if v[:1] in ("=", "+", "-", "@", "\t", "\r") else v)
+    d["fonte"] = fonte
+    d["se_origem"] = f"{c.se_origem[0]}-{c.se_origem[1]:02d}"
+    return d.to_csv(index=False, lineterminator="\n")
 
 
 ORIGINAL = carregar(DATA)      # fail-fast no import, como antes

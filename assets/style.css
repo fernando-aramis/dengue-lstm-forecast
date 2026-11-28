@@ -665,6 +665,10 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 .horiz-v { display: block; font-size: 1.05rem; font-weight: 600; color: var(--text); margin: 2px 0; }
 .horiz-ic { display: block; font-size: .8125rem; color: var(--text-muted); }
 .horiz-nota { margin: 10px 0 0; }
+.mudancas { margin-top: 14px; }
+.mudancas-t { font-size: 1rem; margin: 0 0 2px; }
+.mudancas-lista { margin: 6px 0 0; padding-left: 1.2em; font-size: 1rem; }
+.link-dados { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; }
 
 .painel-extra { display: grid; gap: 24px; margin-top: 24px; }
 .tab-rank .tab-cidade { text-align: left; font-weight: 600; }
@@ -697,13 +701,15 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
    nem em .materiais (coluna lateral sticky no desktop). */
 .artigo-coluna > section { content-visibility: auto; contain-intrinsic-size: auto var(--ci, 780px);
   overflow-anchor: none; }   /* sem isto o scroll anchoring reajustava o salto e #sec-2 pousava 58px fora */
+.prosa-h3 { font-size: 1rem; margin: 18px 0 4px; }
 /* alturas MEDIDAS (border-box menos padding+borda: contain-intrinsic-size é a caixa de CONTEÚDO;
    #resumo −46px, #como-citar −48px) a 390px / ≥768px. Padrão = PT (idioma principal); EN e ES têm
    texto de outro tamanho (até ±9%) e os erros SE SOMAM acima do alvo: com os valores errados #sec-2
    pousava 55–85px fora. Refaça a medição (idiomas × larguras) se o texto do artigo mudar muito. */
 #resumo{--ci:805px} #sec-1{--ci:701px} #sec-2{--ci:1325px} #sec-3{--ci:1259px} #sec-4{--ci:1178px}
-#sec-5{--ci:344px} #declaracoes{--ci:439px} #referencias{--ci:872px} #como-citar{--ci:686px}
+#sec-5{--ci:344px} #declaracoes{--ci:439px} #referencias{--ci:872px} #como-citar{--ci:686px} #metodologia{--ci:1761px}
 @media (min-width: 768px) {
+  #metodologia{--ci:1199px}
   #resumo{--ci:443px} #sec-1{--ci:451px} #sec-2{--ci:802px} #sec-3{--ci:864px} #sec-4{--ci:670px}
   #sec-5{--ci:236px} #declaracoes{--ci:401px} #referencias{--ci:540px} #como-citar{--ci:538px}
 }
@@ -716,7 +722,9 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 :root[lang="en"] #declaracoes{--ci:417px}
 :root[lang="en"] #referencias{--ci:872px}
 :root[lang="en"] #como-citar{--ci:686px}
+:root[lang="en"] #metodologia{--ci:1785px}
 @media (min-width: 768px) {
+  :root[lang="en"] #metodologia{--ci:1199px}
   :root[lang="en"] #resumo{--ci:417px}
   :root[lang="en"] #sec-1{--ci:422px}
   :root[lang="en"] #sec-2{--ci:773px}
@@ -736,7 +744,9 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
 :root[lang="es"] #declaracoes{--ci:439px}
 :root[lang="es"] #referencias{--ci:872px}
 :root[lang="es"] #como-citar{--ci:686px}
+:root[lang="es"] #metodologia{--ci:1818px}
 @media (min-width: 768px) {
+  :root[lang="es"] #metodologia{--ci:1256px}
   :root[lang="es"] #resumo{--ci:417px}
   :root[lang="es"] #sec-1{--ci:451px}
   :root[lang="es"] #sec-2{--ci:802px}

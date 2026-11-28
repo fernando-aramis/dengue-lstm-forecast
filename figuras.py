@@ -14,11 +14,12 @@ from dados import (
     ORDEM_NIVEL,
     ORIGINAL,
     fora_limite,
+    mudancas,
     nome_uf,
     semana_epi,
 )
 from formato import plotly_hoverformat_data, plotly_separators
-from i18n import fmt_data, fmt_int, tr
+from i18n import fmt_data, fmt_dec, fmt_int, fmt_intervalo, fmt_pct, tr
 from i18n import nivel as nivel_tr
 
 # paletas de GRÁFICO por tema (coerentes com o CSS claro/escuro)
@@ -260,7 +261,38 @@ def tabela_comparacao(geo_id, comp, lang="pt", c=ORIGINAL):
                         html.Caption(tr(lang, "cmp_tab_cap")), html.Thead(cab), html.Tbody(linhas)]))
 
 
-def horizontes(geo_id, lang="pt", comp=None, c=ORIGINAL):
+def nota_cobertura(lang, desemp):
+    """Fase 3.3: nota junto à banda — cobertura medida em t+1 (ou 'em acumulação' abaixo de n_min). [] sem dados."""
+    h1 = (desemp or {}).get("por_h", {}).get("1")
+    if not h1 or h1["n"] == 0:
+        return []
+    if h1["n"] < desemp["n_min"]:
+        return [html.P(tr(lang, "cob_nota_acum", n=fmt_int(h1["n"], lang)), className="horiz-nota aux")]
+    ic = fmt_intervalo(h1["wilson_inf"] * 100, h1["wilson_sup"] * 100, lang, fmt=lambda v, l: fmt_dec(v, l, 0)) + "%"
+    return [html.P(tr(lang, "cob_nota", v=fmt_pct(h1["cobertura"], lang), n=fmt_int(h1["n"], lang), ic=ic),
+                   className="horiz-nota aux")]
+
+
+def bloco_mudancas(geo_id, lang="pt", c=ORIGINAL):
+    """P.3: 'o que mudou desde a última previsão' (texto neutro; sentido dito por extenso, nunca só cor/seta).
+    Lista vazia = recurso oculto (sem previsão anterior ou sem alvo em comum)."""
+    m = mudancas(c, geo_id)
+    if not m:
+        return []
+    itens = []
+    for l in m["linhas"]:
+        d = l["delta"]
+        dir_ = tr(lang, "mud_igual") if d == 0 else tr(lang, "mud_subiu" if d > 0 else "mud_caiu", d=fmt_int(abs(d), lang))
+        itens.append(html.Li(tr(lang, "mud_item", data=fmt_data(l["data_prev"], lang, "curto"), h=l["h"],
+                                antes=fmt_int(l["antes"], lang), agora=fmt_int(l["agora"], lang), dir=dir_)))
+    ano, se = m["se_anterior"]
+    return [html.Div(className="mudancas", children=[
+        html.H3(tr(lang, "mud_t"), className="mudancas-t"),
+        html.P(tr(lang, "mud_intro", se=se, ano=ano, n=len(itens)), className="horiz-nota aux"),
+        html.Ul(itens, className="mudancas-lista")])]
+
+
+def horizontes(geo_id, lang="pt", comp=None, c=ORIGINAL, desemp=None):
     """Lista t+1…t+4 (valor + IC) + frase do alargamento da faixa. Vai abaixo do gráfico de detalhe."""
     prev = c.prev
     pv = prev[prev["geo_id"] == geo_id].sort_values("h")
@@ -281,11 +313,17 @@ def horizontes(geo_id, lang="pt", comp=None, c=ORIGINAL):
     return [html.Ol(itens, className="horizontes"),
             html.P(tr(lang, "horiz_nota", a=fmt_int(m1, lang), b=fmt_int(m4, lang)),
                    className="horiz-nota aux"),
+            *nota_cobertura(lang, desemp),
             html.P(tr(lang, "gloss_linha"), className="horiz-nota aux"),
             *([html.P(tr(lang, "horiz_ingenuo", v=fmt_int(hs["casos"].iloc[-1], lang)), className="horiz-nota aux")]
               if len(hs) else []),
             *([tabela_comparacao(geo_id, comp, lang, c), html.P(tr(lang, "cmp_hint"), className="horiz-nota aux")]
-              if comparacao_valida(geo_id, comp, c) else [])]
+              if comparacao_valida(geo_id, comp, c) else []),
+            *bloco_mudancas(geo_id, lang, c),
+            html.A(tr(lang, "baixar_csv"), className="link-dados",
+                   href=f"/dados/{geo_id}.csv?fonte={'original' if c is ORIGINAL else 'atual'}",
+                   **{"data-testid": "baixar-csv"}),
+            html.P(tr(lang, "baixar_csv_nota"), className="horiz-nota aux")]
 
 
 def cartao_info(geo_id, lang="pt", c=ORIGINAL):

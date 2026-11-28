@@ -38,7 +38,7 @@ TIMEOUT_S = 5
 BACKOFF_S = (0, 15, 60, 300)
 RECHECAGEM_S = 6 * 3600
 ARQUIVOS = ("previsoes.csv", "historico.csv", "_meta.json")
-OPCIONAIS = ("limite_treino.csv",)      # só são buscados se o ponteiro lista o hash; ausente/divergente só desliga o recurso (o run segue)
+OPCIONAIS = ("limite_treino.csv", "previsoes_anterior.csv", "desempenho.json")      # só são buscados se o ponteiro lista o hash; ausente/divergente só desliga o recurso (o run segue)
 _RE_RUN = re.compile(r"^[0-9]{6}-[0-9a-f]{7}$")
 
 CARREGANDO, DISPONIVEL, DEFASADO, INDISPONIVEL = "carregando", "disponivel", "defasado", "indisponivel"
@@ -117,7 +117,7 @@ def _json(corpo, o_que):
 
 def buscar(base, fetcher, etag=None):
     """Lê latest.json e os arquivos do run apontado (hash conferido).
-    → (None, etag) se 304; senão ((prev_df, hist_df, meta, run, limite_df|None), etag)."""
+    → (None, etag) se 304; senão ((prev_df, hist_df, meta, run, limite_df|None, anterior_df|None, desempenho_dict|None), etag)."""
     st, corpo, novo = fetcher(base + "latest.json", etag)
     if st == 304:
         return None, novo
@@ -163,14 +163,26 @@ def buscar(base, fetcher, etag=None):
             lim = pd.read_csv(io.BytesIO(brutos["limite_treino.csv"]), dtype={"geo_id": str})
         except (ValueError, pd.errors.ParserError):
             lim = None            # opcional: ilegível = recurso desligado, não derruba o run
-    return (prev, hist, meta, run, lim), novo
+    ant = None
+    if "previsoes_anterior.csv" in brutos:
+        try:
+            ant = pd.read_csv(io.BytesIO(brutos["previsoes_anterior.csv"]), parse_dates=["data_origem", "data_prev"])
+        except (ValueError, KeyError, pd.errors.ParserError):
+            ant = None            # opcional: ilegível = "o que mudou" oculto, não derruba o run
+    desemp = None
+    if "desempenho.json" in brutos:
+        try:
+            desemp = json.loads(brutos["desempenho.json"])
+        except (ValueError, UnicodeDecodeError):
+            desemp = None         # opcional: ilegível = desempenho oculto (validar_desempenho filtra o resto)
+    return (prev, hist, meta, run, lim, ant, desemp), novo
 
 
-def montar(prev, hist, meta, original, lim=None):
+def montar(prev, hist, meta, original, lim=None, ant=None, desemp=None):
     """Valida e constrói o Conjunto atual. Levanta ErroAtual com motivo curto."""
     try:
         dados.validar(prev, hist)
-        c = dados.carregar((prev, hist, meta, lim))
+        c = dados.carregar((prev, hist, meta, lim, ant, desemp))
     except RuntimeError as e:
         raise ErroAtual("dados inválidos: " + str(e).split(": ", 1)[-1][:80]) from None
     origem_meta = meta.get("se_origem")      # no _meta, `se_origem` é a data de origem (AAAA-MM-DD)
@@ -235,8 +247,8 @@ class Atual:
                     if self._c is None:
                         self._estado, self._motivo = INDISPONIVEL, "sem dados"
                 return True
-            prev, hist, meta, run, lim = res
-            c = montar(prev, hist, meta, self._original, lim)
+            prev, hist, meta, run, lim, ant, desemp = res
+            c = montar(prev, hist, meta, self._original, lim, ant, desemp)
         except Exception as e:     # noqa: BLE001 — nada pode matar a thread; só ErroAtual tem motivo exibível
             motivo = str(e) if isinstance(e, ErroAtual) else "erro inesperado"
             with self._lock:
@@ -275,6 +287,13 @@ class Atual:
 
 _GLOBAL = None
 _GLOBAL_LOCK = threading.Lock()
+
+
+def desempenho_vigente():
+    """Fase 3.3: desempenho realizado a exibir, independente da fonte escolhida — o do `atual` carregado, senão o
+    do original; None = recurso oculto. Sem rede."""
+    c = global_atual().conjunto()
+    return (c.desempenho if c is not None and c.desempenho else None) or dados.ORIGINAL.desempenho
 
 
 def global_atual():

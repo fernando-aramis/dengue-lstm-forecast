@@ -15,6 +15,7 @@ Deploy:        gunicorn app:server
 import json
 import logging
 import os
+import re
 
 from dash import Dash, Input, Output, Patch, State, ctx, dcc, html, no_update
 from flask import Response, request, send_file
@@ -27,6 +28,7 @@ from dados import (
     ORIGINAL,
     TETO_FATOR,
     UFS,
+    csv_cidade,
     nome_uf,
 )
 from figuras import (
@@ -247,6 +249,26 @@ def obter(fonte):
 def _health():
     """Liveness barato p/ o HEALTHCHECK do container — testa o processo, não re-renderiza a página."""
     return "ok", 200
+
+
+@server.route("/dados/<geo_id>.csv")
+def _dados_csv(geo_id):
+    """P.2: download das previsões de uma cidade/estado. `geo_id` só vale se está no conjunto carregado
+    (allowlist em memória; nada vira caminho de arquivo) e `fonte` só aceita original|atual."""
+    fonte = request.args.get("fonte", "original")
+    if fonte not in ("original", "atual"):
+        return Response("fonte inválida (use original ou atual)\n", 400, mimetype="text/plain")
+    c = ORIGINAL if fonte == "original" else atual.global_atual().conjunto()
+    if c is None:
+        return Response("dados atuais indisponíveis no momento; use fonte=original\n", 404, mimetype="text/plain")
+    corpo = csv_cidade(c, geo_id, fonte)
+    if corpo is None:
+        return Response("geo_id desconhecido\n", 404, mimetype="text/plain")
+    nome = re.sub(r"[^A-Za-z0-9_-]", "", str(geo_id))
+    return Response(corpo, mimetype="text/csv", headers={
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": f'attachment; filename="previsao_{nome}_{fonte}.csv"',
+        "Cache-Control": "public, max-age=300", "X-Content-Type-Options": "nosniff"})
 
 
 @server.route("/robots.txt")
@@ -581,7 +603,7 @@ def atualizar(geo_id, lang, tema, cmp, fonte="original"):
     comp = comparacao_valida(geo_id, cmp, c)    # só município vs. outro município existente (valor forjado → None)
     nome_cmp = tr(lang, "serie_cmp", nome=c.nome_por_geo[comp]) if comp else ""
     return (cartao_info(geo_id, lang, c=c), figura_detalhe(geo_id, lang, tema, comp, c=c),
-            horizontes(geo_id, lang, comp, c), resumo_cartao(geo_id, lang, comp, c),
+            horizontes(geo_id, lang, comp, c, atual.desempenho_vigente()), resumo_cartao(geo_id, lang, comp, c),
             bool(sem_serie(geo_id, c)),            # legenda da série só faz sentido com série (estado sem cobertura: oculta)
             geo_id.startswith("UF-"),           # comparar só vale entre municípios
             not comp, nome_cmp)
