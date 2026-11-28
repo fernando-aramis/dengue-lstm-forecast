@@ -201,7 +201,7 @@ T = {
     "leg_sem_dado": {"pt": "Sem dado", "en": "No data", "es": "Sin dato"},
     "serie_obs": {"pt": "Observado", "en": "Observed", "es": "Observado"},
     "serie_prev": {"pt": "Previsto", "en": "Forecast", "es": "Previsto"},
-    "aviso_limite": {"pt": "Previsão menos confiável: nível acima do histórico de treino (acima do máximo usado na normalização do modelo).",
+    "aviso_limite": {"pt": "Previsão menos confiável: nível acima do intervalo de treino do modelo (máximo usado na normalização).",
                      "en": "Less reliable forecast: level above the training history (above the maximum used to normalise the model).",
                      "es": "Pronóstico menos fiable: nivel por encima del historial de entrenamiento (por encima del máximo usado en la normalización del modelo)."},
     "aviso_limite_tab": {"pt": " (acima do limite de treino)", "en": " (above the training limit)",
