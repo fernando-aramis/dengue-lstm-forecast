@@ -643,3 +643,12 @@ def test_lock_sincronizado():
     dif = {k: (v, lock.get(k)) for k, v in pins.items() if lock.get(k) != v}
     assert not dif, ("requirements.lock divergente de requirements.txt (regere com "
                      f"`uv pip compile ... --generate-hashes`): {dif}")
+
+
+def test_requirements_ci_numpy_compativel_com_tf():
+    """TF 2.18 exige numpy < 2.1: um bump do Dependabot nesta faixa quebra o refresh (ocorreu em 2026-11-28)."""
+    import re
+    txt = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "pipeline", "requirements-ci.txt"), encoding="utf-8").read()
+    m = re.search(r"^numpy[^\n]*$", txt, re.M)
+    assert m and re.search(r"<\s*2\.[0-2]\b", m.group(0)), m and m.group(0)
