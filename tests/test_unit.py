@@ -517,7 +517,7 @@ def test_callbacks_toleram_payloads_forjados():
     assert A.clique_mapa({"points": [{"location": "SP"}]}) == ("SP", ns)
     for uf in (["SP"], 1, {"a": 1}, "ZZ"):                      # uf forjada → escopo nacional, sem exceção
         A.zoom_uf(uf)
-        A.remapa_idioma("pt", False, uf, "light")
+        A.remapa_idioma(False, uf, "light", "pt")
 
 
 def test_tema_mapa_espelha_contorno_dos_estados():
