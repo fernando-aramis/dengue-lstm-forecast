@@ -3,7 +3,7 @@
 [![CI](https://github.com/fernando-aramis/dengue-lstm-forecast/actions/workflows/ci.yml/badge.svg)](https://github.com/fernando-aramis/dengue-lstm-forecast/actions/workflows/ci.yml)
 [![Security](https://github.com/fernando-aramis/dengue-lstm-forecast/actions/workflows/security.yml/badge.svg)](https://github.com/fernando-aramis/dengue-lstm-forecast/actions/workflows/security.yml)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-blue.svg)](./LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.14-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.11%20(serving)%20%7C%203.12%20(refresh)%20%7C%203.14%20(dev)-blue.svg)](https://www.python.org/)
 [![Deploy: Render](https://img.shields.io/badge/deploy-Render-46E3B7.svg)](./render.yaml)
 
 > **Resumo.** Painel web interativo de **previsão semanal de casos de dengue** para capitais e
@@ -24,9 +24,11 @@ O mapa tem **duas camadas**: um *choropleth* estadual (fundo, colorido pelo tota
 do projeto (paleta verde-terrosa + Inter), com foco visível e movimento discreto (respeita
 `prefers-reduced-motion`).
 
-> ✅ **Os dados em `data/*.csv` são REAIS** — gerados por `pipeline/gerar_previsoes_reais.py`
-> (InfoDengue → EDA → LSTM A + conformal) para **33 cidades**, pipeline completo (até 500 épocas),
-> origem na semana epidemiológica de **2026-10-25**. Os 33 geocodes foram **validados contra o
+> ✅ **Os dados são REAIS** — gerados por `pipeline/gerar_previsoes_reais.py`
+> (InfoDengue → EDA → LSTM A + conformal) para **33 cidades**, pipeline completo (até 500 épocas).
+> Há **duas fontes**: o *Original* (`data/*.csv` deste repositório, a base de contingência) e o *Atual*
+> (a execução semanal mais recente, na branch `data`). A semana de origem de cada uma aparece no
+> próprio painel e em `_meta.json` — este README não a fixa. Os 33 geocodes foram **validados contra o
 > IBGE**. O `data/br_uf.geojson` é a malha do IBGE **simplificada** (~128 KB).
 
 ---
@@ -51,24 +53,58 @@ superfície de ataque mínima.
 
 ```mermaid
 flowchart LR
-    subgraph OFF["🔬 OFFLINE · semanal (GitHub Actions / Colab)"]
+    subgraph OFF["🔬 OFFLINE · semanal (GitHub Actions) ou manual"]
         direction TB
-        A["InfoDengue<br/>casos prováveis (SINAN)"] --> B["EDA + preparação<br/>log1p · janela 12 sem · seno/cosseno"]
+        A["InfoDengue<br/>casos estimados (nowcast)"] --> B["EDA + preparação<br/>log1p · janela 12 sem · seno/cosseno"]
         B --> C["LSTM A univariada<br/>Adam 1e-3 · MSE · ≤500 épocas"]
         C --> D["Conformal 90%<br/>+ agregação estadual"]
-        D --> E[("data/*.csv<br/>previsoes · historico")]
+        D --> EV["avaliar.py (sem TF)<br/>desempenho realizado"]
     end
+    D -->|"treino manual"| E[("main · data/*.csv<br/>ORIGINAL (contingência)")]
+    D -->|"refresh.yml"| DT[("branch data · runs/AAAASS-sha<br/>+ latest.json (ponteiro)")]
+    EV --> DT
     subgraph WEB["🌐 WEB · sempre leve (Render)"]
         direction TB
-        F["Dash app (app.py)<br/>somente LÊ os CSVs"] --> G["Mapa nacional<br/>choropleth UF + bolhas por cidade"]
-        F --> H["Seletor UF → cidade<br/>+ fallback estadual"]
-        F --> I["Gráfico 4 semanas<br/>+ banda de 90%"]
+        F["Dash app (app.py)<br/>só LÊ CSV/JSON"] --> G["Mapa nacional · gráfico 4 semanas<br/>banda 90% · tabelas · CSV por cidade"]
     end
-    E -->|"CSV (contrato de dados)"| F
+    E --> F
+    DT -.->|"atual.py · thread em 2º plano<br/>HTTPS · allowlist · SHA-256"| F
 ```
 
-Nada é treinado no request → o deploy fica leve e grátis. O **schema** de `previsoes.csv` /
-`historico.csv` é o **contrato** entre o pipeline e o app: troque os CSVs sem mudar o app.
+Nada é treinado nem previsto no request → o deploy fica leve e grátis. O **schema** de `previsoes.csv` /
+`historico.csv` é o **contrato** entre o pipeline e o app: troque os CSVs sem mudar o app. A única
+chamada externa do serving é a busca em segundo plano do run mais recente da branch `data`
+(`atual.py`, [ADR 0001](docs/adr/0001-dados-atuais-via-artefato.md)); se falhar, o app serve o Original.
+
+## Dados atuais × original
+
+| | **Original** | **Atual** |
+|---|---|---|
+| Onde está | `data/*.csv` na `main` (vai na imagem) | branch `data` (`runs/AAAASS-<sha7>/` + `latest.json`) |
+| Quem gera | treino manual (`pipeline/`) | `refresh.yml` (seg./qui.; o *probe* pula se a SE não mudou) |
+| Como o app lê | no boot (falha-rápido) | em 2º plano, nunca no caminho de uma requisição; hash SHA-256 por arquivo |
+| Se falhar | — | o app serve o Original e o painel avisa (estados: carregando · disponível · defasado · indisponível) |
+
+O seletor **Original/Atual** fica na página (`?fonte=atual` na URL). Arquivos **opcionais** do run
+(`limite_treino.csv`, `previsoes_anterior.csv`, `desempenho.json`) são conferidos por hash; ausentes ou
+divergentes só desligam o recurso correspondente, nunca o run. O refresh **não** faz commit na `main`:
+não há redeploy a cada semana.
+
+## Limitações e desempenho realizado
+
+- **Fora do limite de treino:** quando o nível observado ou a previsão t+1 de um município supera o
+  máximo usado na normalização, o painel marca a previsão como menos confiável.
+- **Linha ingênua:** o gráfico mostra a referência “repetir a última semana”; se o modelo não a supera, a
+  previsão não agrega informação (no cenário E2 do estudo, ela erra menos).
+- **O que mudou desde a última previsão:** compara só os alvos em comum com a execução anterior; parte da
+  diferença vem da **revisão do nowcast**, não do modelo.
+- **Desempenho realizado** (`pipeline/avaliar.py`, sem TensorFlow): confronta cada previsão publicada com o
+  observado **consolidado 4 semanas depois** (cobertura com IC de Wilson 95%, MAE do modelo × ingênuo,
+  ganho em casos, em escala log e por mediana de cidades). Só aparece por horizonte a partir de **100
+  pares**; antes disso o painel mostra “em acumulação (n=…)” (esperado: ~3 meses). O IC supõe pares
+  independentes, mas as cidades são correlacionadas (otimista).
+- **Download:** `GET /dados/<geo_id>.csv?fonte=original|atual` entrega as previsões da seleção (colunas do
+  contrato + `fonte` e `se_origem`; ponto decimal, datas ISO). `geo_id` é validado contra o conjunto carregado.
 
 ## Modelo e metodologia
 
@@ -108,21 +144,28 @@ python app.py            # -> http://127.0.0.1:8050   (DASH_DEBUG=1 liga o modo 
 
 | Arquivo | Papel |
 |---|---|
-| `app.py` | App Dash: init, callbacks, cabeçalhos de segurança e gzip. Só **lê** `data/`. |
-| `dados.py` | Carga de CSV/GeoJSON + globais derivados (cap do intervalo, `_meta.json`). |
+| `app.py` | App Dash: init, callbacks, cabeçalhos de segurança, gzip, `/health`, `/dados/<geo_id>.csv`. Só **lê** dados. |
+| `dados.py` | Contrato (`validar`), `Conjunto` imutável e `carregar()`; `ORIGINAL`; limite de treino, previsão anterior e desempenho (opcionais). |
+| `atual.py` | Busca em 2º plano do run mais recente da branch `data` (hash, allowlist, estados, fallback). |
+| `conteudo.py` · `formato.py` | Textos do artigo e referências (dados puros) · **único** lugar de formatação numérica/data por idioma. |
 | `figuras.py` | Figuras Plotly (mapa, detalhe) e cartão, com paleta por tema (claro/escuro). |
 | `layout.py` | Blocos editoriais, barra de controles (idioma/tema) e montagem da página. |
 | `i18n.py` | Traduções PT/EN/ES da interface (detecção por `Accept-Language`, fallback EN). |
-| `assets/style.css` | Identidade visual (paleta + Inter), temas claro/escuro, responsivo e acessível (AAA). |
+| `assets/style.css` · `assets/fonts/` · `assets/icons/` | Design system (tokens), temas claro/escuro, responsivo e acessível (AAA); fontes auto-hospedadas; ícones SVG por máscara CSS. |
+| `DESIGN.md` · `PRODUCT.md` · `docs/ui/` · `.impeccable/` | Sistema de design, produto e exceções de acessibilidade. |
+| `docs/adr/` · `docs/operacao/` · `docs/CONTEXTO.md` | Decisões de arquitetura (ADR 0001–0004), runbook de agendamento e estado do projeto. |
 | `data/previsoes.csv` · `data/historico.csv` | Previsão t+1..t+4 + banda 90% (cidade **e** estado) · casos observados. |
 | `data/_meta.json` · `data/snapshots/` | Proveniência (coleta, modelo, origem) · snapshots datados (backtesting). |
+| `data/limite_treino.csv` | (opcional) máximo de casos usado na normalização, por município. |
+| `data/previsoes_anterior.csv` · `data/desempenho.json` | (opcionais) execução anterior · desempenho realizado; ausentes = recurso oculto. |
 | `data/br_uf.geojson` | Malha das 27 UFs (IBGE, **simplificada** ~128 KB; chave `properties.sigla`). |
 | `pipeline/infodengue.py` | Coleta a série semanal real (API alertcity) + **validação de schema**. |
 | `pipeline/preparacao.py` · `pipeline/modelo.py` | EDA/preparação (19 etapas) · LSTM A + conformal 90%. |
 | `pipeline/gerar_previsoes_reais.py` | **Pipeline completo**: InfoDengue → EDA → modelo → CSVs + `_meta.json` + snapshot. |
+| `pipeline/avaliar.py` · `pipeline/publicar_run.py` | Desempenho realizado (sem TF) · publicação atômica de um run na branch `data`. |
 | `pipeline/simplificar_geojson.py` | Simplifica a geometria da malha (offline, shapely) p/ reduzir o payload do mapa. |
 | `pipeline/validar_geocodes.py` | Confere os geocodes de `cidades.py` contra o IBGE (33/33 OK). |
-| `tests/test_unit.py` · `tests/test_e2e.py` | Validação (AAA claro/escuro, contrato, _meta, geojson, segurança) · Playwright (5 breakpoints, idioma/tema). |
+| `tests/` | `test_unit` (contrato, contraste AAA, segurança) · `test_atual`/`test_conjunto`/`test_limite`/`test_mudancas`/`test_desempenho`/`test_avaliar`/`test_dados_csv` (sem navegador) · `test_*e2e` (Playwright: 5 breakpoints, idioma/tema, fonte) · `test_a11y_axe` (axe-core AAA nos 2 temas). |
 | `.github/workflows/` | `ci` (testes), `security` (CVE/SAST/imagem/segredos) e `refresh` (pipeline semanal). |
 
 ## Testes
@@ -131,7 +174,7 @@ python app.py            # -> http://127.0.0.1:8050   (DASH_DEBUG=1 liga o modo 
 cd webapp && source .venv/bin/activate
 pip install -r tests/requirements.txt
 python -m playwright install chromium     # 1ª vez (navegador do E2E)
-pytest tests/ -q                          # 32 testes: 19 unit (validação) + 13 E2E (Playwright)
+pytest tests/ -q                          # unit + formato + i18n + E2E + axe AAA (a contagem muda; confie no resumo; ~7 min)
 ```
 
 As prévias ficam em `tests/screenshots/` (`bp-*` por breakpoint; `dark-*` no tema escuro). O schema
@@ -142,9 +185,9 @@ e o app não muda.
 
 **GitHub Flow** com quatro workflows (`.github/workflows/`): `ci` (unit em Python 3.11/3.14 + E2E),
 `security` (pip-audit · bandit · hadolint · Trivy · **gitleaks no histórico**) e `refresh`
-(pipeline semanal com **gate de contrato** antes de commitar) e `main-health` (vigia 2×/semana: abre issue se a `main` ficar vermelha). Actions **SHA-pinned**; Dependabot
-mantém os updates. Os dados publicados são gerados **apenas pelo CI** (Python 3.12 + TensorFlow 2.18, `pipeline/requirements-ci.txt`); o ambiente local (Python 3.14 + TF rc) serve só para teste. O deploy é no **Render** (Docker, free tier) via `render.yaml` — **auto-deploy no
-push em `main`** (não há workflow de deploy: o Render observa o repositório).
+(pipeline semanal com **gate de contrato** antes de publicar) e `main-health` (vigia 2×/semana: abre issue se a `main` ficar vermelha). Actions **SHA-pinned**; Dependabot
+mantém os updates. Os dados publicados são gerados **apenas pelo CI** (Python 3.12 + TensorFlow 2.18, `pipeline/requirements-ci.txt`; o serving roda em Python 3.11 e o desenvolvimento local em 3.14 + TF rc, só para teste). O deploy é no **Render** (Docker, free tier) via `render.yaml` — **auto-deploy no
+push em `main`** (não há workflow de deploy: o Render observa o repositório). O `refresh` **não** toca a `main` — publica na branch `data`.
 
 ```mermaid
 flowchart LR
@@ -153,8 +196,9 @@ flowchart LR
     CI -- "vermelho" --> X["bloqueia o merge"]
     M --> R["Render · autoDeploy<br/>build do Dockerfile + /health"]
     REF["refresh.yml<br/>(agendado · semanal)"] --> G{"gate de contrato<br/>schema dos CSVs"}
-    G -- "ok" --> M
-    G -- "falha" --> AB["aborta · nada é publicado"]
+    G -- "ok" --> AV["avaliar.py<br/>(não bloqueia)"] --> DT["publica na branch data<br/>run imutável + latest.json por último"]
+    G -- "falha" --> AB["aborta · a data segue com o último run bom"]
+    DT -.->|"app busca em 2º plano"| R
 ```
 
 ### Publicar no Render
@@ -163,8 +207,9 @@ flowchart LR
 2. **New → Blueprint** → selecione este repo. O Render lê o `render.yaml`, builda o `Dockerfile` e
    publica o web service (monitorando `/health`).
 3. Deploy automático a cada push em `main`. Em *Settings* dá para exigir **"After CI Checks Pass"**.
-4. Para atualizar a previsão: rode o pipeline (ou o workflow `refresh.yml`) e faça commit dos novos
-   `data/*.csv` — o push redispara o deploy.
+4. A previsão **atual** não exige deploy: o workflow `refresh.yml` publica na branch `data` e o app a
+   busca sozinho. Só o **Original** (`data/*.csv` na `main`) muda com commit + deploy — rode o
+   pipeline manualmente e abra um PR quando quiser renovar essa base de contingência.
 
 > A imagem é portável: Render, Fly.io, Koyeb etc. servem o mesmo `Dockerfile` (ou `gunicorn
 > app:server`). O container roda como usuário **não-root**, com `HEALTHCHECK` e dependências
@@ -174,6 +219,11 @@ flowchart LR
 
 - **Variáveis de ambiente:** `DASH_DEBUG=1` liga o debug (padrão **desligado** — nunca em produção),
   `HOST`/`PORT` (padrão `127.0.0.1:8050`), `WEB_CONCURRENCY` (workers do gunicorn), `LOG_LEVEL`.
+  Dados atuais: `DADOS_ATUAIS=0` é o **kill-switch** (serve só o Original; padrão ligado),
+  `DADOS_ATUAIS_URL` (base alternativa; só host/repositório permitidos) e `ATUAL_MAX_IDADE_SEMANAS`
+  (padrão 3; acima disso o estado vira *defasado* e o painel avisa).
+- **Agendamento e monitoramento:** ver `docs/operacao/agendamento.md` (heartbeat, alerta por issue em
+  falha e monitor externo opcional via `HEALTHCHECK_URL`).
 - **Segurança (hardening de exposição):** cabeçalhos `X-Content-Type-Options`, `Referrer-Policy`,
   `X-Frame-Options`, HSTS, `Permissions-Policy` e uma **CSP em Report-Only** — mantida assim por
   **decisão documentada**: o renderer do Dash exige `script-src 'unsafe-inline' 'unsafe-eval'` e os
@@ -192,8 +242,18 @@ CIDADES_GEO=4106902 MODO_RAPIDO=1 python gerar_previsoes_reais.py   # smoke numa
 python gerar_previsoes_reais.py                                      # todas (lento em CPU; ideal GPU)
 ```
 
-Isso sobrescreve `data/historico.csv` e `data/previsoes.csv` com previsões **reais** e grava
-`data/eda.json`. O app passa a mostrar a previsão nova **sem nenhuma mudança de código**.
+Isso sobrescreve `data/historico.csv` e `data/previsoes.csv` com previsões **reais** (guardando a
+execução anterior em `data/previsoes_anterior.csv`) e grava `data/limite_treino.csv`, `data/eda.json` e
+o snapshot datado. `DATA_DIR` redireciona a saída (é o que o CI usa). O treino completo leva ≈ 15 min no
+GitHub Actions (CPU). O `_meta.json` (versão 2) registra a proveniência: versões, semente, épocas,
+commit. O app passa a mostrar a previsão nova **sem nenhuma mudança de código**.
+
+## Roadmap
+
+Registrado, **não** implementado: calibração alternativa do conformal (ACI e variantes), conjunto de
+sementes, inferência NumPy com pesos congelados (exigiria novo ADR), shards por cidade, SEO com resumo
+pré-renderizado, endpoint `/status`, CSP *enforcing* com coletor, `pip-audit` agendado e imagem base em
+Python mais novo.
 
 ## Como citar
 

@@ -1,9 +1,10 @@
-# Contexto do projeto (webapp) — atualizado em 2026-11-21
+# Contexto do projeto (webapp) — atualizado em 2026-11-28
 
 Resumo para retomar o trabalho sem reexplorar o código. Detalhes: memória automática do projeto e `project-report/temp/HANDOFF-ui-refino.md`.
 
 ## Estado
 - Refino de UI/UX em 8 fases concluído na branch `fix/a11y-ui-remediation`; PR #11 aberto (aguarda 1º CI e merge). Não abrir novo PR sem OK explícito.
+- Plano 21 (dados atuais + honestidade): Fases 0, Q, 1 e 2 mergeadas. Fase 2B (metodologia, download CSV, "o que mudou"), Fase 3 (`avaliar.py` + Tabela 3 de desempenho realizado) e Fase 4 (README) na branch `feat/produto-2b`. Arquivos opcionais do run: `limite_treino.csv`, `previsoes_anterior.csv`, `desempenho.json` (ausente/divergente = só o recurso some).
 - North Star: "O Periódico Vivo". Refino, não redesign (identidade verde-terrosa, casca JBCS, AAA, trilíngue).
 
 ## Toolchain dos dados

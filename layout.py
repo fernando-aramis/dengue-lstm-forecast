@@ -336,6 +336,46 @@ def tabela_ranking(lang, n=None, c=ORIGINAL):
                   className="horiz-nota aux")] if sinalizadas else [])])
 
 
+def tabela_desempenho(lang, d):
+    """Fase 3.3 — Tabela 3: desempenho realizado por horizonte (legenda ACIMA). [] sem dados. Abaixo de n_min,
+    a linha mostra 'em acumulação (n=…)'. Números só via formato.py; ganho com sinal explícito."""
+    if not d or not any(v["n"] for v in d["por_h"].values()):
+        return []
+    dt = date.fromisoformat(d["gerado_em"])
+    cap = tr(lang, "desemp_cap", data=fmt_data(dt, lang, "ano"))
+
+    def skill(v):
+        return "—" if v is None else fmt_pct(v, lang, 0, sinal=True)
+
+    linhas = []
+    for h in ("1", "2", "3", "4"):
+        r = d["por_h"][h]
+        cab = html.Th(f"t+{h}", scope="row")
+        if r["n"] < d["n_min"]:
+            linhas.append(html.Tr([cab, html.Td(tr(lang, "desemp_acum", n=fmt_int(r["n"], lang), min=fmt_int(d["n_min"], lang)),
+                                                colSpan=8)]))
+            continue
+        ic = fmt_intervalo(r["wilson_inf"] * 100, r["wilson_sup"] * 100, lang, fmt=lambda v, l: fmt_dec(v, l, 0))
+        linhas.append(html.Tr([
+            cab, html.Td(fmt_int(r["n"], lang), className="tabular"),
+            html.Td(f"{fmt_pct(r['cobertura'], lang)} ({ic}%)", className="tabular"),
+            html.Td(fmt_dec(r["mae_lstm"], lang, 1), className="tabular"),
+            html.Td(fmt_dec(r["mae_ingenuo"], lang, 1), className="tabular"),
+            html.Td(skill(r["skill"]), className="tabular"),
+            html.Td(skill(r["skill_log"]), className="tabular"),
+            html.Td(skill(r["skill_mediano_cidade"]), className="tabular"),
+            html.Td(fmt_int(r["n_cidades"], lang), className="tabular")]))
+    cols = ["desemp_h", "desemp_n", "desemp_cob", "desemp_mae", "desemp_mae_i", "desemp_skill",
+            "desemp_skill_log", "desemp_skill_med", "desemp_ncid"]
+    return [html.Div(className="tbl-wrap tbl-desemp-wrap", tabIndex=0,
+                     **{"role": "region", "aria-label": tr(lang, "tabela_pref", n=3).strip()},
+                     children=[html.Table(className="res tab-desemp", children=[
+                         html.Caption([html.Strong(tr(lang, "tabela_pref", n=3)), cap]),
+                         html.Thead(html.Tr([html.Th(tr(lang, k), scope="col") for k in cols])),
+                         html.Tbody(linhas)])]),
+            html.P(tr(lang, "desemp_honest"), className="horiz-nota aux")]
+
+
 _MESES_PT = ["jan.", "fev.", "mar.", "abr.", "maio", "jun.", "jul.", "ago.", "set.", "out.", "nov.", "dez."]
 
 
@@ -394,7 +434,8 @@ def sumario(lang):
     itens = [("#resumo", tr(lang, "resumo_rotulo").rstrip(".")),
              ("#sec-1", "1 " + tr(lang, "sec1_t")), ("#sec-2", "2 " + tr(lang, "sec2_t")),
              ("#sec-3", "3 " + tr(lang, "sec3_t")), ("#sec-4", "4 " + tr(lang, "sec4_t")),
-             ("#sec-5", "5 " + tr(lang, "sec5_t")), ("#declaracoes", tr(lang, "decl_t")),
+             ("#sec-5", "5 " + tr(lang, "sec5_t")), ("#metodologia", tr(lang, "metod_t")),
+             ("#declaracoes", tr(lang, "decl_t")),
              ("#referencias", tr(lang, "ref_t")), ("#como-citar", tr(lang, "citar_t"))]
     return html.Nav(className="toc", **{"aria-label": tr(lang, "toc_label")}, children=[
         html.Span(tr(lang, "toc_label"), className="toc-label"),
@@ -487,6 +528,12 @@ def artigo(lang):
             card_etapa("04", tr(lang, "fut4_t"), tr(lang, "fut4_p"))])])
     s5 = _sec(5, lang, [tr(lang, "sec5_p1")], "sec5_t")
 
+    metodologia = html.Section(id="metodologia", **{"aria-labelledby": "metodologia-t"}, children=[
+        html.H2(tr(lang, "metod_t"), id="metodologia-t", className="sec-titulo"),
+        html.Div(className="prosa", children=[
+            blk for i in range(1, 8) for blk in (html.H3(tr(lang, f"metod_{i}_t"), className="prosa-h3"),
+                                                 html.P(rico(tr(lang, f"metod_{i}_p")), className="prosa-p"))])])
+
     declaracoes = html.Section(id="declaracoes", children=[
         html.H2(tr(lang, "decl_t"), className="sec-titulo"),
         declaracao(tr(lang, "decl_contrib_t"), tr(lang, "decl_contrib_p")),
@@ -514,7 +561,7 @@ def artigo(lang):
 
     coluna = html.Div(className="artigo-coluna", children=[
         html.Header(cab, className="artigo-cab"),
-        resumo, s1, s2, s3, s4, s5, declaracoes, referencias, como_citar])
+        resumo, s1, s2, s3, s4, s5, metodologia, declaracoes, referencias, como_citar])
 
     return html.Article(id="artigo", className="artigo", children=[
         sumario(lang), coluna, materiais(lang)])
@@ -615,7 +662,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIG
                                   # locales e a CSP proíbe CDN). O Graph é recriado ao trocar de idioma.
                                   config={"displayModeBar": False, "responsive": True,
                                           "locale": lang, "locales": {lang: plotly_locale(lang)}}),
-                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp, c))]),
+                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp, c, atual.desempenho_vigente()))]),
                 ]),
                 html.Figcaption([html.Strong(tr(lang, "figura_pref", n=1)),
                                  tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
@@ -623,6 +670,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIG
             html.Div(className="painel-extra", children=[
                 html.Div(className="avisos avisos--fonte", children=[_aviso(lang, c)]),
                 tabela_ranking(lang, c=c),
+                *tabela_desempenho(lang, atual.desempenho_vigente()),
                 html.Div(className="como-ler", children=[
                     html.H3(tr(lang, "como_ler_t"), className="como-ler-t"),
                     html.Ol([html.Li(tr(lang, "como_ler_1")), html.Li(tr(lang, "como_ler_2")),

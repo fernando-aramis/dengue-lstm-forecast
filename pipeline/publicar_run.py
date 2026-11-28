@@ -5,7 +5,7 @@ Uso (no CI, com a branch `data` em um worktree):
     python publicar_run.py <DATA_DIR da saída do pipeline> <worktree da branch data> [commit_sha]
 
 Layout gerado em <worktree>:
-    runs/AAAASS-<sha7>/{previsoes.csv,historico.csv,_meta.json,eda.json[,limite_treino.csv]}
+    runs/AAAASS-<sha7>/{previsoes.csv,historico.csv,_meta.json,eda.json[,limite_treino.csv][,previsoes_anterior.csv][,desempenho.json]}
     snapshots/previsoes_AAAASS.csv
     latest.json   {run, se_origem, sha256{arquivo: hash}}   <- escrito por último (ponteiro atômico)
 
@@ -21,7 +21,7 @@ import sys
 import pandas as pd
 
 OBRIGATORIOS = ("previsoes.csv", "historico.csv", "_meta.json")
-OPCIONAIS = ("eda.json", "limite_treino.csv")
+OPCIONAIS = ("eda.json", "limite_treino.csv", "desempenho.json")
 
 
 def _sha256(path):
@@ -36,6 +36,20 @@ def nome_run(se_origem, commit):
     if len(sha7) < 7 or any(ch not in "0123456789abcdef" for ch in sha7):
         sha7 = "0000000"
     return f"{ano}{int(semana):02d}-{sha7}", f"{ano}{int(semana):02d}"
+
+
+def _run_anterior(destino, se_origem):
+    """Caminho do previsoes.csv do run apontado pelo latest.json atual, se sua origem for anterior; senão None."""
+    try:
+        with open(os.path.join(destino, "latest.json"), encoding="utf-8") as f:
+            ptr = json.load(f)
+        run, origem = ptr["run"], str(ptr["se_origem"])[:10]
+        caminho = os.path.join(destino, "runs", run, "previsoes.csv")
+        if origem < se_origem and os.path.isfile(caminho) and os.path.basename(run) == run:
+            return caminho
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    return None
 
 
 def publicar(data_dir, destino, commit=None):
@@ -54,6 +68,11 @@ def publicar(data_dir, destino, commit=None):
         if os.path.isfile(src):
             shutil.copyfile(src, os.path.join(pasta, n))
             hashes[n] = _sha256(src)
+    # P.3: a previsão da execução anterior (mesmo schema) vai junto, com hash, para a UI mostrar "o que mudou"
+    anterior = _run_anterior(destino, se_origem)
+    if anterior:
+        shutil.copyfile(anterior, os.path.join(pasta, "previsoes_anterior.csv"))
+        hashes["previsoes_anterior.csv"] = _sha256(anterior)
     snap = os.path.join(data_dir, "snapshots", f"previsoes_{aaaass}.csv")
     if os.path.isfile(snap):
         os.makedirs(os.path.join(destino, "snapshots"), exist_ok=True)

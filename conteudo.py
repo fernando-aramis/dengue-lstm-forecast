@@ -317,6 +317,42 @@ T_ARTIGO = {
                   "es": "Datos, código y decisiones de limpieza publicados con el artículo."},
     "nova_aba": {"pt": "(abre em nova aba)", "en": "(opens in a new tab)", "es": "(abre en una nueva pestaña)"},
     "toc_label": {"pt": "Nesta página", "en": "On this page", "es": "En esta página"},
+    "metod_t": {"pt": "Metodologia e limites", "en": "Methodology and limits", "es": "Metodología y límites"},
+    "metod_1_t": {"pt": "A previsão", "en": "The forecast", "es": "La previsión"},
+    "metod_1_p": {
+        "pt": "Casos semanais estimados de dengue por município, de 1 a 4 semanas à frente (t+1…t+4), produzidos por uma rede LSTM treinada offline; o painel apenas exibe os resultados já calculados. Para estados sem município monitorado não há previsão própria.",
+        "en": "Estimated weekly dengue cases per municipality, 1 to 4 weeks ahead (t+1…t+4), produced by an LSTM network trained offline; the dashboard only displays results already computed. States without a monitored municipality have no forecast of their own.",
+        "es": "Casos semanales estimados de dengue por municipio, de 1 a 4 semanas adelante (t+1…t+4), producidos por una red LSTM entrenada fuera de línea; el panel solo muestra resultados ya calculados. Los estados sin municipio monitoreado no tienen previsión propia."},
+    "metod_2_t": {"pt": "O intervalo de 90%", "en": "The 90% interval", "es": "El intervalo de 90%"},
+    "metod_2_p": {
+        "pt": "A faixa vem de predição conformal adaptativa: em média, cerca de 90% dos valores observados deveriam cair dentro dela. Isso é uma garantia média de longo prazo, não para cada semana ou cidade, e depende de os erros recentes se parecerem com os passados; em surtos fora do padrão a cobertura pode ser menor.",
+        "en": "The band comes from adaptive conformal prediction: on average, about 90% of observed values should fall inside it. This is a long-run average guarantee, not one for each week or city, and it relies on recent errors resembling past ones; in unusual outbreaks coverage can be lower.",
+        "es": "La banda proviene de predicción conforme adaptativa: en promedio, cerca del 90% de los valores observados debería caer dentro de ella. Es una garantía promedio de largo plazo, no para cada semana o ciudad, y depende de que los errores recientes se parezcan a los pasados; en brotes atípicos la cobertura puede ser menor."},
+    "metod_3_t": {"pt": "Casos estimados e atraso de notificação", "en": "Estimated cases and reporting delay", "es": "Casos estimados y retraso de notificación"},
+    "metod_3_p": {
+        "pt": "A série usada é a de casos estimados (nowcast) do InfoDengue, que corrige o atraso de notificação. Os valores das semanas mais recentes ainda são preliminares e podem ser revistos; parte da diferença entre duas previsões consecutivas vem dessa revisão, não do modelo.",
+        "en": "The series used is InfoDengue’s estimated cases (nowcast), which corrects for reporting delay. Values for the most recent weeks are still preliminary and may be revised; part of the difference between two consecutive forecasts comes from this revision, not from the model.",
+        "es": "La serie usada es la de casos estimados (nowcast) de InfoDengue, que corrige el retraso de notificación. Los valores de las semanas más recientes aún son preliminares y pueden revisarse; parte de la diferencia entre dos previsiones consecutivas proviene de esa revisión, no del modelo."},
+    "metod_4_t": {"pt": "Dados originais e atuais", "en": "Original and current data", "es": "Datos originales y actuales"},
+    "metod_4_p": {
+        "pt": "“Original” é o conjunto publicado com o painel (treino manual, usado também se algo falhar). “Atual” é a execução semanal automática mais recente, baixada em segundo plano e conferida por hash; se estiver indisponível ou defasada, o painel mostra o original e avisa.",
+        "en": "“Original” is the dataset published with the dashboard (manual training, also used if anything fails). “Current” is the most recent automatic weekly run, downloaded in the background and verified by hash; if it is unavailable or stale, the dashboard shows the original and says so.",
+        "es": "“Original” es el conjunto publicado con el panel (entrenamiento manual, usado también si algo falla). “Actual” es la ejecución semanal automática más reciente, descargada en segundo plano y verificada por hash; si no está disponible o está desactualizada, el panel muestra el original y lo avisa."},
+    "metod_5_t": {"pt": "Fora do limite de treino e ingênuo", "en": "Outside the training limit and the naive baseline", "es": "Fuera del límite de entrenamiento e ingenuo"},
+    "metod_5_p": {
+        "pt": "Quando um município supera o maior nível visto no treino, o modelo extrapola e a previsão é menos confiável: o painel marca esses casos. A linha “Ingênuo” (repetir a última semana) é a referência mínima; se o modelo não a supera, a previsão não agrega informação.",
+        "en": "When a municipality exceeds the highest level seen in training, the model extrapolates and the forecast is less reliable: the dashboard flags these cases. The “Naive” line (repeating the last week) is the minimum benchmark; if the model does not beat it, the forecast adds no information.",
+        "es": "Cuando un municipio supera el mayor nivel visto en el entrenamiento, el modelo extrapola y la previsión es menos confiable: el panel marca esos casos. La línea “Ingenuo” (repetir la última semana) es la referencia mínima; si el modelo no la supera, la previsión no aporta información."},
+    "metod_6_t": {"pt": "Desempenho realizado", "en": "Realised performance", "es": "Desempeño realizado"},
+    "metod_6_p": {
+        "pt": "Quando há previsões antigas já confrontadas com o observado consolidado (4 semanas depois), o painel mostra cobertura e erro acumulados por horizonte. Antes de 100 pares por horizonte aparece apenas “em acumulação”.",
+        "en": "When past forecasts have been compared with the consolidated observed value (4 weeks later), the dashboard shows accumulated coverage and error per horizon. Below 100 pairs per horizon it only shows “accumulating”.",
+        "es": "Cuando hay previsiones pasadas ya contrastadas con lo observado consolidado (4 semanas después), el panel muestra cobertura y error acumulados por horizonte. Con menos de 100 pares por horizonte solo aparece “en acumulación”."},
+    "metod_7_t": {"pt": "Uso responsável", "en": "Responsible use", "es": "Uso responsable"},
+    "metod_7_p": {
+        "pt": "O nível de alerta exibido é simplificado (incidência semanal por 100 mil habitantes) e não é o alerta oficial do InfoDengue. Este painel é pesquisa acadêmica e não substitui o boletim epidemiológico oficial nem a orientação das autoridades de saúde.",
+        "en": "The alert level shown is simplified (weekly incidence per 100,000 inhabitants) and is not InfoDengue’s official alert. This dashboard is academic research and does not replace the official epidemiological bulletin or the guidance of health authorities.",
+        "es": "El nivel de alerta mostrado es simplificado (incidencia semanal por 100 mil habitantes) y no es la alerta oficial de InfoDengue. Este panel es investigación académica y no sustituye el boletín epidemiológico oficial ni la orientación de las autoridades de salud."},
 }
 
 # o título é publicado em PT nos 3 idiomas (WCAG 3.1.2)

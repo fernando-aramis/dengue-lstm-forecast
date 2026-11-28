@@ -18,6 +18,7 @@ Env opcionais:
 import json
 import os
 import platform
+import shutil
 import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -149,6 +150,23 @@ def agregar_estados(por_uf, hist_rows, prev_rows):
                               nivel_alerta(a["prev"], pop_uf)])
 
 
+def _guardar_anterior(nova_origem):
+    """P.3: antes de sobrescrever previsoes.csv, guarda a execução anterior em previsoes_anterior.csv
+    (arquivo opcional do contrato; só se a origem antiga for estritamente anterior à nova)."""
+    atual_csv = os.path.join(DATA, "previsoes.csv")
+    if not os.path.isfile(atual_csv):
+        return
+    try:
+        antiga = str(pd.read_csv(atual_csv, usecols=["data_origem"])["data_origem"].max())[:10]
+    except (ValueError, OSError):
+        return
+    destino = os.path.join(DATA, "previsoes_anterior.csv")
+    if antiga < str(nova_origem)[:10]:
+        shutil.copyfile(atual_csv, destino)
+    elif os.path.isfile(destino):
+        os.remove(destino)          # reexecução da mesma origem: um "anterior" velho enganaria o "o que mudou"
+
+
 def main():
     cidades = _lista_cidades()
     print(f"Processando {len(cidades)} cidade(s) · EY_START={EY_START} · "
@@ -199,6 +217,7 @@ def main():
     pd.DataFrame(hist_rows, columns=["nivel_geo", "geo_id", "uf", "nome", "lat", "lon",
                                      "data", "casos"]).to_csv(
         os.path.join(DATA, "historico.csv"), index=False)
+    _guardar_anterior(df_prev["data_origem"].max())
     df_prev.to_csv(os.path.join(DATA, "previsoes.csv"), index=False)
     # 2.2: limite de treino por município (arquivo OPCIONAL do contrato; alimenta o aviso "fora do limite")
     pd.DataFrame(limites).to_csv(os.path.join(DATA, "limite_treino.csv"), index=False)

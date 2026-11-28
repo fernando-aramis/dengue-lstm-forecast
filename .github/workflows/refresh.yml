@@ -101,13 +101,23 @@ jobs:
           pip install "$(grep -E '^pytest==' tests/requirements.txt)"
           pytest tests/test_unit.py -q -k "schema or geojson or meta_proveniencia or contrato_estavel"
 
-      - name: Publicar na branch `data` (run imutável + latest.json por último)
+      - name: Avaliar o desempenho realizado (Fase 3; não bloqueia a publicação)
+        # Roda ANTES de publicar para que `desempenho.json` entre no run com hash (um único commit, atômico).
+        # Compara os snapshots já publicados (+ o novo) com o observado consolidado do run novo.
+        # Falha aqui só desliga o recurso na UI: o arquivo é opcional no contrato.
         if: steps.probe.outputs.treinar == 'true'
+        continue-on-error: true
         run: |
           if [ "$BOOTSTRAP" = "1" ]; then
             # semeia com os snapshots históricos de main (preserva o histórico p/ a Fase 3)
             mkdir -p _data/snapshots && cp -n data/snapshots/*.csv _data/snapshots/ 2>/dev/null || true
           fi
+          python pipeline/avaliar.py _data/snapshots "$DATA_OUT/historico.csv" "$DATA_OUT/desempenho.json" \
+            "$DATA_OUT"/snapshots/previsoes_*.csv
+
+      - name: Publicar na branch `data` (run imutável + latest.json por último)
+        if: steps.probe.outputs.treinar == 'true'
+        run: |
           RUN=$(python pipeline/publicar_run.py "$DATA_OUT" _data "$GITHUB_SHA")
           cd _data
           git add -A

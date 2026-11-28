@@ -6,6 +6,7 @@ import os
 import threading
 from datetime import date, timedelta
 
+import pandas as pd
 import pytest
 
 import atual
@@ -258,3 +259,31 @@ def test_limite_listado_mas_ausente_nao_derruba_o_run():
 def test_limite_ilegivel_nao_derruba_o_run():
     a = _mk(_com_limite(b"\xff\xfe lixo"))
     assert a.tentar() is True and a.conjunto().limite == {}
+
+
+def _com_anterior(corpo, hash_ok=True):
+    s = _site()
+    base = atual.BASE_PADRAO
+    s[f"{base}runs/{RUN}/previsoes_anterior.csv"] = corpo
+    p = json.loads(s[base + "latest.json"])
+    p["sha256"]["previsoes_anterior.csv"] = hashlib.sha256(corpo if hash_ok else b"x").hexdigest()
+    s[base + "latest.json"] = json.dumps(p).encode()
+    return s
+
+
+def _csv_anterior():
+    a = dados.ORIGINAL.prev.copy()
+    for col in ("data_origem", "data_prev"):
+        a[col] = (a[col] - pd.Timedelta(days=7)).dt.strftime("%Y-%m-%d")
+    return a.to_csv(index=False).encode()
+
+
+def test_anterior_opcional_e_carregado_quando_o_hash_confere():
+    a = _mk(_com_anterior(_csv_anterior()))
+    assert a.tentar() is True and a.conjunto().anterior is not None
+
+
+@pytest.mark.parametrize("corpo,hash_ok", [(b"\xff\xfe lixo", True), (_csv_anterior(), False)])
+def test_anterior_invalido_ou_divergente_desliga_so_o_recurso(corpo, hash_ok):
+    a = _mk(_com_anterior(corpo, hash_ok))
+    assert a.tentar() is True and a.conjunto().anterior is None
