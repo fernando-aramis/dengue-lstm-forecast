@@ -1,0 +1,30 @@
+{
+  "gerado_em": "2026-11-28T10:30:50+00:00",
+  "criterio": {
+    "atraso_semanas": 4,
+    "n_min": 100
+  },
+  "por_h": {
+    "1": {
+      "n": 0
+    },
+    "2": {
+      "n": 0
+    },
+    "3": {
+      "n": 0
+    },
+    "4": {
+      "n": 0
+    }
+  },
+  "snapshots_usados": [
+    "previsoes_202643.csv",
+    "previsoes_202644.csv",
+    "previsoes_202645.csv",
+    "previsoes_202646.csv",
+    "previsoes_202646.csv"
+  ],
+  "periodo": null,
+  "ultima_semana_observada": "2026-11-15"
+}

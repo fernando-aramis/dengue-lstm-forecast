@@ -1,10 +1,12 @@
 {
-  "run": "202646-d795b19",
+  "run": "202646-1ffaeba",
   "se_origem": "2026-11-15",
   "sha256": {
     "previsoes.csv": "4f1d07d774b25d528ded364e6074caf8d95e1860db832745323fba8f82893b31",
     "historico.csv": "c7e46a11ae4c0cb9ac70a981dd63ddbcc844b5378ffe6b1ed4576ec06b849a66",
-    "_meta.json": "5cdaef08db912f6e16368f7e420954140828289b95db09b76171d2e0383d2546",
-    "eda.json": "45a18b1b223c8106b46edd3fb0711ad2c5b6deebd7a40072cd7131aa3e7110e0"
+    "_meta.json": "7b7585a9a826b952afeb4ebf35ab47690d68d0b98467a6f6d1fddc6be3aee528",
+    "eda.json": "45a18b1b223c8106b46edd3fb0711ad2c5b6deebd7a40072cd7131aa3e7110e0",
+    "limite_treino.csv": "fd752b9f9dea9fbddbdaa3de88d966b33a9cdeb708642aac633e821c066020be",
+    "desempenho.json": "24ab456884ead801768e977f64c4c177c75218f2917e12853abe483a8ffaab5a"
   }
 }
