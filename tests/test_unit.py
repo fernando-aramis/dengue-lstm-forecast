@@ -15,7 +15,9 @@ import pandas as pd
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 WEBAPP = os.path.dirname(AQUI)
-DATA = os.path.join(WEBAPP, "data")
+DATA = os.path.join(WEBAPP, "data")                # repositório (geojson não é saída do pipeline)
+# Saída do pipeline sob teste (gate do refresh): previsoes/historico/_meta usam DATA_DIR.
+DATA_SAIDA = os.path.abspath(os.environ.get("DATA_DIR") or DATA)
 for p in (WEBAPP, os.path.join(WEBAPP, "pipeline")):
     if p not in sys.path:
         sys.path.insert(0, p)
@@ -123,7 +125,7 @@ def test_css_usa_tokens_AAA():
 
 # ---------------------------------------------------------------- contrato dos dados
 def test_schema_previsoes():
-    df = pd.read_csv(os.path.join(DATA, "previsoes.csv"))
+    df = pd.read_csv(os.path.join(DATA_SAIDA, "previsoes.csv"))
     cols = {"nivel_geo", "geo_id", "uf", "nome", "lat", "lon", "data_origem", "h",
             "data_prev", "prev", "inf", "sup", "nivel_alerta"}
     assert cols.issubset(df.columns)
@@ -135,7 +137,7 @@ def test_schema_previsoes():
 
 
 def test_schema_historico():
-    df = pd.read_csv(os.path.join(DATA, "historico.csv"))
+    df = pd.read_csv(os.path.join(DATA_SAIDA, "historico.csv"))
     assert {"nivel_geo", "geo_id", "uf", "nome", "lat", "lon", "data", "casos"}.issubset(df.columns)
     assert (df["casos"] >= 0).all()
 
@@ -150,7 +152,7 @@ def test_contrato_estavel():
     altera o JSON na MESMA PR (revisão consciente)."""
     for nome in ("previsoes", "historico"):
         esperado = json.load(open(os.path.join(AQUI, "contrato", nome + ".json"), encoding="utf-8"))
-        df = pd.read_csv(os.path.join(DATA, nome + ".csv"))
+        df = pd.read_csv(os.path.join(DATA_SAIDA, nome + ".csv"))
         obtido = [{"nome": c, "dtype": _dtype_contrato(t)} for c, t in df.dtypes.items()]
         assert obtido == esperado["colunas"], f"contrato de {nome}.csv mudou"
 
@@ -185,7 +187,7 @@ def test_layout_sem_lista_aninhada():
     hits = _coleta_listas_aninhadas(A.serve_layout())
     for lg in ("pt", "en", "es"):
         hits += _coleta_listas_aninhadas(A.construir_conteudo(lg))
-        for g in [A.mapa_cid["geo_id"].iloc[0], "UF-PR", "UF-ZZ"]:
+        for g in [A.ORIGINAL.mapa_cid["geo_id"].iloc[0], "UF-PR", "UF-ZZ"]:
             hits += _coleta_listas_aninhadas(A.cartao_info(g, lg))
     assert hits == [], "há lista aninhada em children (causa o erro do Dash/React)"
 
@@ -205,7 +207,7 @@ def test_figuras_claro_escuro():
     import app as A
     for tm in ("light", "dark"):
         A.figura_mapa("BR", "en", tm)
-        A.figura_detalhe(A.mapa_cid["geo_id"].iloc[0], "es", tm)
+        A.figura_detalhe(A.ORIGINAL.mapa_cid["geo_id"].iloc[0], "es", tm)
 
 
 def test_geojson_simplificado_leve():
@@ -218,7 +220,7 @@ def test_geojson_simplificado_leve():
 
 
 def test_meta_proveniencia():
-    mp = os.path.join(DATA, "_meta.json")
+    mp = os.path.join(DATA_SAIDA, "_meta.json")
     assert os.path.exists(mp), "o pipeline deve gravar data/_meta.json"
     m = json.load(open(mp, encoding="utf-8"))
     for k in ("coletado_em", "se_origem", "modelo", "n_cidades", "n_falhas"):
@@ -235,7 +237,7 @@ def test_modulos_refatorados_importam():
     import dados
     import figuras
     import layout
-    assert hasattr(dados, "prev") and hasattr(dados, "GEO0")
+    assert hasattr(dados, "ORIGINAL") and hasattr(dados.ORIGINAL, "geo0")
     assert hasattr(figuras, "figura_mapa") and hasattr(figuras, "PLOT")
     assert hasattr(layout, "construir_conteudo") and hasattr(layout, "serve_layout")
 
@@ -252,10 +254,10 @@ def test_cartao_estado_e_sem_cobertura():
 
 def test_cap_sup_invariante_e_teto():
     import app as A
-    assert (A.prev["sup"] >= A.prev["prev"]).all()
-    assert (A.prev["inf"] <= A.prev["prev"]).all()
-    pico = A.hist.groupby("geo_id")["casos"].max()
-    m = A.prev.join(pico.rename("pico"), on="geo_id").dropna(subset=["pico"])
+    assert (A.ORIGINAL.prev["sup"] >= A.ORIGINAL.prev["prev"]).all()
+    assert (A.ORIGINAL.prev["inf"] <= A.ORIGINAL.prev["prev"]).all()
+    pico = A.ORIGINAL.hist.groupby("geo_id")["casos"].max()
+    m = A.ORIGINAL.prev.join(pico.rename("pico"), on="geo_id").dropna(subset=["pico"])
     teto = np.maximum(1.0, np.maximum(m["pico"], m["prev"])) * A.TETO_FATOR
     assert (m["sup"] <= teto + 1e-6).all(), "sup acima do teto (quebraria a escala do gráfico)"
 
@@ -360,9 +362,9 @@ def test_semana_epi():
 
 def test_resumo_situacao():
     import dados
-    r = dados.RESUMO
-    assert sum(r["por_nivel"].values()) == r["n_cidades"] == len(dados.mapa_cid), "soma por nível != n_cidades"
-    assert r["total_h1"] == int(dados.mapa_cid["prev"].sum()), "total_h1 != soma das previsões"
+    r = dados.ORIGINAL.resumo
+    assert sum(r["por_nivel"].values()) == r["n_cidades"] == len(dados.ORIGINAL.mapa_cid), "soma por nível != n_cidades"
+    assert r["total_h1"] == int(dados.ORIGINAL.mapa_cid["prev"].sum()), "total_h1 != soma das previsões"
 
 
 def test_fmt_int_por_idioma():
@@ -374,7 +376,7 @@ def test_fmt_int_por_idioma():
 def test_horizontes_4_itens():
     import dados
     import figuras
-    out = figuras.horizontes(dados.GEO0, "pt")
+    out = figuras.horizontes(dados.ORIGINAL.geo0, "pt")
     assert len(out[0].children) == 4, f"esperava 4 horizontes, veio {len(out[0].children)}"
 
 
@@ -387,7 +389,7 @@ def test_tabela_ranking():
     # padrão: lista COMPLETA, da maior para a menor previsão
     completa = layout.tabela_ranking("pt").children[0]
     linhas = completa.children[2].children
-    assert len(linhas) == len(dados.mapa_cid), "Tabela 1 deve listar todas as cidades monitoradas"
+    assert len(linhas) == len(dados.ORIGINAL.mapa_cid), "Tabela 1 deve listar todas as cidades monitoradas"
     prevs = [int(l.children[1].children.replace(".", "").replace("\xa0", "")) for l in linhas]
     assert prevs == sorted(prevs, reverse=True), "Tabela 1 deve vir ordenada da maior para a menor"
 
@@ -464,7 +466,8 @@ def test_banda_90_tem_bordas_visiveis_3a1():
     """A banda sozinha tem ~1,3:1 (claro) / 1,6:1 (escuro) — abaixo dos 3:1 de WCAG 1.4.11. As bordas finas
     (sup/inf) na cor da previsão devem existir e ter ≥3:1 contra o papel nos dois temas."""
     import figuras
-    from dados import GEO0
+    from dados import ORIGINAL
+    GEO0 = ORIGINAL.geo0
     for tema in ("light", "dark"):
         fig = figuras.figura_detalhe(GEO0, "pt", tema)
         p = figuras.PLOT[tema]
@@ -475,7 +478,8 @@ def test_banda_90_tem_bordas_visiveis_3a1():
 
 def test_figura_detalhe_localiza_data_no_hover():
     import figuras
-    from dados import GEO0
+    from dados import ORIGINAL
+    GEO0 = ORIGINAL.geo0
     assert figuras.figura_detalhe(GEO0, "pt").layout.xaxis.hoverformat == "%d/%m/%Y"
     assert figuras.figura_detalhe(GEO0, "es").layout.xaxis.hoverformat == "%d/%m/%Y"
     assert figuras.figura_detalhe(GEO0, "en").layout.xaxis.hoverformat == "%m/%d/%Y"
@@ -486,7 +490,7 @@ def test_callbacks_toleram_payloads_forjados():
     import app as A
     import dados as D
     assert A._geo_valido(4106902) is False and A._geo_valido(["x"]) is False
-    assert A._geo_valido(D.GEO0) is True and A._geo_valido("UF-PR") is True and A._geo_valido("UF-ZZ") is False
+    assert A._geo_valido(D.ORIGINAL.geo0) is True and A._geo_valido("UF-PR") is True and A._geo_valido("UF-ZZ") is False
     ns = A.no_update
     for click in ({"points": []}, {"points": ["x"]}, {"points": [{"location": ["SP"]}]},
                   {"points": [{"customdata": 4106902}]}, {}, None, {"points": [{"location": "ZZ"}]}):
@@ -503,8 +507,8 @@ def test_tema_mapa_espelha_contorno_dos_estados():
     import dados as D
     from figuras import PLOT
     ops = {tuple(o["location"]): o["params"]["value"] for o in A.tema_mapa("dark")._operations}
-    assert ops[("data", D.IDX_CHOROPLETH, "marker", "line", "color")] == PLOT["dark"]["mapline"]
-    assert ops[("data", D.IDX_CHOROPLETH, "marker", "line", "width")] == PLOT["dark"]["maplinew"]
+    assert ops[("data", D.ORIGINAL.idx_choropleth, "marker", "line", "color")] == PLOT["dark"]["mapline"]
+    assert ops[("data", D.ORIGINAL.idx_choropleth, "marker", "line", "width")] == PLOT["dark"]["maplinew"]
 
 
 def test_popular_cidades_ao_trocar_idioma_nao_reverte_a_cidade():
@@ -514,7 +518,7 @@ def test_popular_cidades_ao_trocar_idioma_nao_reverte_a_cidade():
 
     import app as A
     import dados as D
-    uf = next(u for u, l in D.cidades_por_uf.items() if l)
+    uf = next(u for u, l in D.ORIGINAL.cidades_por_uf.items() if l)
 
     def chama(trigger):
         ctx_val = AttributeDict(triggered_inputs=[{"prop_id": trigger}], inputs_list=[], states_list=[],

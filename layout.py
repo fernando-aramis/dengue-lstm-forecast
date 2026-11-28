@@ -10,12 +10,74 @@ from urllib.parse import parse_qs, urlsplit
 import flask
 from dash import dcc, html
 
+import atual
 from conteudo import BIBTEX, ESTUDO, LINKS, ORCID, ORCID_URL, REFERENCIAS, TAB_RES, abnt
-from dados import DATA_ORIGEM, DATA_PREV_H1, GEO0, RESUMO, SE_H1, SE_ORIGEM, UFS, cidades_por_uf, mapa_cid, nome_uf
+from dados import ORIGINAL, UFS, nome_uf
 from figuras import ORDEM_NIVEL, cartao_info, figura_detalhe, figura_mapa, horizontes
 from formato import plotly_locale
 from i18n import IDIOMAS, fmt_data, fmt_dec, fmt_int, fmt_intervalo, fmt_pct, resolver, tr
 from i18n import nivel as nivel_tr
+
+
+# ---------------------------------------------------------------- fonte dos dados: original × atual (1.10)
+def _se_txt(lang, se):
+    return f"{tr(lang, 'se_abrev', se=se[1])}/{se[0]}"
+
+
+_MOTIVOS = (("desligado", "fonte_m_desligado"), ("rede", "fonte_m_rede"), ("HTTP", "fonte_m_http"),
+            ("anterior", "fonte_m_anterior"))
+
+
+def _motivo(lang, m):
+    for pref, chave in _MOTIVOS:
+        if m and m.startswith(pref):
+            return tr(lang, chave)
+    return tr(lang, "fonte_m_invalido")
+
+
+def status_fonte(lang, est, c=ORIGINAL):
+    """Texto da linha de status (role=status) a partir do estado do atual.py."""
+    e = est["estado"]
+    if e == atual.CARREGANDO:
+        return tr(lang, "fonte_st_carregando")
+    if e in (atual.DISPONIVEL, atual.DEFASADO):
+        try:
+            coletado = fmt_data(date.fromisoformat(str(est["coletado_em"])[:10]), lang, "ano")
+        except (TypeError, ValueError):
+            coletado = "—"
+        chave = "fonte_st_disponivel" if e == atual.DISPONIVEL else "fonte_st_defasado"
+        return tr(lang, chave, se=_se_txt(lang, est["se_origem"]), data=coletado)
+    return tr(lang, "fonte_st_indisponivel", motivo=_motivo(lang, est["motivo"]), se=_se_txt(lang, c.se_origem))
+
+
+def atributos_fonte(est, fonte):
+    """aria-checked/tabindex/aria-disabled dos dois botões (roving tabindex do radiogroup)."""
+    ok = est["estado"] in (atual.DISPONIVEL, atual.DEFASADO)
+    atual_on = fonte == "atual" and ok
+    return {
+        "original": {"aria-checked": "false" if atual_on else "true", "tabIndex": -1 if atual_on else 0},
+        "atual": {"aria-checked": "true" if atual_on else "false", "tabIndex": 0 if atual_on else -1,
+                  "aria-disabled": "false" if ok else "true"},
+    }
+
+
+def seletor_fonte(lang, fonte="original", est=None, c=ORIGINAL):
+    """Controle segmentado (radiogroup) Original/Atual + linha de status. Rótulos levam a SE de cada fonte."""
+    est = est or atual.global_atual().estado()
+    a = atributos_fonte(est, fonte)
+    rot_atual = tr(lang, "fonte_atual")
+    if est["se_origem"] and est["estado"] in (atual.DISPONIVEL, atual.DEFASADO):
+        rot_atual += f" · {_se_txt(lang, est['se_origem'])}"
+    return html.Div(className="fonte", children=[
+        html.Span(tr(lang, "fonte_grupo"), id="fonte-rotulo", className="fonte-rotulo"),
+        html.Div(className="fonte-grupo", role="radiogroup", **{"aria-labelledby": "fonte-rotulo"}, children=[
+            html.Button(f"{tr(lang, 'fonte_original')} · {_se_txt(lang, c.se_origem)}", id="fonte-original",
+                        className="fonte-opt", n_clicks=0, role="radio", type="button", **a["original"]),
+            html.Button(rot_atual, id="fonte-atual", className="fonte-opt", n_clicks=0, role="radio",
+                        type="button", **{"aria-describedby": "fonte-status"}, **a["atual"])]),
+        html.P(status_fonte(lang, est, c), id="fonte-status", className="fonte-status",
+               role="status", **{"aria-live": "polite"}),
+    ])
 
 
 # ---------------------------------------------------------------- blocos reutilizáveis
@@ -28,17 +90,18 @@ def stat(big, lbl, tom=None):
         html.Div(corpo, className="big"), html.Div(lbl, className="lbl")])
 
 
-def situacao(lang):
+def situacao(lang, c=ORIGINAL, fonte="original"):
     """Cartão 'Resumo da situação' do hero: total t+1 + barra empilhada + lista por nível."""
+    SE_H1, DATA_PREV_H1, RESUMO = c.se_h1, c.data_prev_h1, c.resumo
     _, se = SE_H1
     ini, fim = DATA_PREV_H1, DATA_PREV_H1 + timedelta(days=6)
     por, n = RESUMO["por_nivel"], RESUMO["n_cidades"]
     segs, aria = [], []
     for nv in ORDEM_NIVEL:
-        c = por.get(nv, 0)
-        if c:
-            segs.append(html.Span(className=f"barra-seg {nv.lower()}", style={"flexGrow": c}))
-            aria.append(f"{c} {nivel_tr(lang, nv)}")
+        qtd = por.get(nv, 0)
+        if qtd:
+            segs.append(html.Span(className=f"barra-seg {nv.lower()}", style={"flexGrow": qtd}))
+            aria.append(f"{qtd} {nivel_tr(lang, nv)}")
     linhas = [html.Div(className="sit-linha", children=[
         html.Span([html.Span(className=f"glifo {nv.lower()}", **{"aria-hidden": "true"}),
                    nivel_tr(lang, nv)], className=f"pill nivel-{nv.lower()}"),
@@ -54,6 +117,8 @@ def situacao(lang):
                  **{"aria-label": tr(lang, "sit_barra_aria", n=n, lista=", ".join(aria))}),
         html.Div(linhas, className="sit-lista"),
         html.Div(tr(lang, "nota_nivel_hero"), className="sit-nota aux"),
+        *([html.Div(tr(lang, "fonte_exibindo", fonte=tr(lang, "fonte_nome_atual")), className="sit-nota aux")]
+          if fonte == "atual" else []),
     ])
 
 
@@ -75,30 +140,30 @@ def opcoes_uf(lang):
             + [{"label": nome_uf.get(uf, uf), "value": uf} for uf in UFS])
 
 
-def opcoes_cidade_br():
+def opcoes_cidade_br(c=ORIGINAL):
     """Todas as cidades (visão BR) — já no layout para o value=GEO0 resolver no 1º render
     (o dropdown do Dash descarta um value que não esteja nas opções iniciais)."""
-    todas = sorted((n, g) for lst in cidades_por_uf.values() for n, g in lst)
+    todas = sorted((n, g) for lst in c.cidades_por_uf.values() for n, g in lst)
     return [{"label": n, "value": g} for n, g in todas]
 
 
-_GEOS_CIDADE = set(mapa_cid["geo_id"].astype(str))
 _UFS = set(UFS)
 
 
-def _sel_inicial(sel, lang):
+def _sel_inicial(sel, lang, c=ORIGINAL):
     """A15 — resolve a seleção vinda da URL (validada) → (geo p/ renderizar, uf, opções, valor).
     Cidade "UF-XX" abre no escopo estadual; cidade normal abre direto; inválida cai no GEO0."""
+    geos_cidade = set(c.mapa_cid["geo_id"].astype(str))
     if isinstance(sel, str) and sel.startswith("UF-") and sel[3:] in _UFS:
         uf = sel[3:]
         rot = f"◼ {nome_uf.get(uf, uf)} ({tr(lang, 'escopo_estado').lower()})"
         opts = [{"label": rot, "value": sel}] + [{"label": n, "value": g}
-                                                 for n, g in cidades_por_uf.get(uf, [])]
+                                                 for n, g in c.cidades_por_uf.get(uf, [])]
         return sel, uf, opts, sel
     s = str(sel) if sel is not None else ""
-    if s in _GEOS_CIDADE:
-        return s, "BR", opcoes_cidade_br(), s
-    return GEO0, "BR", opcoes_cidade_br(), GEO0
+    if s in geos_cidade:
+        return s, "BR", opcoes_cidade_br(c), s
+    return c.geo0, "BR", opcoes_cidade_br(c), c.geo0
 
 
 _NOMES_PROPRIOS = re.compile(r"\b(InfoDengue|Mosqlimate|SINAN|IBGE|UTFPR|LSTM|JBCS|Zenodo|GitHub|Colab|Anthropic|Claude)\b")
@@ -117,7 +182,8 @@ def rico(texto):
     return [p for p in partes if p != ""]
 
 
-def _aviso(lang):
+def _aviso(lang, c=ORIGINAL):
+    SE_ORIGEM, DATA_ORIGEM = c.se_origem, c.data_origem
     origem_se = f"{tr(lang, 'se_abrev', se=SE_ORIGEM[1])}/{SE_ORIGEM[0]} ({DATA_ORIGEM})"
     full = tr(lang, "aviso", origem=origem_se)
     strong = tr(lang, "aviso_strong")
@@ -221,8 +287,9 @@ def legenda_niveis(lang):
                     children=[html.Span(tr(lang, "legend_title"), className="leg-label"), *itens])
 
 
-def legenda_serie(lang):
+def legenda_serie(lang, c=ORIGINAL):
     """Legenda do gráfico de detalhe em HTML (fora do canvas) — Observado/Previsto/Intervalo/Origem."""
+    SE_ORIGEM = c.se_origem
     _, se = SE_ORIGEM
     def item(cls, texto):
         return html.Span([html.Span(className=f"serie-sw {cls}"), texto], className="serie-item")
@@ -233,11 +300,12 @@ def legenda_serie(lang):
                   children=[html.Span(className="serie-sw cmp"), html.Span(id="legenda-cmp-nome")])])
 
 
-def tabela_ranking(lang, n=None):
+def tabela_ranking(lang, n=None, c=ORIGINAL):
     """Tabela 1 — previsões de TODAS as cidades monitoradas, da maior para a menor (alternativa textual
     acessível ao mapa). `n` limita as linhas (testes); o padrão é a lista completa, numa região rolável."""
+    SE_H1 = c.se_h1
     _, se = SE_H1
-    top = mapa_cid.sort_values("prev", ascending=False)
+    top = c.mapa_cid.sort_values("prev", ascending=False)
     if n is not None:
         top = top.head(n)
     linhas = []
@@ -445,9 +513,11 @@ def artigo(lang):
         sumario(lang), coluna, materiais(lang)])
 
 
-def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
-    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang)
-    cmp = cmp if (isinstance(cmp, str) and cmp in _GEOS_CIDADE) else None   # A15 — seleção inicial da URL
+def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None, c=ORIGINAL, fonte="original"):
+    SE_ORIGEM, DATA_ORIGEM = c.se_origem, c.data_origem
+    geo, uf_ini, cid_opts, cid_val = _sel_inicial(sel, lang, c)
+    geos_cidade = set(c.mapa_cid["geo_id"].astype(str))
+    cmp = cmp if (isinstance(cmp, str) and cmp in geos_cidade) else None   # A15 — seleção inicial da URL
     return [
         # hero (capa dos slides: fundo verde full-bleed + resumo da situação)
         html.Header(className="hero", children=[
@@ -459,7 +529,7 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
                              html.Span(tr(lang, "h1_acento"), className="acento")]),
                     html.P(rico(tr(lang, "lede")), className="lede"),
                 ]),
-                situacao(lang),
+                situacao(lang, c, fonte),
                 html.Div(className="hero-foot", children=[
                     html.Div(className="hero-autor", children=[
                         html.Strong("Fernando Aramis Colque"),
@@ -492,9 +562,11 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
                 html.Div(className="sec-head", children=[
                     html.H2(tr(lang, "map_h2"), id="painel-titulo")]),
                 html.Span([html.Span(className="rec-dot", **{"aria-hidden": "true"}),
-                           tr(lang, "recencia", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])],
+                           tr(lang, "recencia", se=SE_ORIGEM[1], ano=SE_ORIGEM[0]),
+                           " · " + tr(lang, "fonte_exibindo", fonte=tr(lang, f"fonte_nome_{fonte}"))],
                           className="recencia")]),
             html.P(tr(lang, "map_sub", origem=DATA_ORIGEM), className="sec-sub"),
+            seletor_fonte(lang, fonte),
             html.Figure(className="figura", children=[
                 html.Div(className="grid", children=[
                     html.Div(className="panel panel-mapa", children=[
@@ -515,35 +587,35 @@ def construir_conteudo(lang, sel=None, tema="light", cvd=False, cmp=None):
                                                        clearable=False, labels=_labels_dd(lang))])])]),
                         html.Div(id="mapa-fallback", className="mapa-fallback", hidden=True,
                                  role="status", children=html.P(tr(lang, "mapa_sem_webgl"))),
-                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang, tema_nome=tema, cvd=cvd),
+                        dcc.Graph(id="mapa", className="graph-mapa", figure=figura_mapa(uf_ini, lang=lang, tema_nome=tema, cvd=cvd, c=c),
                                   config={"displayModeBar": False, "scrollZoom": True, "responsive": True}),
                         legenda_niveis(lang),
                         html.Div(tr(lang, "map_hint"), className="map-hint")]),
                     html.Div(className="panel panel-detalhe", children=[
-                        html.Div(id="cartao", className="cartao", children=cartao_info(geo, lang)),
+                        html.Div(id="cartao", className="cartao", children=cartao_info(geo, lang, c=c)),
                         # anúncio para leitor de tela quando a cidade muda (NEW-1)
                         html.Div(id="cartao-status", className="sr-only",
                                  **{"role": "status", "aria-live": "polite", "aria-atomic": "true"}),
                         html.Div(className="comparar", children=[
                             html.Label(tr(lang, "lbl_comparar"), htmlFor="dd-comparar"),
                             dcc.Dropdown(id="dd-comparar", placeholder=tr(lang, "ph_comparar"),
-                                         options=opcoes_cidade_br(), value=cmp, clearable=True,
+                                         options=opcoes_cidade_br(c), value=cmp, clearable=True,
                                          disabled=geo.startswith("UF-"), labels=_labels_dd(lang))]),
-                        legenda_serie(lang),
+                        legenda_serie(lang, c),
                         dcc.Graph(id="detalhe", className="graph-detalhe",
-                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema, comp=cmp),
+                                  figure=figura_detalhe(geo, lang=lang, tema_nome=tema, comp=cmp, c=c),
                                   # locale INLINE: meses/dias no idioma da UI (o Plotly do Dash não traz
                                   # locales e a CSP proíbe CDN). O Graph é recriado ao trocar de idioma.
                                   config={"displayModeBar": False, "responsive": True,
                                           "locale": lang, "locales": {lang: plotly_locale(lang)}}),
-                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp))]),
+                        html.Div(id="horizontes", children=horizontes(geo, lang, cmp, c))]),
                 ]),
                 html.Figcaption([html.Strong(tr(lang, "figura_pref", n=1)),
                                  tr(lang, "fig1_caption", se=SE_ORIGEM[1], ano=SE_ORIGEM[0])]),
             ]),
             html.Div(className="painel-extra", children=[
-                html.Div(className="avisos avisos--fonte", children=[_aviso(lang)]),
-                tabela_ranking(lang),
+                html.Div(className="avisos avisos--fonte", children=[_aviso(lang, c)]),
+                tabela_ranking(lang, c=c),
                 html.Div(className="como-ler", children=[
                     html.H3(tr(lang, "como_ler_t"), className="como-ler-t"),
                     html.Ol([html.Li(tr(lang, "como_ler_1")), html.Li(tr(lang, "como_ler_2")),
@@ -599,10 +671,28 @@ def _contexto_inicial():
     return lang, sel
 
 
+def _fonte_inicial():
+    """`?fonte=` do Referer, validado: só 'atual' é aceito (qualquer outra coisa → 'original')."""
+    if not flask.has_request_context():
+        return "original"
+    try:
+        q = parse_qs(urlsplit(flask.request.headers.get("Referer", "")).query)
+    except ValueError:
+        return "original"
+    return "atual" if (q.get("fonte") or [""])[0] == "atual" else "original"
+
+
 def serve_layout():
     # 1º render: idioma/cidade da URL (via Referer) ou Accept-Language; o boot (callback clientside)
     # reaplica a URL e o idioma salvo em localStorage.
     lang, sel = _contexto_inicial()
+    pedida = _fonte_inicial()
+    at = atual.global_atual()
+    at.iniciar()                      # preguiçoso, idempotente, sem rede aqui (thread daemon por worker)
+    est = at.estado()
+    # `atual` só vale se já estiver carregado; senão abre no original e o poll troca quando chegar
+    fonte = "atual" if (pedida == "atual" and est["estado"] in (atual.DISPONIVEL, atual.DEFASADO)) else "original"
+    c = at.conjunto() if fonte == "atual" else ORIGINAL
     return html.Div([
         html.A(tr(lang, "skip"), href="#conteudo", className="skip-link"),
         html.Div(id="running-header", className="running-header",
@@ -617,7 +707,7 @@ def serve_layout():
                      **{"aria-label": tr(lang, "nav_label")}),
             barra_controles(lang)])]),
         html.Main(id="conteudo", children=html.Div(id="app-content",
-                                                   children=construir_conteudo(lang, sel))),
+                                                   children=construir_conteudo(lang, sel, c=c, fonte=fonte))),
         dcc.Store(id="lang", data=lang),   # memória: no boot reseta ao idioma do servidor (Accept-Language);
                                            # o idioma escolhido persiste em localStorage (ver callback de pílula)
         dcc.Store(id="theme"),
@@ -627,6 +717,10 @@ def serve_layout():
         dcc.Store(id="cmp"),   # cidade de comparação (fonte canônica; imune ao rebuild de render_content)
         # A15 — estado compartilhável na URL (?lang=&cidade=); tema/cvd/motion ficam no localStorage
         dcc.Location(id="url", refresh=False),
+        dcc.Store(id="fonte", data=fonte),                                   # 'original' | 'atual' (ativa)
+        dcc.Store(id="fonte-pedida", data="atual" if pedida == "atual" and fonte != "atual" else None),
+        dcc.Interval(id="poll-atual", interval=4000, n_intervals=0,
+                     disabled=(not atual.habilitado()) or est["estado"] in (atual.DISPONIVEL, atual.DEFASADO)),
         dcc.Store(id="url-sync"),
         dcc.Store(id="url-cidade"),   # ?cidade= CRU lido no boot; validado no servidor (aplica_url_cidade)
         dcc.Interval(id="boot", interval=80, n_intervals=0, max_intervals=1),

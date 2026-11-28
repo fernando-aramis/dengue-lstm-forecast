@@ -17,27 +17,17 @@ import logging
 import os
 
 from dash import Dash, Input, Output, Patch, State, ctx, dcc, html, no_update
-from flask import request, send_file
+from flask import Response, request, send_file
 from flask_compress import Compress
 
+import atual
 import conteudo
 from dados import (
-    COBERTAS,
-    DATA_ORIGEM,
-    GEO0,
     GEOJSON_UF,
-    IDX_CHOROPLETH,
-    META,
-    NAO_COBERTAS,
+    ORIGINAL,
     TETO_FATOR,
     UFS,
-    cidades_por_uf,
-    hist,
-    mapa_cid,
-    mapa_uf,
-    nome_por_geo,
     nome_uf,
-    prev,
 )
 from figuras import (
     CORES_NIVEL,
@@ -55,7 +45,15 @@ from figuras import (
 )
 from figuras import tema as _tema
 from i18n import resolver, tr
-from layout import cabecalho_corrido, construir_conteudo, nav_links, opcoes_uf, serve_layout
+from layout import (
+    atributos_fonte,
+    cabecalho_corrido,
+    construir_conteudo,
+    nav_links,
+    opcoes_uf,
+    serve_layout,
+    status_fonte,
+)
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
                     format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -79,8 +77,23 @@ app = Dash(__name__, title="Previsão de dengue no Brasil com LSTM",
                       {"name": "DC.creator", "content": "Colque, Fernando Aramis"},
                       {"name": "DC.date", "content": "2026-10-21"},
                       {"name": "DC.language", "content": "pt"},
+                      # SEO (1.13): description, Open Graph completo e Twitter card. O HTML inicial é igual nos
+                      # 3 idiomas (idioma resolvido no cliente): metatags em PT e SEM hreflang.
+                      {"name": "description", "content": tr("pt", "meta_desc")},
                       {"property": "og:type", "content": "article"},
-                      {"property": "og:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]}])
+                      {"property": "og:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"property": "og:description", "content": tr("pt", "meta_desc")},
+                      {"property": "og:url", "content": conteudo.PUBLIC_URL + "/"},
+                      {"property": "og:image", "content": conteudo.PUBLIC_URL + "/assets/og.png"},
+                      {"property": "og:image:width", "content": "1200"},
+                      {"property": "og:image:height", "content": "630"},
+                      {"property": "og:image:alt", "content": tr("pt", "og_alt")},
+                      {"property": "og:locale", "content": "pt_BR"},
+                      {"property": "og:site_name", "content": "Previsão de dengue no Brasil"},
+                      {"name": "twitter:card", "content": "summary_large_image"},
+                      {"name": "twitter:title", "content": conteudo.T_ARTIGO["artigo_titulo"]["pt"]},
+                      {"name": "twitter:description", "content": tr("pt", "meta_desc")},
+                      {"name": "twitter:image", "content": conteudo.PUBLIC_URL + "/assets/og.png"}])
 # Fontes auto-hospedadas em assets/fonts/ (self-host, WS2/F1): o Dash carrega assets/fonts.css
 # automaticamente; sem dependência do Google Fonts (ver CSP: font-src 'self', style-src sem o Google).
 server = app.server
@@ -90,7 +103,7 @@ Compress(server)   # gzip/brotli nas respostas (corta o payload do geojson/JS)
 app.index_string = """<!DOCTYPE html>
 <html lang="pt">
 <head>
-  {%metas%}<meta name="theme-color" content="#1C2620"><title>{%title%}</title>{%favicon%}
+  {%metas%}<link rel="canonical" href="__CANONICAL__"><meta name="theme-color" content="#1C2620"><title>{%title%}</title>{%favicon%}
   <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
   {%css%}
@@ -123,9 +136,11 @@ _JSONLD = json.dumps({
     "author": {"@type": "Person", "name": "Fernando Aramis Colque",
                **({"identifier": conteudo.ORCID_URL} if conteudo.ORCID else {})},
     "inLanguage": "pt", "datePublished": "2026-10-21", "url": conteudo.PUBLIC_URL + "/",
+    **({"dateModified": ORIGINAL.meta["coletado_em"][:10]} if str(ORIGINAL.meta.get("coletado_em", ""))[:4].isdigit() else {}),
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "publisher": {"@type": "Organization", "name": "Universidade Tecnológica Federal do Paraná"},
 }, ensure_ascii=False)
+app.index_string = app.index_string.replace("__CANONICAL__", conteudo.PUBLIC_URL + "/")
 app.index_string = app.index_string.replace(
     "__TITULOS__", json.dumps({_l: tr(_l, "doc_title") for _l in ("pt", "en", "es")}, ensure_ascii=False))
 app.index_string = app.index_string.replace(
@@ -219,10 +234,35 @@ def _cabecalhos_seguranca(resp):
     return resp
 
 
+def obter(fonte):
+    """Conjunto da fonte pedida pelo cliente: 'atual' só se já estiver carregado; senão ORIGINAL."""
+    if fonte == "atual":
+        c = atual.global_atual().conjunto()
+        if c is not None:
+            return c
+    return ORIGINAL
+
+
 @server.route("/health")
 def _health():
     """Liveness barato p/ o HEALTHCHECK do container — testa o processo, não re-renderiza a página."""
     return "ok", 200
+
+
+@server.route("/robots.txt")
+def _robots():
+    """Permite tudo e aponta o sitemap (1.14). Cache público de 1 h; herda os cabeçalhos de segurança."""
+    corpo = f"User-agent: *\nAllow: /\n\nSitemap: {conteudo.PUBLIC_URL}/sitemap.xml\n"
+    return Response(corpo, mimetype="text/plain", headers={"Cache-Control": "public, max-age=3600"})
+
+
+@server.route("/sitemap.xml")
+def _sitemap():
+    """Apenas '/', coerente com o canonical único (1.14)."""
+    corpo = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+             f"  <url><loc>{conteudo.PUBLIC_URL}/</loc></url>\n</urlset>\n")
+    return Response(corpo, mimetype="application/xml", headers={"Cache-Control": "public, max-age=3600"})
 
 
 @server.route("/CITATION.cff")
@@ -233,8 +273,8 @@ def _citation_cff():
 
 
 app.layout = serve_layout
-log.info("app pronto · %d cidades · origem %s%s", len(mapa_cid), DATA_ORIGEM,
-         f" · coletado {META.get('coletado_em')}" if META.get("coletado_em") else "")
+log.info("app pronto · %d cidades · origem %s%s", len(ORIGINAL.mapa_cid), ORIGINAL.data_origem,
+         f" · coletado {ORIGINAL.meta.get('coletado_em')}" if ORIGINAL.meta.get("coletado_em") else "")
 
 
 # ---------------------------------------------------------------- idioma
@@ -247,16 +287,19 @@ def set_lang(a, b, c):
 
 @app.callback(Output("app-content", "children"),
               Output("running-header", "children"), Output("topnav", "children"),
-              Input("lang", "data"), State("sel", "data"), State("url-cidade", "data"),
+              Input("lang", "data"), Input("fonte", "data"),
+              State("sel", "data"), State("url-cidade", "data"),
               State("theme-eff", "data"), State("cvd", "data"), State("cmp", "data"),
-              prevent_initial_call=True)   # conteúdo já vem do serve_layout; re-render só ao TROCAR idioma
-def render_content(lang, sel, url_cidade, tema, cvd, cmp):
+              prevent_initial_call=True)   # conteúdo já vem do serve_layout; re-render ao TROCAR idioma ou fonte
+def render_content(lang, fonte, sel, url_cidade, tema, cvd, cmp):
     lang = resolver(lang)
+    c = obter(fonte)
+    fonte = "atual" if c is not ORIGINAL else "original"
     # preserva a seleção atual ao trocar de idioma (store sel). No boot, `lang` e `url-cidade` saem
     # na MESMA resposta do callback clientside, mas `sel` só é gravado depois (aplica_url_cidade):
     # sem este fallback o rebuild correria na frente e perderia a cidade da URL.
-    alvo = sel if _geo_valido(sel) else (url_cidade if _geo_valido(url_cidade) else None)
-    return (construir_conteudo(lang, alvo, tema or "light", bool(cvd), cmp),
+    alvo = sel if _geo_valido(sel, c) else (url_cidade if _geo_valido(url_cidade, c) else None)
+    return (construir_conteudo(lang, alvo, tema or "light", bool(cvd), cmp, c=c, fonte=fonte),
             cabecalho_corrido(lang), nav_links(lang))
 
 
@@ -276,6 +319,51 @@ app.clientside_callback(
     "function(l){try{if(l){localStorage.setItem('lang', l);}}catch(e){} return window.dash_clientside.no_update;}",
     Output("url-sync", "data", allow_duplicate=True),
     Input("lang", "data"), prevent_initial_call=True)
+
+
+# ---------------------------------------------------------------- fonte dos dados (1.9)
+@app.callback(Output("fonte", "data"),
+              Input("fonte-original", "n_clicks"), Input("fonte-atual", "n_clicks"),
+              prevent_initial_call=True)
+def escolher_fonte(_o, _a):
+    """Cliente pede a fonte; 'atual' só é aceita se já estiver carregada (senão mantém a atual)."""
+    if ctx.triggered_id == "fonte-atual":
+        return "atual" if atual.global_atual().conjunto() is not None else no_update
+    return "original"
+
+
+@app.callback(Output("fonte-status", "children"),
+              Output("fonte-original", "aria-checked"), Output("fonte-original", "tabIndex"),
+              Output("fonte-atual", "aria-checked"), Output("fonte-atual", "tabIndex"),
+              Output("fonte-atual", "aria-disabled"),
+              Output("poll-atual", "disabled"), Output("poll-atual", "interval"),
+              Output("fonte", "data", allow_duplicate=True), Output("fonte-pedida", "data"),
+              Input("poll-atual", "n_intervals"), Input("lang", "data"), Input("fonte", "data"),
+              State("fonte-pedida", "data"), prevent_initial_call=True)
+def poll_atual(_n, lang, fonte, pedida):
+    """Atualiza status/estado dos botões a partir do atual.py; troca para 'atual' se foi pedido por
+    ?fonte= e acabou de chegar; para o poll quando o estado fica estável."""
+    est = atual.global_atual().estado()
+    pronto = est["estado"] in (atual.DISPONIVEL, atual.DEFASADO)
+    nova, limpa = no_update, no_update
+    if pedida == "atual" and pronto:
+        nova, limpa, fonte = "atual", None, "atual"
+    a = atributos_fonte(est, fonte)
+    parar = pronto or est["motivo"] == "desligado"
+    intervalo = 4000 if est["estado"] == atual.CARREGANDO else 30000
+    return (status_fonte(resolver(lang), est), a["original"]["aria-checked"], a["original"]["tabIndex"],
+            a["atual"]["aria-checked"], a["atual"]["tabIndex"], a["atual"]["aria-disabled"],
+            parar, intervalo, nova, limpa)
+
+
+# ao trocar de fonte, a seleção/comparação são revalidadas contra o Conjunto ativo (fallback geo0)
+@app.callback(Output("sel", "data", allow_duplicate=True), Output("cmp", "data", allow_duplicate=True),
+              Input("fonte", "data"), State("sel", "data"), State("cmp", "data"), prevent_initial_call=True)
+def revalidar_selecao(fonte, sel, cmp):
+    c = obter(fonte)
+    novo_sel = sel if _geo_valido(sel, c) else c.geo0
+    novo_cmp = cmp if (isinstance(cmp, str) and cmp in c.nome_por_geo) else None
+    return (no_update if novo_sel == sel else novo_sel), (no_update if novo_cmp == cmp else novo_cmp)
 
 
 # ---------------------------------------------------------------- tema
@@ -368,8 +456,9 @@ def rotulo_tema(choice, lang):
 
 # recolore o MAPA no tema via Patch — atualiza só estilo/cores, SEM reenviar o geojson (~128 KB)
 @app.callback(Output("mapa", "figure", allow_duplicate=True), Input("theme-eff", "data"),
-              prevent_initial_call=True)
-def tema_mapa(tnome):
+              State("fonte", "data"), prevent_initial_call=True)
+def tema_mapa(tnome, fonte="original"):
+    c = obter(fonte)
     p = _tema(tnome or "light")
     patch = Patch()
     patch["layout"]["map"]["style"] = p["mapstyle"]
@@ -381,12 +470,12 @@ def tema_mapa(tnome):
     patch["layout"]["hoverlabel"]["bgcolor"] = p["hover_bg"]       # tooltip segue o tema (contraste)
     patch["layout"]["hoverlabel"]["bordercolor"] = p["hover_bd"]
     patch["layout"]["hoverlabel"]["font"]["color"] = p["ink"]
-    patch["data"][IDX_CHOROPLETH]["colorscale"] = p["escala"]
-    patch["data"][IDX_CHOROPLETH]["marker"]["line"]["color"] = p["mapline"]
-    patch["data"][IDX_CHOROPLETH]["marker"]["line"]["width"] = p["maplinew"]
-    for i in indices_anel():                  # anéis das bolhas (cor do tema)
+    patch["data"][c.idx_choropleth]["colorscale"] = p["escala"]
+    patch["data"][c.idx_choropleth]["marker"]["line"]["color"] = p["mapline"]
+    patch["data"][c.idx_choropleth]["marker"]["line"]["width"] = p["maplinew"]
+    for i in indices_anel(c):                  # anéis das bolhas (cor do tema)
         patch["data"][i]["marker"]["color"] = p["ring"]
-    if NAO_COBERTAS:
+    if c.nao_cobertas:
         patch["data"][0]["marker"]["line"]["color"] = p["mapline"]
         patch["data"][0]["marker"]["line"]["width"] = p["maplinew"]                      # camada "sem cobertura" (índice 0) acompanha o tema
         patch["data"][0]["colorscale"] = [[0, p["naocob"]], [1, p["naocob"]]]
@@ -398,39 +487,41 @@ _UFS_SET = set(UFS)
 
 
 @app.callback(Output("dd-cidade", "options"), Output("dd-cidade", "value"),
-              Input("dd-uf", "value"), Input("lang", "data"))
-def popular_cidades(uf, lang):
+              Input("dd-uf", "value"), Input("lang", "data"), State("fonte", "data"))
+def popular_cidades(uf, lang, fonte="original"):
     lang = resolver(lang)
+    por_uf = obter(fonte).cidades_por_uf
     uf = uf if isinstance(uf, str) and (uf == "BR" or uf in _UFS_SET) else "BR"
     if uf == "BR" or not uf:
-        todas = sorted(((n, g) for lst in cidades_por_uf.values() for n, g in lst))
+        todas = sorted(((n, g) for lst in por_uf.values() for n, g in lst))
         return [{"label": n, "value": g} for n, g in todas], no_update
-    cidades = cidades_por_uf.get(uf, [])
+    cidades = por_uf.get(uf, [])
     rotulo = f"◼ {nome_uf.get(uf, uf)} ({tr(lang, 'escopo_estado').lower()})"
     opts = [{"label": rotulo, "value": f"UF-{uf}"}] + [{"label": n, "value": g} for n, g in cidades]
     # Input("lang") só traduz os rótulos: gravar o value aqui reverteria a cidade escolhida ao estado
     return opts, (no_update if ctx.triggered_id == "lang" else f"UF-{uf}")
 
 
-def _geo_valido(g):
+def _geo_valido(g, c=ORIGINAL):
     """WS6: valida geo vindo do cliente (POST forjável) → permite fallback seguro, nunca exceção."""
     if not g or not isinstance(g, str):        # int/lista forjados → inválido (antes: AttributeError/500)
         return False
     if g.startswith("UF-"):
         return g[3:] in _UFS_SET
-    return g in nome_por_geo
+    return g in c.nome_por_geo
 
 
 # WS5: um ÚNICO handler de clique no mapa — bolha de cidade → dd-cidade; estado → dd-uf (ambos validados).
 @app.callback(Output("dd-uf", "value"), Output("dd-cidade", "value", allow_duplicate=True),
-              Input("mapa", "clickData"), prevent_initial_call=True)
-def clique_mapa(click):
+              Input("mapa", "clickData"), State("fonte", "data"), prevent_initial_call=True)
+def clique_mapa(click, fonte="original"):
+    nomes = obter(fonte).nome_por_geo
     if not click:
         return no_update, no_update
     try:
         pt = click["points"][0]
         cd = pt.get("customdata")
-        if isinstance(cd, str) and cd in nome_por_geo:       # bolha de cidade
+        if isinstance(cd, str) and cd in nomes:       # bolha de cidade
             return no_update, cd
         loc = pt.get("location")
         if isinstance(loc, str) and loc in _UFS_SET:         # estado (choropleth)
@@ -444,19 +535,19 @@ def clique_mapa(click):
 # tema efetivo; tema puro é tratado por tema_mapa via Patch.
 @app.callback(Output("mapa", "figure"),
               Input("lang", "data"), Input("cvd", "data"),
-              State("dd-uf", "value"), State("theme-eff", "data"),
+              State("dd-uf", "value"), State("theme-eff", "data"), State("fonte", "data"),
               prevent_initial_call=True)
-def remapa_idioma(lang, cvd, uf, tema):
+def remapa_idioma(lang, cvd, uf, tema, fonte="original"):
     uf = uf if isinstance(uf, str) and (uf == "BR" or uf in _UFS_SET) else "BR"
-    return figura_mapa(uf, resolver(lang), tema or "light", cvd=bool(cvd))
+    return figura_mapa(uf, resolver(lang), tema or "light", cvd=bool(cvd), c=obter(fonte))
 
 
 # mudança de UF: só recentra/dá zoom via Patch — NÃO reenvia o geojson (~128 KB) a cada clique.
 @app.callback(Output("mapa", "figure", allow_duplicate=True),
-              Input("dd-uf", "value"), prevent_initial_call=True)
-def zoom_uf(uf):
+              Input("dd-uf", "value"), State("fonte", "data"), prevent_initial_call=True)
+def zoom_uf(uf, fonte="original"):
     uf = uf if isinstance(uf, str) and (uf == "BR" or uf in _UFS_SET) else "BR"
-    centro, zoom = centro_zoom(uf)
+    centro, zoom = centro_zoom(uf, obter(fonte))
     patch = Patch()
     patch["layout"]["map"]["center"] = centro
     patch["layout"]["map"]["zoom"] = zoom
@@ -464,9 +555,10 @@ def zoom_uf(uf):
 
 
 # a seleção vem SEMPRE do dd-cidade (o clique no mapa já atualiza o dd-cidade acima → fluxo único)
-@app.callback(Output("sel", "data"), Input("dd-cidade", "value"), prevent_initial_call=True)
-def selecionar(cidade):
-    return cidade if _geo_valido(cidade) else no_update
+@app.callback(Output("sel", "data"), Input("dd-cidade", "value"), State("fonte", "data"),
+              prevent_initial_call=True)
+def selecionar(cidade, fonte="original"):
+    return cidade if _geo_valido(cidade, obter(fonte)) else no_update
 
 
 @app.callback(Output("cartao", "children"), Output("detalhe", "figure"),
@@ -475,22 +567,25 @@ def selecionar(cidade):
               Output("dd-comparar", "disabled"), Output("legenda-cmp", "hidden"),
               Output("legenda-cmp-nome", "children"),
               Input("sel", "data"), Input("lang", "data"), Input("theme-eff", "data"),
-              Input("cmp", "data"))
-def atualizar(geo_id, lang, tema, cmp):
+              Input("cmp", "data"), State("fonte", "data"))
+def atualizar(geo_id, lang, tema, cmp, fonte="original"):
     lang, tema = resolver(lang), (tema or "light")
-    if not _geo_valido(geo_id):                 # WS6: geo ausente/forjado → seleção inicial segura
-        geo_id = GEO0
-    comp = comparacao_valida(geo_id, cmp)       # só município vs. outro município existente (valor forjado → None)
-    nome_cmp = tr(lang, "serie_cmp", nome=nome_por_geo[comp]) if comp else ""
-    return (cartao_info(geo_id, lang), figura_detalhe(geo_id, lang, tema, comp),
-            horizontes(geo_id, lang, comp), resumo_cartao(geo_id, lang, comp),
-            bool(sem_serie(geo_id)),            # legenda da série só faz sentido com série (estado sem cobertura: oculta)
+    c = obter(fonte)
+    if not _geo_valido(geo_id, c):              # WS6: geo ausente/forjado → seleção inicial segura
+        geo_id = c.geo0
+    comp = comparacao_valida(geo_id, cmp, c)    # só município vs. outro município existente (valor forjado → None)
+    nome_cmp = tr(lang, "serie_cmp", nome=c.nome_por_geo[comp]) if comp else ""
+    return (cartao_info(geo_id, lang, c=c), figura_detalhe(geo_id, lang, tema, comp, c=c),
+            horizontes(geo_id, lang, comp, c), resumo_cartao(geo_id, lang, comp, c),
+            bool(sem_serie(geo_id, c)),            # legenda da série só faz sentido com série (estado sem cobertura: oculta)
             geo_id.startswith("UF-"),           # comparar só vale entre municípios
             not comp, nome_cmp)
-@app.callback(Output("cmp", "data"), Input("dd-comparar", "value"), prevent_initial_call=True)
-def selecionar_cmp(valor):
+@app.callback(Output("cmp", "data"), Input("dd-comparar", "value"), State("fonte", "data"),
+              prevent_initial_call=True)
+def selecionar_cmp(valor, fonte="original"):
     """Comparação: valor do cliente validado (forjado/inexistente → sem comparação)."""
-    return valor if (isinstance(valor, str) and valor in nome_por_geo and not valor.startswith("UF-")) else None
+    return valor if (isinstance(valor, str) and valor in obter(fonte).nome_por_geo
+                     and not valor.startswith("UF-")) else None
 
 
 # anúncio "Copiado" para leitor de tela ao usar os botões de copiar (NEW/A14)
@@ -505,16 +600,17 @@ def anuncia_copia(_a, _b, lang):
 # Usa o store `sel` (fonte canônica da seleção, imune ao rebuild de render_content), não o dd-cidade.
 # Tema/cvd/motion ficam no localStorage, não na URL.
 app.clientside_callback(
-    "function(lang, sel){try{"
+    "function(lang, sel, fonte){try{"
     "var p=new URLSearchParams(window.location.search);"
     "if(lang){p.set('lang', lang);}"
+    "if(fonte==='atual'){p.set('fonte','atual');}else{p.delete('fonte');}"
     "if(sel!=null && sel!==''){p.set('cidade', String(sel));}"
     "var qs=p.toString();"
     "var u=window.location.pathname + (qs?('?'+qs):'') + window.location.hash;"
     "window.history.replaceState(null, '', u);"
     "}catch(e){} return window.dash_clientside.no_update;}",
     Output("url-sync", "data"),
-    Input("lang", "data"), Input("sel", "data"),
+    Input("lang", "data"), Input("sel", "data"), Input("fonte", "data"),
     prevent_initial_call=True)
 
 # A15 — LEITURA da URL no boot (clientside; a query não chega ao serve_layout, que é servido via
@@ -540,14 +636,15 @@ app.clientside_callback(
 @app.callback(Output("sel", "data", allow_duplicate=True),
               Output("dd-uf", "value", allow_duplicate=True),
               Output("dd-cidade", "value", allow_duplicate=True),
-              Input("url-cidade", "data"), prevent_initial_call=True)
-def aplica_url_cidade(raw):
+              Input("url-cidade", "data"), State("fonte", "data"), prevent_initial_call=True)
+def aplica_url_cidade(raw, fonte="original"):
     """A15 — aplica ?cidade= vindo da URL. Valor forjado/inexistente → seleção inicial segura (GEO0),
     nunca um dropdown vazio nem a string da URL ecoada de volta."""
     if not raw:
         return no_update, no_update, no_update
-    if not _geo_valido(raw):
-        return GEO0, no_update, no_update          # dropdowns já estão em GEO0; só normaliza sel/URL
+    c = obter(fonte)
+    if not _geo_valido(raw, c):
+        return c.geo0, no_update, no_update          # dropdowns já estão em GEO0; só normaliza sel/URL
     if raw.startswith("UF-"):
         return raw, raw[3:], raw
     return raw, no_update, raw

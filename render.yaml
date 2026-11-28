@@ -14,4 +14,11 @@ services:
     envVars:
       - key: WEB_CONCURRENCY # 1 worker no free tier (512 MB) — o Dockerfile lê esta env
         value: "1"
+      # Dataset "atual" (Fase 1): o app busca o último run da branch `data` em segundo plano.
+      # KILL-SWITCH: DADOS_ATUAIS=0 desliga (mudar env no Render REINICIA o serviço; não é instantâneo).
+      - key: DADOS_ATUAIS
+        value: "1"
+      - key: ATUAL_MAX_IDADE_SEMANAS   # acima disso o atual aparece como "defasado" (com aviso)
+        value: "3"
+      # DADOS_ATUAIS_URL (opcional): só aceita hosts da allowlist (raw.githubusercontent.com).
       # O Render injeta $PORT automaticamente; o container já se vincula a ele.

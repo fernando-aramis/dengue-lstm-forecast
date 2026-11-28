@@ -34,7 +34,8 @@ from cidades import CIDADES, UF_NOME
 log = _log.configurar("dengue.pipeline")
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
-DATA = os.path.join(AQUI, "..", "data")
+# DATA_DIR (env) redireciona a SAÍDA (gate de contrato e publicação na branch `data`); padrão: ../data.
+DATA = os.path.abspath(os.environ.get("DATA_DIR") or os.path.join(AQUI, "..", "data"))
 os.makedirs(DATA, exist_ok=True)
 
 HIST_SEMANAS = 20

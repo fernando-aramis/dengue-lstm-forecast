@@ -882,3 +882,19 @@ header.hero .lede { color: var(--on-brand-muted); font-size: 1.0625rem; max-widt
   .artigo-coluna > section { content-visibility: visible; }   /* impressão: tudo renderizado */
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .7em; color: #555; word-break: break-all; }
 }
+
+/* ---- Fonte dos dados: Original × Atual (Fase 1.10) — controle segmentado (radiogroup) ----------- */
+.fonte { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0 0 14px; }
+.fonte-rotulo { font-size: .8125rem; font-weight: 600; color: var(--text); }
+.fonte-grupo { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+.fonte-opt {
+  min-height: 44px; min-width: 44px; padding: 8px 14px; border-radius: 8px;
+  background: var(--surface-raised); color: var(--text);
+  border: 1px solid var(--border-strong); font: inherit; font-size: .8125rem; cursor: pointer;
+}
+.fonte-opt[aria-checked="true"] {
+  background: var(--green-l); border: 3px solid var(--green-ink); padding: 6px 12px; font-weight: 700;
+}
+.fonte-opt[aria-disabled="true"] { border-style: dashed; color: var(--text-muted); cursor: not-allowed; }
+.fonte-opt:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.fonte-status { flex-basis: 100%; margin: 0; font-size: .8125rem; color: var(--text-muted); }

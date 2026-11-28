@@ -237,7 +237,7 @@ def test_recencia_se(pagina):
     pagina.goto(URL)
     pagina.wait_for_selector(".recencia", timeout=40000)
     import dados
-    se = dados.SE_ORIGEM[1]                          # derivado dos dados: não quebra a cada retreino
+    se = dados.ORIGINAL.se_origem[1]                          # derivado dos dados: não quebra a cada retreino
     assert f"SE {se}" in pagina.inner_text(".recencia"), "selo de recência deve mostrar a SE da origem"
 
 
@@ -557,8 +557,9 @@ def test_alvos_de_toque_do_dropdown_e_links_de_materiais(pagina):
 @pytest.mark.parametrize("lang", ["pt", "en", "es"])
 def test_numeros_do_cartao_seguem_o_formato_do_idioma(pagina, lang):
     """O número previsto no cartão sai de formato.py: milhar/decimal por idioma (pt/es 1.197, en 1,197)."""
-    from dados import GEO0, mapa_cid
+    from dados import ORIGINAL
     from formato import fmt_int
+    mapa_cid, GEO0 = ORIGINAL.mapa_cid, ORIGINAL.geo0
     v = float(mapa_cid.loc[mapa_cid["geo_id"] == GEO0, "prev"].iloc[0])
     esperado = fmt_int(v, lang)
     pagina.set_viewport_size({"width": 1280, "height": 900})
@@ -800,7 +801,7 @@ def test_tabela1_completa_cabe_sem_cortar_colunas_no_desktop(pagina):
                     ult:[...document.querySelectorAll('.tab-rank tbody tr:first-child td')].map(
                         td=>td.getBoundingClientRect().right).pop()}}""")
         import dados
-        assert r["linhas"] == len(dados.mapa_cid), f"Tabela 1 deveria ter todas as cidades: {r}"
+        assert r["linhas"] == len(dados.ORIGINAL.mapa_cid), f"Tabela 1 deveria ter todas as cidades: {r}"
         assert r["sw"] <= r["cw"] + 1, f"coluna(s) da Tabela 1 cortada(s) em {largura}px: {r}"
         assert r["h"] <= 520, f"altura da Tabela 1 deve ser limitada (rolagem interna): {r}"
 
