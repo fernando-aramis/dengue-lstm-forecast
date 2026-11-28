@@ -37,7 +37,7 @@ jobs:
           echo "::error::push do heartbeat em main falhou"; exit 1
       - name: Heartbeat em data (se a branch existir)
         run: |
-          git ls-remote --exit-code --heads origin data >/dev/null 2>&1 || { echo "branch data ainda não existe"; exit 0; }
+          git ls-remote --exit-code --heads origin refs/heads/data >/dev/null 2>&1 || { echo "branch data ainda não existe"; exit 0; }
           git fetch --depth=1 origin data
           git worktree add -B data _data FETCH_HEAD
           cd _data
