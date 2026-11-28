@@ -206,7 +206,7 @@ def figura_detalhe(geo_id, lang="pt", tema_nome="light", comp=None, c=ORIGINAL):
         fig.add_trace(go.Scatter(x=[h["data"].iloc[-1]] + list(pv["data_prev"]), y=[ult] * (len(pv) + 1),
                                  mode="lines", showlegend=False,
                                  line=dict(color=p["naive"], width=1.75, dash="dashdot"),
-                                 name=pref + tr(lang, "g_ingenuo")))
+                                 name=pref + tr(lang, "serie_naive")))
     if comp:                                   # série de comparação: azul + traço pontilhado + losango (não só cor)
         hc = hist[hist["geo_id"] == comp].sort_values("data")
         pc = prev[prev["geo_id"] == comp].sort_values("h")

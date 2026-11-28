@@ -211,8 +211,6 @@ T = {
                           "es": "Marcador: nivel reciente (estimado) o previsto por encima del máximo usado en la normalización del modelo; pronóstico menos fiable."},
     "serie_naive": {"pt": "Ingênuo (última semana repetida)", "en": "Naive (last week repeated)",
                     "es": "Ingenuo (última semana repetida)"},
-    "g_ingenuo": {"pt": "Ingênuo (última semana repetida)", "en": "Naive (last week repeated)",
-                  "es": "Ingenuo (última semana repetida)"},
     "horiz_ingenuo": {"pt": "Referência ingênua: {v} casos por semana em t+1…t+4 (última semana observada repetida). Compare com o previsto.",
                       "en": "Naive reference: {v} cases per week at t+1…t+4 (last observed week repeated). Compare with the forecast.",
                       "es": "Referencia ingenua: {v} casos por semana en t+1…t+4 (última semana observada repetida). Compare con lo previsto."},
