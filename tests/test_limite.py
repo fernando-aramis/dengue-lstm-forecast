@@ -21,8 +21,8 @@ def _base():
     return o.prev.copy(), o.hist.copy()
 
 
-def test_sem_arquivo_recurso_desligado():
-    assert dados.ORIGINAL.limite == {}      # o original ainda não traz limite_treino.csv (1.4c pendente)
+def test_original_traz_limite_e_sem_arquivo_desliga():
+    assert set(dados.ORIGINAL.limite) == set(dados.ORIGINAL.mapa_cid["geo_id"])   # 1.4c: o original traz o arquivo
     prev, hist = _base()
     assert dados.carregar((prev, hist)).limite == {}
 
@@ -117,7 +117,7 @@ def _vals(geo):
 def test_fora_limite_regra_dos_dois_gatilhos_e_igualdade():
     geo = dados.ORIGINAL.geo0
     obs, prev = _vals(geo)
-    assert dados.fora_limite(dados.ORIGINAL, geo) is None                              # sem arquivo: sem aviso
+    assert dados.fora_limite(dados.ORIGINAL, geo) is None      # hoje nenhuma cidade acima do limite (medido)
     c = _com_limite_em(geo, max(obs, prev) + 1)
     assert dados.fora_limite(c, geo) is None                                # abaixo: sem aviso
     assert dados.fora_limite(_com_limite_em(geo, max(obs, prev)), geo) is None   # igual ao limite NÃO sinaliza
