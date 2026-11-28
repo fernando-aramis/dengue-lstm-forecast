@@ -151,3 +151,23 @@ def test_aviso_aparece_no_cartao_tabela_e_anuncio(lang):
     sem = dados.carregar((dados.ORIGINAL.prev.copy(), dados.ORIGINAL.hist.copy()))
     assert "aviso-limite" not in str(figuras.cartao_info(geo, lang, c=sem))
     assert "atencao" not in str(layout.tabela_ranking(lang, c=sem))
+
+
+def test_pico_invalido_nao_desliga_o_aviso():
+    geo = dados.ORIGINAL.geo0
+    lim = _lim(geo, 5.0, pico=float("nan"))
+    c = dados.carregar((dados.ORIGINAL.prev.copy(), dados.ORIGINAL.hist.copy(), {}, lim))
+    assert c.limite[geo] == {"casos_max_treino": 5.0, "pico_serie_completa": None}
+
+
+def test_aviso_nao_gera_lista_aninhada():
+    from test_unit import _coleta_listas_aninhadas
+
+    import figuras
+    import layout
+    geo = dados.ORIGINAL.geo0
+    c = _com_limite_em(geo, 0.0)
+    hits = _coleta_listas_aninhadas(figuras.cartao_info(geo, "pt", c=c))
+    hits += _coleta_listas_aninhadas(layout.tabela_ranking("pt", c=c))
+    hits += _coleta_listas_aninhadas(figuras.horizontes(geo, "pt", c=c))
+    assert hits == []

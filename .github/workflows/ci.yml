@@ -84,7 +84,7 @@ jobs:
         if: steps.pw.outputs.cache-hit != 'true'
         run: python -m playwright install chromium
       # E2E + axe-core AAA (tests/vendor/axe.min.js, vendorizado: sem CDN)
-      - run: pytest tests/test_e2e.py tests/test_a11y_axe.py tests/test_fonte_e2e.py -q
+      - run: pytest tests/test_e2e.py tests/test_a11y_axe.py tests/test_fonte_e2e.py tests/test_aviso_limite_e2e.py -q
       # Sobe os screenshots SÓ quando o E2E falha — debug de flaky sem reexecutar localmente.
       - name: Upload screenshots on failure
         if: failure()

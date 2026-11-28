@@ -92,7 +92,7 @@ def validar_limite(lim):
     _exigir(not lim.empty, "limite_treino.csv está vazio")
     _exigir(_COLS_LIMITE.issubset(lim.columns),
             f"colunas faltando em limite_treino.csv: {sorted(_COLS_LIMITE - set(lim.columns))}")
-    num = [c for c in _COLS_LIMITE | {"pico_serie_completa"} if c != "geo_id" and c in lim.columns]
+    num = [c for c in _COLS_LIMITE if c != "geo_id"]      # pico_serie_completa é tolerante (NaN → sem pico)
     _exigir(lim[num].notna().all().all() and (lim[num].select_dtypes("number").shape[1] == len(num)),
             "limite_treino.csv: valores ausentes ou não numéricos")
     _exigir((lim["casos_max_treino"] >= 0).all(), "limite_treino.csv: casos_max_treino negativo")
@@ -107,10 +107,10 @@ def _dict_limite(lim):
         validar_limite(lim)
     except RuntimeError:
         return {}
-    tem_pico = "pico_serie_completa" in lim.columns
-    return {str(g): {"casos_max_treino": float(c), "pico_serie_completa": float(p) if tem_pico else None}
-            for g, c, p in zip(lim["geo_id"], lim["casos_max_treino"],
-                               lim["pico_serie_completa"] if tem_pico else [None] * len(lim))}
+    picos = pd.to_numeric(lim["pico_serie_completa"], errors="coerce") if "pico_serie_completa" in lim.columns \
+        else pd.Series([float("nan")] * len(lim), index=lim.index)
+    return {str(g): {"casos_max_treino": float(c), "pico_serie_completa": None if pd.isna(p) else float(p)}
+            for g, c, p in zip(lim["geo_id"], lim["casos_max_treino"], picos)}
 
 
 @dataclass(frozen=True, eq=False)
