@@ -38,7 +38,7 @@ TIMEOUT_S = 5
 BACKOFF_S = (0, 15, 60, 300)
 RECHECAGEM_S = 6 * 3600
 ARQUIVOS = ("previsoes.csv", "historico.csv", "_meta.json")
-OPCIONAIS = ("limite_treino.csv",)      # só são buscados se o ponteiro lista o hash; divergência rejeita o run
+OPCIONAIS = ("limite_treino.csv",)      # só são buscados se o ponteiro lista o hash; ausente/divergente só desliga o recurso (o run segue)
 _RE_RUN = re.compile(r"^[0-9]{6}-[0-9a-f]{7}$")
 
 CARREGANDO, DISPONIVEL, DEFASADO, INDISPONIVEL = "carregando", "disponivel", "defasado", "indisponivel"
@@ -145,10 +145,12 @@ def buscar(base, fetcher, etag=None):
         esperado = hashes.get(nome)
         if esperado is None:
             continue
-        _, dados_, _ = fetcher(f"{base}runs/{run}/{nome}", None)
-        if not isinstance(esperado, str) or dados_ is None or hashlib.sha256(dados_).hexdigest() != esperado.lower():
-            raise ErroAtual(f"hash de {nome} não confere")
-        brutos[nome] = dados_
+        try:
+            _, dados_, _ = fetcher(f"{base}runs/{run}/{nome}", None)
+        except ErroAtual:
+            dados_ = None                     # opcional: ausente/erro de rede = recurso desligado, o run segue
+        if isinstance(esperado, str) and dados_ is not None and hashlib.sha256(dados_).hexdigest() == esperado.lower():
+            brutos[nome] = dados_             # hash divergente também só desliga o recurso (afeta só o aviso)
     meta = _json(brutos["_meta.json"], "_meta.json")
     try:
         prev = pd.read_csv(io.BytesIO(brutos["previsoes.csv"]), parse_dates=["data_origem", "data_prev"])

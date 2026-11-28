@@ -203,7 +203,7 @@ def carregar(origem):
 
 def fora_limite(c, geo_id):
     """2.3: o município está acima do máximo usado na normalização do modelo?
-    → None (sem aviso, sem arquivo, UF ou sem dados) | "obs" (último observado > limite) |
+    → None (sem aviso, sem arquivo, UF ou sem dados) | "obs" (último valor do histórico — nowcast, semana ainda em notificação — > limite) |
       "prev" (previsão t+1 > limite) | "ambos". Estritamente maior (igual ao limite não sinaliza)."""
     lim = (c.limite or {}).get(str(geo_id))
     if not lim:

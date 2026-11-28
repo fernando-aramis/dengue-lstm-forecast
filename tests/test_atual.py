@@ -243,9 +243,16 @@ def test_limite_opcional_e_carregado_quando_o_hash_confere():
     assert a.conjunto().limite[geo]["pico_serie_completa"] == 150.0
 
 
-def test_limite_com_hash_divergente_rejeita_o_run():
+def test_limite_com_hash_divergente_desliga_so_o_recurso():
     a = _mk(_com_limite(b"geo_id\n1\n", hash_ok=False))
-    assert a.tentar() is False and "limite_treino" in a.estado()["motivo"]
+    assert a.tentar() is True and a.conjunto().limite == {}
+
+
+def test_limite_listado_mas_ausente_nao_derruba_o_run():
+    s = _com_limite(b"x")
+    del s[f"{atual.BASE_PADRAO}runs/{RUN}/limite_treino.csv"]       # o fetcher de teste levanta ErroAtual (404)
+    a = _mk(s)
+    assert a.tentar() is True and a.conjunto().limite == {}
 
 
 def test_limite_ilegivel_nao_derruba_o_run():

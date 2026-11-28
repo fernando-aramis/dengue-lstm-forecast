@@ -22,7 +22,7 @@ def _base():
 
 
 def test_sem_arquivo_recurso_desligado():
-    assert dados.ORIGINAL.limite in ({}, dados.ORIGINAL.limite)     # original pode ou não ter o arquivo
+    assert dados.ORIGINAL.limite == {}      # o original ainda não traz limite_treino.csv (1.4c pendente)
     prev, hist = _base()
     assert dados.carregar((prev, hist)).limite == {}
 
@@ -64,7 +64,7 @@ def test_teto_usa_pico_da_serie_completa():
     s_com = com_pico.prev.loc[com_pico.prev["geo_id"].eq(geo) & com_pico.prev["h"].eq(1), "sup"].iloc[0]
     s_sem = sem_pico.prev.loc[sem_pico.prev["geo_id"].eq(geo) & sem_pico.prev["h"].eq(1), "sup"].iloc[0]
     assert s_com > s_sem and s_com <= 5_000_000 * dados.TETO_FATOR
-    assert sem.prev["sup"].le(sem.prev["sup"].max()).all()
+    assert (s_sem < 10_000_000) and sem.prev["sup"].ge(sem.prev["prev"]).all()      # sem pico completo, o guard corta
 
 
 def test_carregar_le_limite_do_diretorio(tmp_path):
@@ -117,7 +117,7 @@ def _vals(geo):
 def test_fora_limite_regra_dos_dois_gatilhos_e_igualdade():
     geo = dados.ORIGINAL.geo0
     obs, prev = _vals(geo)
-    assert dados.fora_limite(dados.ORIGINAL, geo) in (None, "obs", "prev", "ambos")   # sem arquivo: None
+    assert dados.fora_limite(dados.ORIGINAL, geo) is None                              # sem arquivo: sem aviso
     c = _com_limite_em(geo, max(obs, prev) + 1)
     assert dados.fora_limite(c, geo) is None                                # abaixo: sem aviso
     assert dados.fora_limite(_com_limite_em(geo, max(obs, prev)), geo) is None   # igual ao limite NÃO sinaliza
