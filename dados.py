@@ -201,4 +201,21 @@ def carregar(origem):
     )
 
 
+def fora_limite(c, geo_id):
+    """2.3: o município está acima do máximo usado na normalização do modelo?
+    → None (sem aviso, sem arquivo, UF ou sem dados) | "obs" (último observado > limite) |
+      "prev" (previsão t+1 > limite) | "ambos". Estritamente maior (igual ao limite não sinaliza)."""
+    lim = (c.limite or {}).get(str(geo_id))
+    if not lim:
+        return None
+    p1 = c.mapa_cid[c.mapa_cid["geo_id"] == str(geo_id)]
+    h = c.hist[c.hist["geo_id"] == str(geo_id)]
+    if p1.empty or h.empty:
+        return None
+    teto = lim["casos_max_treino"]
+    obs = h.sort_values("data")["casos"].iloc[-1] > teto
+    prev = p1["prev"].iloc[0] > teto
+    return "ambos" if (obs and prev) else "obs" if obs else "prev" if prev else None
+
+
 ORIGINAL = carregar(DATA)      # fail-fast no import, como antes

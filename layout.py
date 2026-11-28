@@ -12,7 +12,7 @@ from dash import dcc, html
 
 import atual
 from conteudo import BIBTEX, ESTUDO, LINKS, ORCID, ORCID_URL, REFERENCIAS, TAB_RES, abnt
-from dados import ORIGINAL, UFS, nome_uf
+from dados import ORIGINAL, UFS, fora_limite, nome_uf
 from figuras import ORDEM_NIVEL, cartao_info, figura_detalhe, figura_mapa, horizontes
 from formato import plotly_locale
 from i18n import IDIOMAS, fmt_data, fmt_dec, fmt_int, fmt_intervalo, fmt_pct, resolver, tr
@@ -308,11 +308,16 @@ def tabela_ranking(lang, n=None, c=ORIGINAL):
     top = c.mapa_cid.sort_values("prev", ascending=False)
     if n is not None:
         top = top.head(n)
-    linhas = []
+    linhas, sinalizadas = [], 0
     for _, r in top.iterrows():
         nv = r["nivel_alerta"]
+        marca = fora_limite(c, r["geo_id"])
+        sinalizadas += bool(marca)
         linhas.append(html.Tr([
-            html.Td(f"{r['nome']} ({r['uf']})", className="tab-cidade"),
+            html.Td([f"{r['nome']} ({r['uf']})",
+                     *([html.Span(className="glifo atencao", **{"aria-hidden": "true"}),
+                        html.Span(tr(lang, "aviso_limite_tab"), className="sr-only")] if marca else [])],
+                    className="tab-cidade"),
             html.Td(fmt_int(r["prev"], lang), className="tabular"),
             html.Td(fmt_int(r["inf"], lang), className="tabular"),
             html.Td(fmt_int(r["sup"], lang), className="tabular"),
@@ -326,7 +331,9 @@ def tabela_ranking(lang, n=None, c=ORIGINAL):
         html.Thead(html.Tr([html.Th(tr(lang, "tab1_cidade")), html.Th(tr(lang, "tab1_prev")),
                             html.Th(tr(lang, "tab1_inf")), html.Th(tr(lang, "tab1_sup")),
                             html.Th(tr(lang, "tab1_nivel"))])),
-        html.Tbody(linhas)])])
+        html.Tbody(linhas)]),
+        *([html.P([html.Span(className="glifo atencao", **{"aria-hidden": "true"}), " ", tr(lang, "aviso_limite_nota")],
+                  className="horiz-nota aux")] if sinalizadas else [])])
 
 
 _MESES_PT = ["jan.", "fev.", "mar.", "abr.", "maio", "jun.", "jul.", "ago.", "set.", "out.", "nov.", "dez."]

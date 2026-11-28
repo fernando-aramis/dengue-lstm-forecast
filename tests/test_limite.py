@@ -94,7 +94,60 @@ def test_ingenuo_e_o_ultimo_observado_repetido():
 
 def test_ingenuo_contraste_grafico_3_para_1():
     from test_unit import contraste
+
     import figuras
     for tema in ("light", "dark"):
         p = figuras.PLOT[tema]
         assert contraste(p["naive"], p["paper"]) >= 3.0, tema
+
+
+# ---- 2.3 aviso "fora do limite de treino" -------------------------------------------------------
+def _com_limite_em(geo, maximo):
+    o = dados.ORIGINAL
+    return dados.carregar((o.prev.copy(), o.hist.copy(), {}, _lim(geo, maximo)))
+
+
+def _vals(geo):
+    o = dados.ORIGINAL
+    obs = o.hist[o.hist["geo_id"] == geo].sort_values("data")["casos"].iloc[-1]
+    prev = o.mapa_cid[o.mapa_cid["geo_id"] == geo]["prev"].iloc[0]
+    return float(obs), float(prev)
+
+
+def test_fora_limite_regra_dos_dois_gatilhos_e_igualdade():
+    geo = dados.ORIGINAL.geo0
+    obs, prev = _vals(geo)
+    assert dados.fora_limite(dados.ORIGINAL, geo) in (None, "obs", "prev", "ambos")   # sem arquivo: None
+    c = _com_limite_em(geo, max(obs, prev) + 1)
+    assert dados.fora_limite(c, geo) is None                                # abaixo: sem aviso
+    assert dados.fora_limite(_com_limite_em(geo, max(obs, prev)), geo) is None   # igual ao limite NÃO sinaliza
+    if obs != prev:
+        alto, baixo = max(obs, prev), min(obs, prev)
+        r = dados.fora_limite(_com_limite_em(geo, (alto + baixo) / 2 if alto - baixo > 1 else baixo - 0.5), geo)
+        assert r == ("obs" if obs > prev else "prev")
+    assert dados.fora_limite(_com_limite_em(geo, min(obs, prev) - 1), geo) == "ambos"
+
+
+def test_fora_limite_ignora_uf_e_geo_sem_limite():
+    c = _com_limite_em(dados.ORIGINAL.geo0, 0.0)
+    uf = "UF-" + dados.ORIGINAL.mapa_uf["uf"].iloc[0]
+    assert dados.fora_limite(c, uf) is None
+    outro = next(g for g in dados.ORIGINAL.mapa_cid["geo_id"] if g != dados.ORIGINAL.geo0)
+    assert dados.fora_limite(c, outro) is None
+
+
+@pytest.mark.parametrize("lang", ["pt", "en", "es"])
+def test_aviso_aparece_no_cartao_tabela_e_anuncio(lang):
+    import figuras
+    import layout
+    from i18n import tr
+    geo = dados.ORIGINAL.geo0
+    c = _com_limite_em(geo, 0.0)                       # força: tudo acima do limite
+    assert "aviso-limite" in str(figuras.cartao_info(geo, lang, c=c))
+    assert tr(lang, "aviso_limite") in figuras.resumo_cartao(geo, lang, c=c)
+    tab = str(layout.tabela_ranking(lang, c=c))
+    assert "atencao" in tab and tr(lang, "aviso_limite_tab") in tab and tr(lang, "aviso_limite_nota") in tab
+    # sem arquivo/aviso: nada disso aparece
+    sem = dados.carregar((dados.ORIGINAL.prev.copy(), dados.ORIGINAL.hist.copy()))
+    assert "aviso-limite" not in str(figuras.cartao_info(geo, lang, c=sem))
+    assert "atencao" not in str(layout.tabela_ranking(lang, c=sem))

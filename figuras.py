@@ -13,6 +13,7 @@ from dados import (
     GEOJSON_UF,
     ORDEM_NIVEL,
     ORIGINAL,
+    fora_limite,
     nome_uf,
     semana_epi,
 )
@@ -319,6 +320,9 @@ def cartao_info(geo_id, lang="pt", c=ORIGINAL):
                  className="sub", style={"marginTop": "8px"}),
         html.Div(tr(lang, "nota_nivel"), className="sub nota"),
     ]
+    if fora_limite(c, geo_id):
+        cartao.append(html.Div([html.Span(className="glifo atencao", **{"aria-hidden": "true"}),
+                                html.Span(tr(lang, "aviso_limite"))], className="aviso aviso-limite"))
     return cartao
 
 
@@ -334,6 +338,8 @@ def resumo_cartao(geo_id, lang="pt", comp=None, c=ORIGINAL):
     r = p1.iloc[0]
     txt = tr(lang, "cartao_resumo_aria", nome=r["nome"],
              v=fmt_int(r["prev"], lang), nivel=nivel_tr(lang, r["nivel_alerta"]))
+    if fora_limite(c, geo_id):
+        txt += " " + tr(lang, "aviso_limite")
     comp = comparacao_valida(geo_id, comp, c)
     if comp:
         c1 = prev[(prev["geo_id"] == comp) & (prev["h"] == 1)].iloc[0]
