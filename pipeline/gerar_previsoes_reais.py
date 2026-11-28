@@ -110,7 +110,14 @@ def processar_cidade(nome, uf, geocode, lat, lon, pop_aprox):
                           p["h"], pd.Timestamp(p["data_prev"]).date().isoformat(),
                           round(p["prev"]), round(p["inf"]), round(p["sup"]),
                           nivel_alerta(p["prev"], pop)])
-    return hist_rows, prev_rows, pop, resumo, {"epocas": meta["epocas"], "campo_casos": params["campo_casos"]}
+    limite = {"geo_id": str(geocode),
+              "casos_max_treino": round(float(np.expm1(params["log1p_max_treino"])), 1),
+              "log1p_min_treino": round(params["log1p_min_treino"], 6),
+              "log1p_max_treino": round(params["log1p_max_treino"], 6),
+              "n_semanas_treino": int(params["corte_treino"]),
+              "pico_serie_completa": int(s["casos"].max())}
+    return (hist_rows, prev_rows, pop, resumo,
+            {"epocas": meta["epocas"], "campo_casos": params["campo_casos"], "limite": limite})
 
 
 def agregar_estados(por_uf, hist_rows, prev_rows):
@@ -147,7 +154,7 @@ def main():
     print(f"Processando {len(cidades)} cidade(s) · EY_START={EY_START} · "
           f"{'rápido' if RAPIDO else 'completo'}")
     hist_rows, prev_rows, por_uf, edas, falhas = [], [], {}, {}, []
-    epocas_cidade, campos = {}, set()
+    epocas_cidade, campos, limites = {}, set(), []
     t0 = time.perf_counter()
 
     # WS9: coleta (I/O) em PARALELO → popula o cache do infodengue; o treino (TF) segue SEQUENCIAL.
@@ -170,6 +177,7 @@ def main():
             hr, pr, pop, resumo, extra = processar_cidade(nome, uf, geocode, lat, lon, pop_aprox)
             epocas_cidade[str(geocode)] = extra["epocas"]
             campos.add(extra["campo_casos"])
+            limites.append(extra["limite"])
             hist_rows += hr
             prev_rows += pr
             por_uf.setdefault(uf, []).append({"lat": lat, "lon": lon, "pop": pop, "hist": hr, "prev": pr})
@@ -192,6 +200,8 @@ def main():
                                      "data", "casos"]).to_csv(
         os.path.join(DATA, "historico.csv"), index=False)
     df_prev.to_csv(os.path.join(DATA, "previsoes.csv"), index=False)
+    # 2.2: limite de treino por município (arquivo OPCIONAL do contrato; alimenta o aviso "fora do limite")
+    pd.DataFrame(limites).to_csv(os.path.join(DATA, "limite_treino.csv"), index=False)
     with open(os.path.join(DATA, "eda.json"), "w", encoding="utf-8") as f:
         json.dump(edas, f, ensure_ascii=False, indent=2)
 

@@ -53,7 +53,7 @@ jobs:
       - run: pip install "$(grep -E '^pytest-cov==' requirements-dev.txt)"
       # Cobertura medida SÓ no unit (E2E roda o servidor em subprocesso, fora do número). Módulos do
       # serving em pyproject.toml. Piso = medido (84,35% em 2026-11-27) − 2 pontos; só sobe.
-      - run: pytest tests/test_unit.py tests/test_formato.py tests/test_i18n_validacoes.py tests/test_sem_cobertura.py tests/test_atual.py tests/test_conjunto.py tests/test_publicar.py tests/test_seo.py tests/test_lacunas_ui.py -q --cov --cov-report=term-missing --cov-fail-under=82
+      - run: pytest tests/test_unit.py tests/test_formato.py tests/test_i18n_validacoes.py tests/test_sem_cobertura.py tests/test_atual.py tests/test_conjunto.py tests/test_publicar.py tests/test_seo.py tests/test_lacunas_ui.py tests/test_limite.py -q --cov --cov-report=term-missing --cov-fail-under=82
 
   e2e:
     runs-on: ubuntu-latest
